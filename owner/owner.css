@@ -116,3 +116,29 @@
  .module-details>.project-form{padding-top:18px}
 }
 @media(prefers-reduced-motion:reduce){.studio-nav a{transition:none}}
+
+/* Vertical slide navigation for the Owner Studio dashboard. */
+html{scroll-behavior:smooth;scroll-snap-type:y proximity}
+.studio-slide{scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:12px;min-height:calc(100svh - 88px);display:flex;flex-direction:column;justify-content:center;position:relative}
+.studio-overview-slide{padding:26px 0;gap:18px}
+.studio-overview-slide .dashboard-heading{margin-bottom:0}
+.studio-overview-slide .stats{margin:0}
+.studio-overview-slide .studio-nav{position:static;margin:0}
+.manager-card.studio-slide{padding-top:clamp(24px,5vh,56px);padding-bottom:clamp(24px,5vh,56px)}
+.studio-slide:not(.is-visible){transition:opacity .35s ease,transform .35s ease}
+@media(min-width:900px){
+ .studio-overview-slide .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .manager-card.studio-slide{padding-left:clamp(24px,4vw,56px);padding-right:clamp(24px,4vw,56px)}
+}
+@media(max-width:680px){
+ html{scroll-snap-type:y proximity}
+ .studio-slide{min-height:calc(100svh - 66px);scroll-margin-top:4px}
+ .studio-overview-slide{justify-content:center;padding:20px 0;gap:14px}
+ .studio-overview-slide .stats{grid-template-columns:1fr}
+ .studio-overview-slide .stat-card{padding:12px 14px}
+ .studio-overview-slide .stat-card p{margin-bottom:0}
+ .studio-overview-slide .studio-nav{display:grid;grid-template-columns:1fr 1fr}
+ .studio-overview-slide .studio-nav a:last-child{grid-column:1/-1}
+ .manager-card.studio-slide{justify-content:flex-start;padding-top:28px;padding-bottom:28px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;scroll-snap-type:y proximity}.studio-slide:not(.is-visible){transition:none}}
