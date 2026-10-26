@@ -142,3 +142,25 @@ html{scroll-behavior:smooth;scroll-snap-type:y proximity}
  .manager-card.studio-slide{justify-content:flex-start;padding-top:28px;padding-bottom:28px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;scroll-snap-type:y proximity}.studio-slide:not(.is-visible){transition:none}}
+
+/* Horizontal slide deck: swipe/scroll left-right between dashboard modules. */
+html{scroll-snap-type:y proximity}
+#dashboard-view{display:flex;flex-direction:row;align-items:stretch;gap:0;overflow-x:auto;overflow-y:visible;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;scrollbar-width:none;width:100%;max-width:100%;padding-bottom:8px}
+#dashboard-view::-webkit-scrollbar{display:none}
+#dashboard-view>.studio-slide{box-sizing:border-box;flex:0 0 100%;width:100%;max-width:100%;min-width:0;min-height:calc(100svh - 100px);scroll-snap-align:start;scroll-snap-stop:always;scroll-margin:0;justify-content:center;padding:clamp(18px,3vw,42px);overflow:visible}
+#dashboard-view>.studio-overview-slide{gap:18px}
+#dashboard-view>.manager-card.studio-slide{margin:0;align-self:stretch}
+#dashboard-view>.manager-card.studio-slide .module-details[open]{min-height:0}
+#dashboard-view>.studio-slide .studio-nav{position:static}
+@media(max-width:680px){
+ #dashboard-view{width:calc(100% + 0px);gap:0}
+ #dashboard-view>.studio-slide{flex-basis:100%;width:100%;min-height:calc(100svh - 76px);padding:20px 16px;scroll-margin:0;justify-content:flex-start}
+ #dashboard-view>.studio-overview-slide{justify-content:center;gap:14px}
+ #dashboard-view>.studio-overview-slide .stats{grid-template-columns:1fr}
+ #dashboard-view>.studio-overview-slide .stat-card{padding:12px 14px}
+ #dashboard-view>.studio-overview-slide .stat-card p{margin-bottom:0}
+ #dashboard-view>.studio-overview-slide .studio-nav{display:grid;grid-template-columns:1fr 1fr}
+ #dashboard-view>.studio-overview-slide .studio-nav a:last-child{grid-column:1/-1}
+ #dashboard-view>.manager-card.studio-slide{padding-top:24px;padding-bottom:24px}
+}
+@media(prefers-reduced-motion:reduce){#dashboard-view{scroll-behavior:auto;scroll-snap-type:x proximity}}
