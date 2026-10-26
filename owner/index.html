@@ -57,13 +57,43 @@
         <div><p class="eyebrow">WELCOME BACK / OWNER</p><h1>Studio overview<span class="period">.</span></h1><p class="intro" id="signed-in-as"></p></div>
         <button class="quiet-button" id="logout-button" type="button">Sign out ↗</button>
       </div>
-      <div class="status-banner"><span class="status-dot"></span><div><strong>Authentication connected</strong><p>You are signed in to Owner Studio.</p></div></div>
+      <div class="status-banner"><span class="status-dot"></span><div><strong>Authentication connected</strong><p>Manage the projects shown on your public portfolio.</p></div></div>
       <div class="stats">
-        <article class="stat-card"><span>PROJECTS</span><strong>—</strong><p>Project manager comes next</p></article>
-        <article class="stat-card"><span>EXPERIENCE</span><strong>—</strong><p>Set your portfolio details next</p></article>
-        <article class="stat-card"><span>PUBLIC SITE</span><strong>LIVE</strong><p>Changes will be added in stages</p></article>
+        <article class="stat-card"><span>PROJECTS</span><strong id="project-count">0</strong><p>Projects saved in your library</p></article>
+        <article class="stat-card"><span>LONG VIDEOS</span><strong id="long-count">0</strong><p>Documentaries and long-form edits</p></article>
+        <article class="stat-card"><span>SHORT VIDEOS</span><strong id="short-count">0</strong><p>Shorts, Reels and vertical edits</p></article>
       </div>
-      <div class="coming-card"><p class="eyebrow">NEXT MODULE / 02</p><h2>Project library</h2><p>Add, edit and remove long-form edits and short-form videos. This is a starter dashboard; project storage and database permissions still need to be configured before saving real content.</p><span class="coming-tag">IN DEVELOPMENT</span></div>
+
+      <section class="manager-card" id="project-manager">
+        <div class="manager-heading"><div><p class="eyebrow">MODULE / 02</p><h2>Project library</h2><p class="manager-intro">Add videos, edit details, publish them on your portfolio, or remove old work.</p></div></div>
+        <form id="project-form" class="project-form">
+          <input type="hidden" id="project-id">
+          <label for="project-title">Project title</label>
+          <input id="project-title" maxlength="120" required placeholder="e.g. The Story of Deccan">
+          <label for="project-type">Video type</label>
+          <select id="project-type" required>
+            <option value="long">Long video — thumbnail included</option>
+            <option value="short">Short video — autoplay on public site</option>
+          </select>
+          <label for="project-description">Description / role</label>
+          <textarea id="project-description" rows="3" maxlength="700" placeholder="Documentary edit, colour, sound design…"></textarea>
+          <label for="project-video">Video URL</label>
+          <input id="project-video" type="url" required placeholder="YouTube, Vimeo, or direct video URL">
+          <p class="field-help">Paste a share/embed-friendly video URL. Direct MP4 links can be used; private file-picker uploads are the next storage module.</p>
+          <div id="thumbnail-field">
+            <label for="project-thumbnail">Thumbnail image URL (long videos)</label>
+            <input id="project-thumbnail" type="url" placeholder="https://…">
+          </div>
+          <label class="publish-toggle"><input id="project-published" type="checkbox" checked> Publish this project on my public portfolio</label>
+          <div class="form-actions">
+            <button class="primary" id="save-project-button" type="submit">Save project <span aria-hidden="true">↗</span></button>
+            <button class="quiet-button hidden" id="cancel-edit-button" type="button">Cancel edit</button>
+          </div>
+          <p class="notice" id="project-message" role="status" aria-live="polite"></p>
+        </form>
+        <div class="library-heading"><h3>Saved projects</h3><button class="quiet-button" id="refresh-projects" type="button">Refresh ↻</button></div>
+        <div id="project-list" class="project-list"><p class="empty-state">Loading your projects…</p></div>
+      </section>
     </section>
   </main>
   <footer class="footer"><span>ZAID® / OWNER STUDIO</span><a href="/">View public portfolio ↗</a></footer>
