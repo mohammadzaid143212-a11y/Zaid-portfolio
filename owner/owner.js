@@ -260,6 +260,14 @@
       if (key === "site" && el !== document.body) return;
       el.style.color = setting.text || "";
       if (setting.accent) el.style.setProperty("--accent", setting.accent);
+      el.style.opacity = setting.opacity == null ? "" : String(setting.opacity / 100);
+      el.style.borderRadius = setting.radius ? setting.radius + "px" : "";
+      el.style.transform = setting.rotation ? "rotate(" + setting.rotation + "deg)" : "";
+      el.style.animation = "none";
+      const animationNames = { "fade-in":"themeFadeIn", float:"themeFloat", pulse:"themePulse", "slow-zoom":"themeSlowZoom", "slide-up":"themeSlideUp", "slide-left":"themeSlideLeft", spin:"themeSpin" };
+      if (setting.animation && animationNames[setting.animation] && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        el.style.animation = animationNames[setting.animation] + " " + (setting.duration || 6) + "s ease-in-out infinite alternate";
+      }
       if (setting.mode === "color") {
         el.style.backgroundColor = setting.bg || "";
         el.style.backgroundImage = "";
@@ -297,7 +305,13 @@
     const saved = themeSettings[key] || {};
     themeMode.value = saved.mode || "color"; themeBg.value = saved.bg || "#0b0b0d";
     themeText.value = saved.text || "#f2f0eb"; themeAccent.value = saved.accent || "#c9f36a";
-    themeMediaUrl.value = saved.mediaUrl || ""; updateThemeFields();
+    themeMediaUrl.value = saved.mediaUrl || "";
+    $("#theme-animation").value = saved.animation || "none";
+    $("#theme-duration").value = saved.duration || 6;
+    $("#theme-opacity").value = saved.opacity ?? 100;
+    $("#theme-radius").value = saved.radius ?? 0;
+    $("#theme-rotation").value = saved.rotation ?? 0;
+    updateThemeFields();
   }
   async function loadThemeSettings() {
     const { data, error } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
@@ -330,7 +344,14 @@
   }
   themeMediaFile.addEventListener("change", e => uploadThemeMedia(e.target.files?.[0]));
   function currentThemeSetting() {
-    return { mode: themeMode.value, bg: themeBg.value, text: themeText.value, accent: themeAccent.value, mediaUrl: themeMediaUrl.value.trim() };
+    return {
+      mode: themeMode.value, bg: themeBg.value, text: themeText.value, accent: themeAccent.value,
+      mediaUrl: themeMediaUrl.value.trim(), animation: $("#theme-animation").value,
+      duration: Math.min(30, Math.max(0.5, Number($("#theme-duration").value) || 6)),
+      opacity: Math.min(100, Math.max(10, Number($("#theme-opacity").value) || 100)),
+      radius: Math.min(200, Math.max(0, Number($("#theme-radius").value) || 0)),
+      rotation: Math.min(180, Math.max(-180, Number($("#theme-rotation").value) || 0))
+    };
   }
   function previewTheme() {
     const setting = currentThemeSetting(), preview = $("#theme-preview");
