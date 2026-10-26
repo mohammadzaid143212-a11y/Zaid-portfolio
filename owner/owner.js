@@ -238,13 +238,22 @@
     about: ".about-section", contact: ".contact-section", footer: ".site-footer"
   };
   function themeNotice(text, isError = false) { setMessage(themeMessage, text, isError); }
+  function selectedThemeKey() {
+    if (themeTarget.value !== "custom") return themeTarget.value;
+    const selector = $("#theme-custom-selector").value.trim();
+    if (!selector || selector.length > 180) return "";
+    try { document.querySelector(selector); } catch { return ""; }
+    return "custom:" + selector;
+  }
+  function selectorForTheme(key) { return key.startsWith("custom:") ? key.slice(7) : themeSelectors[key]; }
   function updateThemeFields() {
     const mode = themeMode.value;
     themeMediaFields.classList.toggle("hidden", !["image", "video"].includes(mode));
     themeColorFields.classList.toggle("hidden", mode !== "color");
+    $("#custom-selector-field").classList.toggle("hidden", themeTarget.value !== "custom");
   }
   function applyThemeTarget(key, setting, root = document) {
-    const selector = themeSelectors[key];
+    const selector = selectorForTheme(key);
     if (!selector || !setting) return;
     const elements = root.querySelectorAll(selector);
     elements.forEach(el => {
@@ -284,7 +293,8 @@
     Object.entries(settings || {}).forEach(([key, setting]) => applyThemeTarget(key, setting, root));
   }
   function populateThemeForm() {
-    const saved = themeSettings[themeTarget.value] || {};
+    const key = selectedThemeKey();
+    const saved = themeSettings[key] || {};
     themeMode.value = saved.mode || "color"; themeBg.value = saved.bg || "#0b0b0d";
     themeText.value = saved.text || "#f2f0eb"; themeAccent.value = saved.accent || "#c9f36a";
     themeMediaUrl.value = saved.mediaUrl || ""; updateThemeFields();
@@ -295,7 +305,8 @@
     themeSettings = data?.settings || {};
     populateThemeForm();
   }
-  themeTarget.addEventListener("change", populateThemeForm);
+  themeTarget.addEventListener("change", () => { updateThemeFields(); populateThemeForm(); });
+  $("#theme-custom-selector").addEventListener("change", populateThemeForm);
   themeMode.addEventListener("change", updateThemeFields);
   async function uploadThemeMedia(file) {
     if (!file) return;
@@ -346,7 +357,8 @@
   themeForm.addEventListener("submit", async e => {
     e.preventDefault();
     if (themeUploadBusy) return themeNotice("Wait for the media upload to finish.", true);
-    const key = themeTarget.value, setting = currentThemeSetting();
+    const key = selectedThemeKey(), setting = currentThemeSetting();
+    if (!key) return themeNotice("Enter a valid CSS selector for the element you want to customize.", true);
     if (["image", "video"].includes(setting.mode)) {
       try { const url = new URL(setting.mediaUrl); if (!["http:", "https:"].includes(url.protocol)) throw new Error(); }
       catch { return themeNotice("Enter a valid background media URL or upload a file.", true); }
@@ -362,13 +374,14 @@
     finally { button.disabled = false; button.innerHTML = 'Save &amp; publish <span aria-hidden="true">↗</span>'; }
   });
   $("#reset-theme-button").addEventListener("click", async () => {
-    const key = themeTarget.value;
+    const key = selectedThemeKey();
+    if (!key) return themeNotice("Choose a website area or enter a valid CSS selector.", true);
     const nextSettings = { ...themeSettings }; delete nextSettings[key];
     try {
       const { error } = await client.from("portfolio_theme_settings").upsert({ id: true, settings: nextSettings, updated_at: new Date().toISOString() }, { onConflict: "id" });
       if (error) throw error;
       themeSettings = nextSettings;
-      const selector = themeSelectors[key];
+      const selector = selectorForTheme(key);
       document.querySelectorAll(selector).forEach(el => {
         el.style.backgroundColor = ""; el.style.backgroundImage = ""; el.style.color = ""; el.style.removeProperty("--accent");
         const video = el.querySelector(":scope > .theme-background-video"); if (video) video.remove();
