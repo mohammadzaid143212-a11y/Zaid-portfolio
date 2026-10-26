@@ -137,6 +137,14 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     document.querySelectorAll(selector).forEach(el => {
       el.style.color = setting.text || "";
       if (setting.accent) el.style.setProperty("--accent", setting.accent);
+      el.style.opacity = setting.opacity == null ? "" : String(setting.opacity / 100);
+      el.style.borderRadius = setting.radius ? setting.radius + "px" : "";
+      el.style.transform = setting.rotation ? "rotate(" + setting.rotation + "deg)" : "";
+      el.style.animation = "none";
+      const animationNames = { "fade-in":"themeFadeIn", float:"themeFloat", pulse:"themePulse", "slow-zoom":"themeSlowZoom", "slide-up":"themeSlideUp", "slide-left":"themeSlideLeft", spin:"themeSpin" };
+      if (setting.animation && animationNames[setting.animation] && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        el.style.animation = animationNames[setting.animation] + " " + (setting.duration || 6) + "s ease-in-out infinite alternate";
+      }
       if (setting.mode === "color") {
         el.style.backgroundColor = setting.bg || "";
         el.style.backgroundImage = "";
