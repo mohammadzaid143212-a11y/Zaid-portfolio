@@ -174,4 +174,41 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
       }
     });
   });
+
+  const customElements = Array.isArray(data.settings.__elements) ? data.settings.__elements : [];
+  const animationNames = { "fade-in":"themeFadeIn", float:"themeFloat", pulse:"themePulse", "slow-zoom":"themeSlowZoom", "slide-up":"themeSlideUp", "slide-left":"themeSlideLeft" };
+  customElements.slice(0,30).forEach(item => {
+    let targets;
+    try { targets = document.querySelectorAll(item.target); } catch { return; }
+    if (!targets.length) return;
+    targets.forEach(target => {
+      const node = document.createElement("div");
+      node.className = "owner-added-element";
+      node.dataset.elementId = item.id || "";
+      node.style.cssText = "box-sizing:border-box;position:relative;z-index:3;width:min(" + Math.max(10,Math.min(100,Number(item.width)||80)) + "%,100%);margin:24px auto;padding:8px;text-align:center;color:" + (item.color || "#c9f36a") + ";";
+      if (item.placement === "top") node.style.marginTop = "0";
+      if (item.placement === "bottom") node.style.marginBottom = "0";
+      if (item.animation && animationNames[item.animation] && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        node.style.animation = animationNames[item.animation] + " " + Math.max(.5,Math.min(30,Number(item.duration)||6)) + "s ease-in-out infinite alternate";
+      }
+      if (item.kind === "text") {
+        node.textContent = String(item.content || "").slice(0,240);
+        node.style.font = "600 clamp(18px,3vw,34px) Manrope, sans-serif";
+        node.style.overflowWrap = "anywhere";
+      } else {
+        let media;
+        if (item.kind === "image") {
+          media = document.createElement("img"); media.alt = ""; media.loading = "lazy"; media.decoding = "async";
+          media.style.cssText = "display:block;width:100%;max-height:70vh;object-fit:contain;margin:auto";
+        } else if (item.kind === "video") {
+          media = document.createElement("video"); media.muted = true; media.loop = true; media.autoplay = true; media.playsInline = true;
+          media.setAttribute("aria-label","Decorative motion graphic"); media.style.cssText = "display:block;width:100%;max-height:70vh;object-fit:contain;margin:auto";
+          media.controls = true;
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { media.autoplay = false; media.controls = true; }
+        } else return;
+        media.src = item.url; node.append(media);
+      }
+      target.append(node);
+    });
+  });
 })();
