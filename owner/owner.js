@@ -357,6 +357,12 @@
     const setting = currentThemeSetting(), preview = $("#theme-preview");
     preview.style.color = setting.text || "#f2f0eb";
     preview.style.setProperty("--accent", setting.accent || "#c9f36a");
+    preview.style.opacity = String(setting.opacity / 100);
+    preview.style.borderRadius = setting.radius + "px";
+    preview.style.transform = setting.rotation ? "rotate(" + setting.rotation + "deg)" : "";
+    preview.style.animation = "none";
+    const previewAnimations = { "fade-in":"themeFadeIn", float:"themeFloat", pulse:"themePulse", "slow-zoom":"themeSlowZoom", "slide-up":"themeSlideUp", "slide-left":"themeSlideLeft", spin:"themeSpin" };
+    if (previewAnimations[setting.animation] && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) preview.style.animation = previewAnimations[setting.animation] + " " + setting.duration + "s ease-in-out infinite alternate";
     preview.style.backgroundImage = ""; preview.style.backgroundColor = "";
     const oldVideo = preview.querySelector("video"); if (oldVideo) oldVideo.remove();
     if (setting.mode === "color") preview.style.backgroundColor = setting.bg;
