@@ -64,6 +64,107 @@
         <article class="stat-card"><span>SHORT VIDEOS</span><strong id="short-count">0</strong><p>Shorts, Reels and vertical edits</p></article>
       </div>
 
+      <section class="manager-card" id="theme-manager">
+        <div class="manager-heading"><div><p class="eyebrow">MODULE / 03</p><h2>Visual theme controller</h2><p class="manager-intro">Choose an area, customize its colors or background media, preview changes, then publish them to your public portfolio.</p></div></div>
+        <form id="theme-form" class="project-form">
+          <label for="theme-target">Choose website area</label>
+          <select id="theme-target">
+            <option value="site">Entire website</option>
+            <option value="header">Header / navigation</option>
+            <option value="hero">Hero section</option>
+            <option value="hero-title">Hero headline</option>
+            <option value="hero-media">Hero video frame</option>
+            <option value="work">Selected Work section</option>
+            <option value="project-cards">Project cards</option>
+            <option value="about">About section</option>
+            <option value="contact">Contact section</option>
+            <option value="footer">Footer</option>
+            <option value="custom">Custom element / CSS selector</option>
+          </select>
+          <div id="custom-selector-field" class="hidden"><label for="theme-custom-selector">Element selector</label><input id="theme-custom-selector" type="text" placeholder="e.g. .project-info h3"><p class="field-help">Enter a CSS selector for the exact element or group you want to style, such as .availability or .project-info h3.</p></div>
+          <label for="theme-mode">Background type</label>
+          <select id="theme-mode">
+            <option value="color">Solid color</option>
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+            <option value="none">Transparent / default</option>
+          </select>
+          <label for="theme-animation">Motion / animation</label>
+          <select id="theme-animation">
+            <option value="none">No animation</option>
+            <option value="fade-in">Fade in</option>
+            <option value="float">Floating motion</option>
+            <option value="pulse">Soft pulse</option>
+            <option value="slow-zoom">Slow cinematic zoom</option>
+            <option value="slide-up">Slide up</option>
+            <option value="slide-left">Slide from left</option>
+            <option value="spin">Slow rotation</option>
+          </select>
+          <div class="theme-control-grid">
+            <div><label for="theme-duration">Animation speed (seconds)</label><input id="theme-duration" type="number" min="0.5" max="30" step="0.5" value="6"></div>
+            <div><label for="theme-opacity">Opacity (%)</label><input id="theme-opacity" type="number" min="10" max="100" step="5" value="100"></div>
+            <div><label for="theme-radius">Corner radius (px)</label><input id="theme-radius" type="number" min="0" max="200" step="2" value="0"></div>
+            <div><label for="theme-rotation">Rotation (degrees)</label><input id="theme-rotation" type="number" min="-180" max="180" step="1" value="0"></div>
+          </div>
+          <p class="field-help">Motion and shape settings apply to the selected element. Respectful motion is disabled for visitors who prefer reduced motion.</p>
+          <div id="theme-color-fields">
+            <label for="theme-background">Background color</label><input id="theme-background" type="color" value="#0b0b0d">
+          </div>
+          <label for="theme-text">Text color</label><input id="theme-text" type="color" value="#f2f0eb">
+          <label for="theme-accent">Accent color</label><input id="theme-accent" type="color" value="#c9f36a">
+          <div id="theme-media-fields" class="hidden">
+            <label for="theme-media-url">Background media URL (optional)</label>
+            <input id="theme-media-url" type="url" placeholder="https://…">
+            <label for="theme-media-file" class="file-picker-label">Or upload background media</label>
+            <input id="theme-media-file" class="file-picker" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/ogg">
+            <p class="field-help">Image: JPG, PNG, WebP. Video: MP4, WebM, OGG. Maximum 50 MB. Video backgrounds play muted and loop.</p>
+            <div class="upload-progress hidden" id="theme-upload-progress"><div class="upload-progress-bar" id="theme-upload-bar"></div></div>
+            <p class="upload-status" id="theme-upload-status" role="status" aria-live="polite"></p>
+          </div>
+          <div class="custom-elements-panel">
+            <p class="eyebrow">ELEMENT BUILDER</p>
+            <h3>Add an element anywhere</h3>
+            <p class="field-help">Add text, an image, a video or a motion-graphic overlay to a selected section. You can edit or remove each element later.</p>
+            <label for="element-target">Place inside section / selector</label>
+            <select id="element-target">
+              <option value=".hero">Hero section</option><option value=".hero-frame">Hero video frame</option>
+              <option value=".work-section">Selected Work</option><option value=".about-section">About section</option>
+              <option value=".contact-section">Contact section</option><option value=".site-header">Header</option>
+              <option value=".site-footer">Footer</option><option value="custom">Custom CSS selector</option>
+            </select>
+            <div id="element-custom-target-field" class="hidden"><label for="element-custom-target">Custom target selector</label><input id="element-custom-target" type="text" placeholder=".project-info h3"></div>
+            <label for="element-kind">Element type</label>
+            <select id="element-kind"><option value="text">Text / heading</option><option value="image">Image / graphic</option><option value="video">Video / motion graphic</option></select>
+            <label for="element-content">Text content (for text elements)</label><input id="element-content" type="text" maxlength="240" placeholder="Your custom headline or caption">
+            <label for="element-url">Image / video URL (optional if uploading)</label><input id="element-url" type="url" placeholder="https://…">
+            <label for="element-file" class="file-picker-label">Or upload image / video</label>
+            <input id="element-file" class="file-picker" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/ogg">
+            <p class="field-help">Maximum 50 MB. Video overlays are muted and loop; use a direct MP4/WebM/OGG file URL.</p>
+            <div class="upload-progress hidden" id="element-upload-progress"><div class="upload-progress-bar" id="element-upload-bar"></div></div>
+            <p class="upload-status" id="element-upload-status" role="status" aria-live="polite"></p>
+            <div class="theme-control-grid">
+              <div><label for="element-placement">Placement</label><select id="element-placement"><option value="top">Top</option><option value="center">Center</option><option value="bottom">Bottom</option></select></div>
+              <div><label for="element-width">Width (%)</label><input id="element-width" type="number" min="10" max="100" value="80"></div>
+              <div><label for="element-animation">Animation</label><select id="element-animation"><option value="none">None</option><option value="fade-in">Fade in</option><option value="float">Float</option><option value="pulse">Pulse</option><option value="slow-zoom">Slow zoom</option><option value="slide-up">Slide up</option><option value="slide-left">Slide left</option></select></div>
+              <div><label for="element-duration">Speed (seconds)</label><input id="element-duration" type="number" min="0.5" max="30" step="0.5" value="6"></div>
+            </div>
+            <label for="element-color">Text / accent color</label><input id="element-color" type="color" value="#c9f36a">
+            <div class="form-actions"><button class="quiet-button" id="add-element-button" type="button">Add element</button><button class="quiet-button" id="clear-element-form" type="button">Clear fields</button></div>
+            <div id="custom-element-list" class="custom-element-list"><p class="empty-state">No custom elements added yet.</p></div>
+          </div>
+          <div class="theme-preview" id="theme-preview" aria-live="polite">
+            <span class="eyebrow">LIVE PREVIEW</span><strong>Stories deserve to be felt.</strong><p>This preview shows your selected background and colors before publishing.</p>
+          </div>
+          <div class="form-actions">
+            <button class="quiet-button" id="preview-theme-button" type="button">Preview changes</button>
+            <button class="primary" id="save-theme-button" type="submit">Save &amp; publish <span aria-hidden="true">↗</span></button>
+          </div>
+          <button class="text-button" id="reset-theme-button" type="button">Reset selected area</button>
+          <p class="notice" id="theme-message" role="status" aria-live="polite"></p>
+          <p class="field-help">Theme settings apply to the selected area only. Media backgrounds are decorative and may be paused by visitors' device or reduced-motion settings.</p>
+        </form>
+      </section>
+
       <section class="manager-card" id="project-manager">
         <div class="manager-heading"><div><p class="eyebrow">MODULE / 02</p><h2>Project library</h2><p class="manager-intro">Add videos, edit details, publish them on your portfolio, or remove old work.</p></div></div>
         <form id="project-form" class="project-form">
