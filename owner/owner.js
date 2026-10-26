@@ -293,7 +293,7 @@
     const { data, error } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
     if (error) { themeNotice("Could not load theme settings: " + error.message, true); return; }
     themeSettings = data?.settings || {};
-    applyAllThemes(themeSettings); populateThemeForm();
+    populateThemeForm();
   }
   themeTarget.addEventListener("change", populateThemeForm);
   themeMode.addEventListener("change", updateThemeFields);
@@ -322,10 +322,25 @@
     return { mode: themeMode.value, bg: themeBg.value, text: themeText.value, accent: themeAccent.value, mediaUrl: themeMediaUrl.value.trim() };
   }
   function previewTheme() {
-    const setting = currentThemeSetting();
-    const preview = { ...themeSettings, [themeTarget.value]: setting };
-    applyThemeTarget(themeTarget.value, setting);
-    themeNotice("Preview only — use Save & publish to keep this change.");
+    const setting = currentThemeSetting(), preview = $("#theme-preview");
+    preview.style.color = setting.text || "#f2f0eb";
+    preview.style.setProperty("--accent", setting.accent || "#c9f36a");
+    preview.style.backgroundImage = ""; preview.style.backgroundColor = "";
+    const oldVideo = preview.querySelector("video"); if (oldVideo) oldVideo.remove();
+    if (setting.mode === "color") preview.style.backgroundColor = setting.bg;
+    else if (setting.mode === "image" && setting.mediaUrl) {
+      preview.style.backgroundImage = "linear-gradient(0deg,rgba(0,0,0,.2),rgba(0,0,0,.1)),url(\"" + setting.mediaUrl.replace(/["\\\\]/g, "") + "\")";
+      preview.style.backgroundSize = "cover"; preview.style.backgroundPosition = "center";
+    } else if (setting.mode === "video" && setting.mediaUrl) {
+      preview.style.backgroundColor = setting.bg || "#0b0b0d";
+      const video = document.createElement("video"); video.src = setting.mediaUrl; video.muted = true; video.loop = true; video.autoplay = true; video.playsInline = true;
+      video.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0";
+      preview.style.position = "relative"; preview.prepend(video);
+      Array.from(preview.children).forEach(child => { if (child !== video) { child.style.position = "relative"; child.style.zIndex = "1"; } });
+      const play = video.play(); if (play && play.catch) play.catch(() => {});
+    } else { preview.style.backgroundColor = "#101013"; }
+    themeNotice("Preview updated below. Save & publish to apply it to the selected public website area.");
+    preview.scrollIntoView({behavior:"smooth",block:"center"});
   }
   $("#preview-theme-button").addEventListener("click", previewTheme);
   themeForm.addEventListener("submit", async e => {
