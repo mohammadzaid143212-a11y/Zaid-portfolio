@@ -95,6 +95,62 @@
   projectType.addEventListener("change", toggleThumbnail);
   toggleThumbnail();
 
+  const MAX_MEDIA_BYTES = 50 * 1024 * 1024;
+  let mediaUploadInProgress = false;
+  function uploadStatus(kind, text, isError = false) {
+    const status = kind === "video" ? $("#video-upload-status") : $("#thumbnail-upload-status");
+    const progress = kind === "video" ? $("#video-upload-progress") : $("#thumbnail-upload-progress");
+    status.textContent = text;
+    status.classList.toggle("error", isError);
+    progress.classList.toggle("hidden", !mediaUploadInProgress || (kind !== "video" && kind !== "thumbnail"));
+  }
+  async function uploadMediaFile(file, kind) {
+    if (!file) return;
+    const isVideo = kind === "video";
+    const allowed = isVideo
+      ? ["video/mp4", "video/webm", "video/ogg", "video/quicktime"]
+      : ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      uploadStatus(kind, isVideo ? "Choose an MP4, WebM, OGG or MOV video." : "Choose a JPG, PNG or WebP image.", true);
+      (isVideo ? $("#project-video-file") : $("#project-thumbnail-file")).value = "";
+      return;
+    }
+    if (file.size > MAX_MEDIA_BYTES) {
+      uploadStatus(kind, "File is larger than 50 MB. Please choose a smaller file.", true);
+      (isVideo ? $("#project-video-file") : $("#project-thumbnail-file")).value = "";
+      return;
+    }
+    mediaUploadInProgress = true;
+    const fileInput = isVideo ? $("#project-video-file") : $("#project-thumbnail-file");
+    const urlInput = isVideo ? $("#project-video") : $("#project-thumbnail");
+    const saveButton = $("#save-project-button");
+    const progress = isVideo ? $("#video-upload-progress") : $("#thumbnail-upload-progress");
+    const bar = isVideo ? $("#video-upload-bar") : $("#thumbnail-upload-bar");
+    progress.classList.remove("hidden"); bar.classList.add("uploading");
+    fileInput.disabled = true; saveButton.disabled = true;
+    uploadStatus(kind, "Uploading " + file.name + "…");
+    try {
+      const safeName = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "").slice(-90) || (isVideo ? "video" : "thumbnail");
+      const path = (isVideo ? "videos/" : "thumbnails/") + crypto.randomUUID() + "-" + safeName;
+      const { data, error } = await client.storage.from("portfolio-media").upload(path, file, {
+        cacheControl: "3600", upsert: false, contentType: file.type
+      });
+      if (error) throw error;
+      const { data: publicData } = client.storage.from("portfolio-media").getPublicUrl(data.path);
+      urlInput.value = publicData.publicUrl;
+      uploadStatus(kind, "Upload complete: " + file.name);
+      fileInput.value = "";
+    } catch (err) {
+      uploadStatus(kind, "Upload failed: " + (err.message || "Please try again."), true);
+    } finally {
+      mediaUploadInProgress = false;
+      fileInput.disabled = false; saveButton.disabled = false;
+      progress.classList.add("hidden"); bar.classList.remove("uploading");
+    }
+  }
+  $("#project-video-file").addEventListener("change", e => uploadMediaFile(e.target.files?.[0], "video"));
+  $("#project-thumbnail-file").addEventListener("change", e => uploadMediaFile(e.target.files?.[0], "thumbnail"));
+
   function resetProjectForm() {
     editingId = null; projectForm.reset(); $("#project-id").value = "";
     $("#project-published").checked = true; $("#save-project-button").innerHTML = 'Save project <span aria-hidden="true">↗</span>';
@@ -147,6 +203,7 @@
   }
   projectForm.addEventListener("submit", async e => {
     e.preventDefault();
+    if (mediaUploadInProgress) return setMessage(projectMessage, "Please wait until the file upload finishes.", true);
     const title = $("#project-title").value.trim(), videoUrl = $("#project-video").value.trim();
     if (!title || !videoUrl) return setMessage(projectMessage, "Title and video URL are required.", true);
     let parsedUrl;
@@ -161,7 +218,8 @@
         ? await client.from("portfolio_projects").update(payload).eq("id", editingId).select().single()
         : await client.from("portfolio_projects").insert(payload).select().single();
       if (result.error) throw result.error;
-      resetProjectForm(); await loadProjects(); setMessage(projectMessage, editingId ? "Project saved." : "Project saved successfully.");
+      const wasEditing = Boolean(editingId);
+      resetProjectForm(); await loadProjects(); setMessage(projectMessage, wasEditing ? "Project updated successfully." : "Project saved successfully.");
     } catch (err) { setMessage(projectMessage, err.message || "Could not save project.", true); }
     finally { button.disabled = false; if (editingId) button.innerHTML = 'Update project <span aria-hidden="true">↗</span>'; else button.innerHTML = 'Save project <span aria-hidden="true">↗</span>'; }
   });
