@@ -43,3 +43,8 @@
 #theme-manager .form-actions button{flex:1}
 #theme-manager #reset-theme-button{align-self:flex-start;margin-top:10px}
 #theme-manager .field-help{max-width:720px}
+
+.theme-preview{min-height:150px;display:flex;flex-direction:column;justify-content:center;gap:12px;padding:24px;border:1px solid var(--line);background:#101013;margin:10px 0 22px;overflow:hidden}
+.theme-preview .eyebrow{color:var(--accent);font-size:10px;letter-spacing:2px}
+.theme-preview strong{font:600 clamp(20px,4vw,30px) Manrope,sans-serif;letter-spacing:-1px;max-width:460px}
+.theme-preview p{font-size:12px;line-height:1.7;color:inherit;opacity:.8;max-width:480px;margin:0}
