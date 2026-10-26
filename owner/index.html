@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0b0d">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Owner Studio — ZAID</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="owner.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="owner.js"></script>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Back to public portfolio">ZAID<span>®</span></a>
+    <span class="private-label"><i></i> PRIVATE OWNER STUDIO</span>
+  </header>
+
+  <main class="shell">
+    <section class="auth-card" id="login-view">
+      <p class="eyebrow">CONTROL ROOM / 01</p>
+      <h1>Your work.<br><span>Your control.</span></h1>
+      <p class="intro">Sign in to manage your portfolio, projects and visual identity.</p>
+      <form id="login-form">
+        <label for="email">Owner email</label>
+        <input id="email" name="email" type="email" autocomplete="username" placeholder="you@example.com" required>
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Your password" required>
+        <button class="primary" id="login-button" type="submit">Sign in <span aria-hidden="true">↗</span></button>
+        <button class="text-button" id="reset-button" type="button">Forgot password?</button>
+      </form>
+      <p class="notice" id="auth-message" role="status" aria-live="polite"></p>
+      <p class="footnote">Private access only. Public account creation is disabled.</p>
+    </section>
+
+    <section class="dashboard hidden" id="dashboard-view">
+      <div class="dashboard-heading">
+        <div><p class="eyebrow">WELCOME BACK / OWNER</p><h1>Studio overview<span class="period">.</span></h1><p class="intro" id="signed-in-as"></p></div>
+        <button class="quiet-button" id="logout-button" type="button">Sign out ↗</button>
+      </div>
+      <div class="status-banner"><span class="status-dot"></span><div><strong>Authentication connected</strong><p>You are signed in to Owner Studio.</p></div></div>
+      <div class="stats">
+        <article class="stat-card"><span>PROJECTS</span><strong>—</strong><p>Project manager comes next</p></article>
+        <article class="stat-card"><span>EXPERIENCE</span><strong>—</strong><p>Set your portfolio details next</p></article>
+        <article class="stat-card"><span>PUBLIC SITE</span><strong>LIVE</strong><p>Changes will be added in stages</p></article>
+      </div>
+      <div class="coming-card"><p class="eyebrow">NEXT MODULE / 02</p><h2>Project library</h2><p>Add, edit and remove long-form edits and short-form videos. This is a starter dashboard; project storage and database permissions still need to be configured before saving real content.</p><span class="coming-tag">IN DEVELOPMENT</span></div>
+    </section>
+  </main>
+  <footer class="footer"><span>ZAID® / OWNER STUDIO</span><a href="/">View public portfolio ↗</a></footer>
+</body>
+</html>
