@@ -62,3 +62,13 @@
 .theme-control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
 .theme-control-grid input{width:100%}
 @media(max-width:520px){.theme-control-grid{grid-template-columns:1fr}}
+
+.custom-elements-panel{border:1px solid var(--line);padding:18px;margin:20px 0;background:rgba(255,255,255,.015)}
+.custom-elements-panel h3{font-size:19px;margin:10px 0}
+.custom-elements-panel .theme-control-grid{margin:14px 0}
+.custom-element-list{display:grid;gap:10px;margin-top:16px}
+.custom-element-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid var(--line);background:#101013}
+.custom-element-item strong{font-size:13px;overflow-wrap:anywhere}
+.custom-element-item p{font-size:11px;color:var(--muted);margin:5px 0 0;overflow-wrap:anywhere}
+.custom-element-item button{flex-shrink:0}
+@media(max-width:600px){.custom-elements-panel{padding:12px}.custom-element-item{align-items:flex-start;flex-direction:column}}
