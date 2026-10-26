@@ -3,7 +3,7 @@
    Never put a service_role/secret key in browser code. */
 (() => {
   const SUPABASE_URL = "https://rtaedoseedjwlijxmrgv.supabase.co";
-  const SUPABASE_PUBLIC_KEY = "PASTE_SUPABASE_PUBLISHABLE_OR_ANON_KEY_HERE";
+  const SUPABASE_PUBLIC_KEY = "sb_publishable__Oc_xT1AELiVIQgCgXytTQ_qxLd_ZFo";
   const OWNER_EMAIL = "mohammadzaid143212@gmail.com".toLowerCase();
 
   const loginView = document.querySelector("#login-view");
