@@ -345,7 +345,7 @@
   themeMediaFile.addEventListener("change", e => uploadThemeMedia(e.target.files?.[0]));
   // Custom element builder: safe text/image/video elements inserted into selected public sections.
   const elementKind = $("#element-kind"), elementFile = $("#element-file");
-  let elementUploadBusy = false, elementUploadedUrl = "";
+  let elementUploadBusy = false, elementUploadedUrl = "", editingElementId = null;
   $("#element-target").addEventListener("change", () => $("#element-custom-target-field").classList.toggle("hidden", $("#element-target").value !== "custom"));
   elementKind.addEventListener("change", () => {
     $("#element-content").disabled = elementKind.value !== "text";
@@ -383,9 +383,23 @@
       const info = document.createElement("div"); const strong = document.createElement("strong");
       strong.textContent = item.kind === "text" ? (item.content || "Text element") : (item.kind === "image" ? "Image / graphic" : "Video / motion graphic");
       const small = document.createElement("p"); small.textContent = item.target + " · " + item.placement + " · " + (item.animation || "no animation");
-      info.append(strong,small); const del = document.createElement("button"); del.type = "button"; del.className = "quiet-button"; del.textContent = "Remove";
+      info.append(strong,small);
+      const actions = document.createElement("div"); actions.className = "custom-element-actions";
+      const edit = document.createElement("button"); edit.type = "button"; edit.className = "quiet-button"; edit.textContent = "Edit";
+      edit.addEventListener("click", () => {
+        editingElementId = item.id; $("#element-target").value = ["site","header","hero","hero-title","hero-media","work","project-cards","about","contact","footer"].includes(item.target) ? item.target : "custom";
+        $("#element-custom-target-field").classList.toggle("hidden", $("#element-target").value !== "custom");
+        if ($("#element-target").value === "custom") $("#element-custom-target").value = item.target;
+        elementKind.value = item.kind; elementKind.dispatchEvent(new Event("change"));
+        $("#element-content").value = item.content || ""; $("#element-url").value = item.url || "";
+        $("#element-placement").value = item.placement || "center"; $("#element-width").value = item.width || 80;
+        $("#element-animation").value = item.animation || "none"; $("#element-duration").value = item.duration || 6;
+        $("#element-color").value = item.color || "#c9f36a"; $("#add-element-button").textContent = "Update element";
+        themeNotice("Editing element. Make changes and tap Update element.");
+      });
+      const del = document.createElement("button"); del.type = "button"; del.className = "quiet-button"; del.textContent = "Remove";
       del.addEventListener("click", () => saveCustomElements(getCustomElements().filter(x => x.id !== item.id)));
-      card.append(info,del); list.append(card);
+      actions.append(edit,del); card.append(info,actions); list.append(card);
     });
   }
   async function saveCustomElements(items) {
@@ -403,11 +417,13 @@
     if (kind === "text" && !content) return themeNotice("Enter the text you want to add.",true);
     if (kind !== "text") { try { const u = new URL(url); if (!["http:","https:"].includes(u.protocol)) throw new Error(); } catch { return themeNotice("Add a valid image/video URL or upload a file first.",true); } }
     const items = getCustomElements();
-    if (items.length >= 30) return themeNotice("Maximum 30 custom elements. Remove one before adding another.",true);
-    const item = { id:crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value };
-    await saveCustomElements([...items,item]);
+    if (!editingElementId && items.length >= 30) return themeNotice("Maximum 30 custom elements. Remove one before adding another.",true);
+    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value };
+    const nextItems = editingElementId ? items.map(x => x.id === editingElementId ? item : x) : [...items,item];
+    await saveCustomElements(nextItems);
+    editingElementId = null; $("#add-element-button").textContent = "Add element";
   });
-  $("#clear-element-form").addEventListener("click", () => { $("#element-content").value=""; $("#element-url").value=""; $("#element-file").value=""; elementUploadedUrl=""; $("#element-upload-status").textContent=""; });
+  $("#clear-element-form").addEventListener("click", () => { editingElementId=null; $("#add-element-button").textContent="Add element"; $("#element-content").value=""; $("#element-url").value=""; $("#element-file").value=""; elementUploadedUrl=""; $("#element-upload-status").textContent=""; });
   renderCustomElements();
 
   function currentThemeSetting() {
