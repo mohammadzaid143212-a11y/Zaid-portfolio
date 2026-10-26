@@ -1,79 +1,37 @@
-/* Owner Studio authentication and password recovery.
-   Only the publishable/anon key belongs in browser code. Never use service_role/secret keys here. */
+/* Owner Studio auth + project library. Browser code uses only Supabase publishable key. */
 (() => {
   const SUPABASE_URL = "https://rtaedoseedjwljixmrgy.supabase.co";
   const SUPABASE_PUBLIC_KEY = "sb_publishable__Oc_xT1AELiVIQgCgXytTQ_qxLd_ZFo";
   const OWNER_EMAIL = "mohammadzaid143212@gmail.com".toLowerCase();
+  const $ = (selector) => document.querySelector(selector);
+  const loginView = $("#login-view"), recoveryView = $("#recovery-view"), dashboardView = $("#dashboard-view");
+  const form = $("#login-form"), message = $("#auth-message"), loginButton = $("#login-button"), resetButton = $("#reset-button");
+  const recoveryForm = $("#recovery-form"), recoveryMessage = $("#recovery-message"), savePasswordButton = $("#save-password-button");
+  const logoutButton = $("#logout-button"), signedInAs = $("#signed-in-as");
+  const projectForm = $("#project-form"), projectMessage = $("#project-message"), projectList = $("#project-list");
+  const projectType = $("#project-type"), thumbnailField = $("#thumbnail-field");
+  let recoveryMode = false, editingId = null, projects = [];
 
-  const loginView = document.querySelector("#login-view");
-  const recoveryView = document.querySelector("#recovery-view");
-  const dashboardView = document.querySelector("#dashboard-view");
-  const form = document.querySelector("#login-form");
-  const message = document.querySelector("#auth-message");
-  const loginButton = document.querySelector("#login-button");
-  const resetButton = document.querySelector("#reset-button");
-  const recoveryForm = document.querySelector("#recovery-form");
-  const recoveryMessage = document.querySelector("#recovery-message");
-  const savePasswordButton = document.querySelector("#save-password-button");
-  const logoutButton = document.querySelector("#logout-button");
-  const signedInAs = document.querySelector("#signed-in-as");
-  let recoveryMode = false;
-
-  function showMessage(text, isError = false) {
-    message.textContent = text;
-    message.classList.toggle("error", isError);
-  }
-  function showRecoveryMessage(text, isError = false) {
-    recoveryMessage.textContent = text;
-    recoveryMessage.classList.toggle("error", isError);
-  }
-  function hideViews() {
-    loginView.classList.add("hidden");
-    recoveryView.classList.add("hidden");
-    dashboardView.classList.add("hidden");
-  }
-  function showLogin() {
-    hideViews();
-    loginView.classList.remove("hidden");
-  }
-  function showRecovery() {
-    recoveryMode = true;
-    hideViews();
-    recoveryView.classList.remove("hidden");
-    showRecoveryMessage("");
-  }
-  function showDashboard(user) {
-    recoveryMode = false;
-    hideViews();
-    dashboardView.classList.remove("hidden");
-    signedInAs.textContent = user?.email ? "Signed in as " + user.email : "Authenticated owner";
-  }
+  function setMessage(el, text, isError = false) { el.textContent = text; el.classList.toggle("error", isError); }
+  function hideViews() { [loginView, recoveryView, dashboardView].forEach(el => el.classList.add("hidden")); }
+  function showLogin() { hideViews(); loginView.classList.remove("hidden"); }
+  function showRecovery() { recoveryMode = true; hideViews(); recoveryView.classList.remove("hidden"); setMessage(recoveryMessage, ""); }
+  function showDashboard(user) { recoveryMode = false; hideViews(); dashboardView.classList.remove("hidden"); signedInAs.textContent = user?.email ? "Signed in as " + user.email : "Authenticated owner"; loadProjects(); }
 
   if (!window.supabase || SUPABASE_PUBLIC_KEY.includes("PASTE_")) {
-    showMessage("Setup needed: add your Supabase publishable (public) key in owner/owner.js before signing in.", true);
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      showMessage("Supabase public key has not been configured yet. Follow the setup instructions first.", true);
-    });
-    resetButton.addEventListener("click", () => showMessage("Add the Supabase public key first, then password recovery can be enabled.", true));
+    setMessage(message, "Setup needed: add your Supabase publishable key in owner/owner.js.", true);
+    form.addEventListener("submit", e => { e.preventDefault(); setMessage(message, "Supabase public key has not been configured.", true); });
+    resetButton.addEventListener("click", () => setMessage(message, "Add the Supabase public key first.", true));
     return;
   }
-
   const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY);
 
   client.auth.onAuthStateChange((event, session) => {
-    if (event === "PASSWORD_RECOVERY") {
-      showRecovery();
-      return;
-    }
+    if (event === "PASSWORD_RECOVERY") { showRecovery(); return; }
     if (event === "SIGNED_OUT" && !recoveryMode) showLogin();
     if (event === "SIGNED_IN" && session && !recoveryMode) {
       if ((session.user.email || "").toLowerCase() === OWNER_EMAIL) showDashboard(session.user);
-      else {
-        client.auth.signOut();
-        showLogin();
-        showMessage("This account is not authorized for Owner Studio.", true);
-      }
+      else { client.auth.signOut(); showLogin(); setMessage(message, "This account is not authorized for Owner Studio.", true); }
     }
   });
 
@@ -82,93 +40,133 @@
     if (recoveryMode) return;
     if (error || !data.session) return showLogin();
     if ((data.session.user.email || "").toLowerCase() !== OWNER_EMAIL) {
-      await client.auth.signOut();
-      showLogin();
-      showMessage("This account is not authorized for Owner Studio.", true);
-      return;
+      await client.auth.signOut(); showLogin(); setMessage(message, "This account is not authorized for Owner Studio.", true); return;
     }
     showDashboard(data.session.user);
   }
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    showMessage("");
-    loginButton.disabled = true;
-    loginButton.textContent = "Signing in…";
-    const email = document.querySelector("#email").value.trim().toLowerCase();
-    const password = document.querySelector("#password").value;
+  form.addEventListener("submit", async e => {
+    e.preventDefault(); setMessage(message, ""); loginButton.disabled = true; loginButton.textContent = "Signing in…";
+    const email = $("#email").value.trim().toLowerCase(), password = $("#password").value;
     try {
       const { data, error } = await client.auth.signInWithPassword({ email, password });
       if (error) throw error;
-      if ((data.user?.email || "").toLowerCase() !== OWNER_EMAIL) {
-        await client.auth.signOut();
-        throw new Error("This account is not authorized for Owner Studio.");
-      }
+      if ((data.user?.email || "").toLowerCase() !== OWNER_EMAIL) { await client.auth.signOut(); throw new Error("This account is not authorized for Owner Studio."); }
       showDashboard(data.user);
-    } catch (error) {
-      showMessage(error.message || "Sign-in failed. Check your email and password.", true);
-    } finally {
-      loginButton.disabled = false;
-      loginButton.innerHTML = 'Sign in <span aria-hidden="true">↗</span>';
-    }
+    } catch (err) { setMessage(message, err.message || "Sign-in failed.", true); }
+    finally { loginButton.disabled = false; loginButton.innerHTML = 'Sign in <span aria-hidden="true">↗</span>'; }
   });
 
   resetButton.addEventListener("click", async () => {
-    const email = document.querySelector("#email").value.trim().toLowerCase();
-    if (!email) return showMessage("Enter your owner email first, then tap Forgot password.", true);
-    if (email !== OWNER_EMAIL) return showMessage("Password recovery is only available for the owner email.", true);
-    resetButton.disabled = true;
-    showMessage("");
+    const email = $("#email").value.trim().toLowerCase();
+    if (!email) return setMessage(message, "Enter your owner email first, then tap Forgot password.", true);
+    if (email !== OWNER_EMAIL) return setMessage(message, "Password recovery is only available for the owner email.", true);
+    resetButton.disabled = true; setMessage(message, "");
     try {
-      const { error } = await client.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + "/owner/"
-      });
+      const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/owner/" });
       if (error) throw error;
-      showMessage("If password recovery is available, Supabase will email you a reset link. Check Inbox and Spam.");
-    } catch (error) {
-      showMessage(error.message || "Could not request a reset link. Please try again.", true);
-    } finally {
-      resetButton.disabled = false;
-    }
+      setMessage(message, "If password recovery is available, Supabase will email you a reset link. Check Inbox and Spam.");
+    } catch (err) { setMessage(message, err.message || "Could not request a reset link.", true); }
+    finally { resetButton.disabled = false; }
   });
 
-  recoveryForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const password = document.querySelector("#new-password").value;
-    const confirmation = document.querySelector("#confirm-password").value;
-    if (password.length < 8) return showRecoveryMessage("Use at least 8 characters for your new password.", true);
-    if (password !== confirmation) return showRecoveryMessage("The passwords do not match. Please try again.", true);
-
-    savePasswordButton.disabled = true;
-    savePasswordButton.textContent = "Saving password…";
-    showRecoveryMessage("");
+  recoveryForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const password = $("#new-password").value, confirmation = $("#confirm-password").value;
+    if (password.length < 8) return setMessage(recoveryMessage, "Use at least 8 characters.", true);
+    if (password !== confirmation) return setMessage(recoveryMessage, "The passwords do not match.", true);
+    savePasswordButton.disabled = true; savePasswordButton.textContent = "Saving password…";
     try {
       const { data, error } = await client.auth.updateUser({ password });
       if (error) throw error;
-      document.querySelector("#new-password").value = "";
-      document.querySelector("#confirm-password").value = "";
-      showRecoveryMessage("Password updated successfully. You can now use it to sign in.");
-      if ((data.user?.email || "").toLowerCase() === OWNER_EMAIL) {
-        window.setTimeout(() => showDashboard(data.user), 1200);
-      } else {
-        recoveryMode = false;
-        showLogin();
-        showMessage("Password updated. Please sign in with your new password.");
-      }
-    } catch (error) {
-      showRecoveryMessage(error.message || "Could not update the password. The link may have expired; request a new one.", true);
-    } finally {
-      savePasswordButton.disabled = false;
-      savePasswordButton.innerHTML = 'Save new password <span aria-hidden="true">↗</span>';
-    }
+      $("#new-password").value = ""; $("#confirm-password").value = "";
+      setMessage(recoveryMessage, "Password updated successfully.");
+      if ((data.user?.email || "").toLowerCase() === OWNER_EMAIL) window.setTimeout(() => showDashboard(data.user), 900);
+      else { recoveryMode = false; showLogin(); setMessage(message, "Password updated. Please sign in."); }
+    } catch (err) { setMessage(recoveryMessage, err.message || "Could not update password. The link may have expired.", true); }
+    finally { savePasswordButton.disabled = false; savePasswordButton.innerHTML = 'Save new password <span aria-hidden="true">↗</span>'; }
   });
 
-  logoutButton.addEventListener("click", async () => {
-    recoveryMode = false;
-    await client.auth.signOut();
-    showLogin();
-    showMessage("You have signed out.");
-  });
+  function toggleThumbnail() {
+    const isLong = projectType.value === "long";
+    thumbnailField.classList.toggle("hidden", !isLong);
+    $("#project-thumbnail").required = false;
+  }
+  projectType.addEventListener("change", toggleThumbnail);
+  toggleThumbnail();
 
+  function resetProjectForm() {
+    editingId = null; projectForm.reset(); $("#project-id").value = "";
+    $("#project-published").checked = true; $("#save-project-button").innerHTML = 'Save project <span aria-hidden="true">↗</span>';
+    $("#cancel-edit-button").classList.add("hidden"); toggleThumbnail(); setMessage(projectMessage, "");
+  }
+  function updateCounts() {
+    $("#project-count").textContent = projects.length;
+    $("#long-count").textContent = projects.filter(p => p.project_type === "long").length;
+    $("#short-count").textContent = projects.filter(p => p.project_type === "short").length;
+  }
+  function renderProjects() {
+    updateCounts();
+    if (!projects.length) { projectList.innerHTML = '<p class="empty-state">No projects yet. Use the form above to add your first video.</p>'; return; }
+    projectList.replaceChildren();
+    projects.forEach(project => {
+      const card = document.createElement("article"); card.className = "library-item";
+      const info = document.createElement("div"); info.className = "library-item-info";
+      const title = document.createElement("h4"); title.textContent = project.title;
+      const meta = document.createElement("p"); meta.textContent = (project.project_type === "long" ? "LONG VIDEO" : "SHORT VIDEO") + " · " + (project.is_published ? "PUBLISHED" : "DRAFT");
+      const desc = document.createElement("p"); desc.textContent = project.description || "No description added.";
+      info.append(title, meta, desc);
+      const actions = document.createElement("div"); actions.className = "library-actions";
+      const edit = document.createElement("button"); edit.className = "quiet-button"; edit.type = "button"; edit.textContent = "Edit";
+      edit.addEventListener("click", () => {
+        editingId = project.id; $("#project-id").value = project.id; $("#project-title").value = project.title;
+        projectType.value = project.project_type; $("#project-description").value = project.description || "";
+        $("#project-video").value = project.video_url; $("#project-thumbnail").value = project.thumbnail_url || "";
+        $("#project-published").checked = project.is_published; toggleThumbnail();
+        $("#save-project-button").innerHTML = 'Update project <span aria-hidden="true">↗</span>';
+        $("#cancel-edit-button").classList.remove("hidden"); setMessage(projectMessage, "Editing: " + project.title);
+        $("#project-manager").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      const del = document.createElement("button"); del.className = "danger-button"; del.type = "button"; del.textContent = "Delete";
+      del.addEventListener("click", async () => {
+        if (!window.confirm('Delete "' + project.title + '"? This cannot be undone.')) return;
+        del.disabled = true;
+        const { error } = await client.from("portfolio_projects").delete().eq("id", project.id);
+        if (error) { setMessage(projectMessage, error.message, true); del.disabled = false; return; }
+        if (editingId === project.id) resetProjectForm();
+        await loadProjects(); setMessage(projectMessage, "Project deleted.");
+      });
+      actions.append(edit, del); card.append(info, actions); projectList.append(card);
+    });
+  }
+  async function loadProjects() {
+    projectList.innerHTML = '<p class="empty-state">Loading your projects…</p>';
+    const { data, error } = await client.from("portfolio_projects").select("*").order("sort_order", { ascending: true }).order("created_at", { ascending: false });
+    if (error) { projects = []; renderProjects(); setMessage(projectMessage, "Could not load projects: " + error.message, true); return; }
+    projects = data || []; renderProjects();
+  }
+  projectForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const title = $("#project-title").value.trim(), videoUrl = $("#project-video").value.trim();
+    if (!title || !videoUrl) return setMessage(projectMessage, "Title and video URL are required.", true);
+    let parsedUrl;
+    try { parsedUrl = new URL(videoUrl); if (!["https:", "http:"].includes(parsedUrl.protocol)) throw new Error(); }
+    catch { return setMessage(projectMessage, "Enter a valid http(s) video URL.", true); }
+    const thumbnail = $("#project-thumbnail").value.trim();
+    if (thumbnail) { try { const u = new URL(thumbnail); if (!["https:", "http:"].includes(u.protocol)) throw new Error(); } catch { return setMessage(projectMessage, "Enter a valid thumbnail URL or leave it blank.", true); } }
+    const payload = { title, project_type: projectType.value, description: $("#project-description").value.trim(), video_url: videoUrl, thumbnail_url: projectType.value === "long" ? thumbnail : "", is_published: $("#project-published").checked };
+    const button = $("#save-project-button"); button.disabled = true; button.textContent = editingId ? "Updating…" : "Saving…"; setMessage(projectMessage, "");
+    try {
+      const result = editingId
+        ? await client.from("portfolio_projects").update(payload).eq("id", editingId).select().single()
+        : await client.from("portfolio_projects").insert(payload).select().single();
+      if (result.error) throw result.error;
+      resetProjectForm(); await loadProjects(); setMessage(projectMessage, editingId ? "Project saved." : "Project saved successfully.");
+    } catch (err) { setMessage(projectMessage, err.message || "Could not save project.", true); }
+    finally { button.disabled = false; if (editingId) button.innerHTML = 'Update project <span aria-hidden="true">↗</span>'; else button.innerHTML = 'Save project <span aria-hidden="true">↗</span>'; }
+  });
+  $("#cancel-edit-button").addEventListener("click", resetProjectForm);
+  $("#refresh-projects").addEventListener("click", loadProjects);
+  logoutButton.addEventListener("click", async () => { recoveryMode = false; await client.auth.signOut(); showLogin(); setMessage(message, "You have signed out."); });
   checkSession();
 })();
