@@ -72,3 +72,4 @@
 .custom-element-item p{font-size:11px;color:var(--muted);margin:5px 0 0;overflow-wrap:anywhere}
 .custom-element-item button{flex-shrink:0}
 @media(max-width:600px){.custom-elements-panel{padding:12px}.custom-element-item{align-items:flex-start;flex-direction:column}}
+.custom-element-actions{display:flex;gap:8px;flex-shrink:0}.custom-element-actions button{min-width:68px}
