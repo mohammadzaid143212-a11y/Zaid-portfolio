@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0b0d" />
+  <meta name="description" content="Contact Zaid for cinematic video editing and documentary projects." />
+  <title>Project Inquiry — Zaid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/contact.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="site-header">
+    <a class="wordmark" href="/" aria-label="Zaid home">ZAID<span>®</span></a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="/#work">Selected Work</a><a href="/#about">About</a><a href="/contact" aria-current="page">Contact</a>
+    </nav>
+    <a class="availability" href="#inquiry"><span class="status-dot"></span> Start a project</a>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
+  </header>
+  <main class="contact-page section-wrap">
+    <div class="contact-intro">
+      <span class="eyebrow"><span class="eyebrow-line"></span> PROJECT INQUIRY / 01</span>
+      <h1>Tell me about<br><span class="muted">your project.</span></h1>
+      <p>Share a few details and choose how you’d like to get in touch. Let’s make something worth watching.</p>
+    </div>
+    <div class="contact-layout" id="inquiry">
+      <section class="contact-form-panel">
+        <div class="form-heading"><span class="section-kicker">01 / PROJECT DETAILS</span><span class="required-note">* REQUIRED</span></div>
+        <form id="inquiry-form">
+          <div class="field-row">
+            <label>Your name *<input name="name" autocomplete="name" placeholder="Name" required maxlength="100"></label>
+            <label>Email address *<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required maxlength="160"></label>
+          </div>
+          <label>What do you need? *
+            <select name="projectType" required>
+              <option value="" disabled selected>Select project type</option>
+              <option>Long-form YouTube video</option><option>Shorts / Reels</option><option>Documentary edit</option><option>Brand film / commercial</option><option>Other editing project</option>
+            </select>
+          </label>
+          <div class="field-row">
+            <label>Estimated budget *
+              <select name="budget" required>
+                <option value="" disabled selected>Select budget range</option>
+                <option>Under ₹1,000</option><option>₹1,000–₹3,000</option><option>₹3,000–₹7,500</option><option>₹7,500–₹15,000</option><option>₹15,000+</option><option>Let’s discuss</option>
+              </select>
+            </label>
+            <label>Deadline
+              <select name="deadline"><option value="Flexible">Flexible</option><option>Within 3 days</option><option>Within 1 week</option><option>Within 2 weeks</option><option>Specific date to discuss</option></select>
+            </label>
+          </div>
+          <label>Project details<textarea name="details" rows="5" placeholder="Tell me about the video, duration, style references, and what you need…" maxlength="3000"></textarea></label>
+          <div class="method-heading"><span class="section-kicker">02 / PREFERRED CONTACT</span><span class="required-note">CHOOSE ONE</span></div>
+          <div class="contact-methods">
+            <label class="method-option"><input type="radio" name="method" value="email" checked><span class="method-icon">✉</span><span><strong>Email</strong><small>Send an inquiry by email</small></span><span class="radio-dot"></span></label>
+            <label class="method-option"><input type="radio" name="method" value="whatsapp"><span class="method-icon">↗</span><span><strong>WhatsApp</strong><small>Continue the conversation on WhatsApp</small></span><span class="radio-dot"></span></label>
+            <label class="method-option"><input type="radio" name="method" value="instagram"><span class="method-icon">◎</span><span><strong>Instagram</strong><small>Send the inquiry through Instagram</small></span><span class="radio-dot"></span></label>
+          </div>
+          <button class="submit-inquiry" type="submit">Prepare inquiry <span>↗</span></button>
+          <p class="form-footnote">Your email app or selected contact channel will open with your project details ready to send. No message is sent automatically.</p>
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+      <aside class="contact-aside">
+        <span class="section-kicker">A NOTE BEFORE WE START</span>
+        <h2>Good work<br>starts with a<br><span class="muted">good conversation.</span></h2>
+        <p>Not sure about your budget yet? That’s okay. Share what you have in mind and we can discuss the scope together.</p>
+        <div class="aside-rule"></div>
+        <div class="aside-detail"><span>01</span><div><strong>Clear communication</strong><p>Tell me the goal, audience and style you’re aiming for.</p></div></div>
+        <div class="aside-detail"><span>02</span><div><strong>Thoughtful editing</strong><p>Every cut, sound and frame should serve the story.</p></div></div>
+        <a class="back-link" href="/">← BACK TO PORTFOLIO</a>
+      </aside>
+    </div>
+  </main>
+  <footer class="site-footer"><a class="wordmark" href="/">ZAID<span>®</span></a><span>PROJECT INQUIRIES · © <span id="year"></span></span><a href="#inquiry">START A PROJECT ↑</a></footer>
+  <script src="/script.js"></script>
+  <script src="/contact.js"></script>
+</body>
+</html>
