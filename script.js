@@ -132,7 +132,7 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     about: ".about-section", contact: ".contact-section", footer: ".site-footer"
   };
   Object.entries(data.settings).forEach(([key, setting]) => {
-    const selector = selectors[key];
+    const selector = key.startsWith("custom:") ? key.slice(7) : selectors[key];
     if (!selector || !setting) return;
     document.querySelectorAll(selector).forEach(el => {
       el.style.color = setting.text || "";
