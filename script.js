@@ -114,3 +114,56 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
   const note = document.querySelector(".work-note");
   if (note) note.textContent = "SELECTED PROJECTS — UPDATED FROM ZAID'S OWNER STUDIO.";
 })();
+
+
+// Load the saved Owner Studio visual theme settings on the public portfolio.
+(async function loadPublishedTheme() {
+  if (!window.supabase) return;
+  const client = window.supabase.createClient(
+    "https://rtaedoseedjwljixmrgy.supabase.co",
+    "sb_publishable__Oc_xT1AELiVIQgCgXytTQ_qxLd_ZFo"
+  );
+  const { data, error } = await client.from("portfolio_theme_settings")
+    .select("settings").eq("id", true).maybeSingle();
+  if (error || !data?.settings) return;
+  const selectors = {
+    site: "body", header: ".site-header", hero: ".hero", "hero-title": ".hero h1",
+    "hero-media": ".hero-frame", work: ".work-section", "project-cards": ".project-card",
+    about: ".about-section", contact: ".contact-section", footer: ".site-footer"
+  };
+  Object.entries(data.settings).forEach(([key, setting]) => {
+    const selector = selectors[key];
+    if (!selector || !setting) return;
+    document.querySelectorAll(selector).forEach(el => {
+      el.style.color = setting.text || "";
+      if (setting.accent) el.style.setProperty("--accent", setting.accent);
+      if (setting.mode === "color") {
+        el.style.backgroundColor = setting.bg || "";
+        el.style.backgroundImage = "";
+        const old = el.querySelector(":scope > .theme-background-video"); if (old) old.remove();
+      } else if (setting.mode === "image" && setting.mediaUrl) {
+        el.style.backgroundColor = setting.bg || "transparent";
+        el.style.backgroundImage = "linear-gradient(0deg,rgba(0,0,0,.25),rgba(0,0,0,.08)),url(\"" + setting.mediaUrl.replace(/["\\\\]/g, "") + "\")";
+        el.style.backgroundSize = "cover"; el.style.backgroundPosition = "center";
+        const old = el.querySelector(":scope > .theme-background-video"); if (old) old.remove();
+      } else if (setting.mode === "video" && setting.mediaUrl) {
+        el.style.backgroundColor = setting.bg || "#0b0b0d";
+        let video = el.querySelector(":scope > .theme-background-video");
+        if (!video) {
+          video = document.createElement("video"); video.className = "theme-background-video";
+          video.muted = true; video.loop = true; video.autoplay = true; video.playsInline = true;
+          video.setAttribute("aria-hidden", "true"); video.setAttribute("tabindex", "-1");
+          video.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none";
+          if (getComputedStyle(el).position === "static") el.style.position = "relative";
+          el.prepend(video);
+          Array.from(el.children).forEach(child => { if (child !== video) { if (!child.style.position) child.style.position = "relative"; if (!child.style.zIndex) child.style.zIndex = "1"; } });
+        }
+        if (video.src !== setting.mediaUrl) video.src = setting.mediaUrl;
+        const play = video.play(); if (play && play.catch) play.catch(() => {});
+      } else if (setting.mode === "none") {
+        el.style.backgroundColor = ""; el.style.backgroundImage = "";
+        const old = el.querySelector(":scope > .theme-background-video"); if (old) old.remove();
+      }
+    });
+  });
+})();
