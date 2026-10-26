@@ -343,6 +343,73 @@
     finally { themeUploadBusy = false; $("#theme-upload-progress").classList.add("hidden"); $("#theme-upload-bar").classList.remove("uploading"); $("#save-theme-button").disabled = false; themeMediaFile.value = ""; }
   }
   themeMediaFile.addEventListener("change", e => uploadThemeMedia(e.target.files?.[0]));
+  // Custom element builder: safe text/image/video elements inserted into selected public sections.
+  const elementKind = $("#element-kind"), elementFile = $("#element-file");
+  let elementUploadBusy = false, elementUploadedUrl = "";
+  $("#element-target").addEventListener("change", () => $("#element-custom-target-field").classList.toggle("hidden", $("#element-target").value !== "custom"));
+  elementKind.addEventListener("change", () => {
+    $("#element-content").disabled = elementKind.value !== "text";
+    elementFile.accept = elementKind.value === "image" ? "image/jpeg,image/png,image/webp" : elementKind.value === "video" ? "video/mp4,video/webm,video/ogg" : "image/jpeg,image/png,image/webp,video/mp4,video/webm,video/ogg";
+  });
+  async function uploadElementFile(file) {
+    if (!file) return;
+    const kind = elementKind.value;
+    const valid = kind === "image" ? ["image/jpeg","image/png","image/webp"].includes(file.type)
+      : kind === "video" ? ["video/mp4","video/webm","video/ogg"].includes(file.type)
+      : ["image/jpeg","image/png","image/webp","video/mp4","video/webm","video/ogg"].includes(file.type);
+    if (!valid) { $("#element-upload-status").textContent = "Choose a supported image or video for this element type."; return; }
+    if (file.size > MAX_MEDIA_BYTES) { $("#element-upload-status").textContent = "File must be 50 MB or smaller."; return; }
+    elementUploadBusy = true; $("#element-upload-progress").classList.remove("hidden"); $("#element-upload-bar").classList.add("uploading");
+    $("#element-upload-status").textContent = "Uploading " + file.name + "…"; $("#add-element-button").disabled = true;
+    try {
+      const path = "elements/" + crypto.randomUUID() + "-" + file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g,"-").slice(-90);
+      const { data, error } = await client.storage.from("portfolio-media").upload(path,file,{cacheControl:"3600",upsert:false,contentType:file.type});
+      if (error) throw error;
+      elementUploadedUrl = client.storage.from("portfolio-media").getPublicUrl(data.path).data.publicUrl;
+      $("#element-url").value = elementUploadedUrl;
+      if (kind === "text") elementKind.value = file.type.startsWith("video/") ? "video" : "image";
+      $("#element-upload-status").textContent = "Upload complete: " + file.name;
+    } catch (err) { $("#element-upload-status").textContent = "Upload failed: " + (err.message || "Try again."); }
+    finally { elementUploadBusy = false; $("#element-upload-progress").classList.add("hidden"); $("#element-upload-bar").classList.remove("uploading"); $("#add-element-button").disabled = false; elementFile.value = ""; }
+  }
+  elementFile.addEventListener("change", e => uploadElementFile(e.target.files?.[0]));
+  function getCustomElements() { return Array.isArray(themeSettings.__elements) ? themeSettings.__elements : []; }
+  function renderCustomElements() {
+    const list = $("#custom-element-list"), items = getCustomElements();
+    list.replaceChildren();
+    if (!items.length) { const p = document.createElement("p"); p.className = "empty-state"; p.textContent = "No custom elements added yet."; list.append(p); return; }
+    items.forEach(item => {
+      const card = document.createElement("div"); card.className = "custom-element-item";
+      const info = document.createElement("div"); const strong = document.createElement("strong");
+      strong.textContent = item.kind === "text" ? (item.content || "Text element") : (item.kind === "image" ? "Image / graphic" : "Video / motion graphic");
+      const small = document.createElement("p"); small.textContent = item.target + " · " + item.placement + " · " + (item.animation || "no animation");
+      info.append(strong,small); const del = document.createElement("button"); del.type = "button"; del.className = "quiet-button"; del.textContent = "Remove";
+      del.addEventListener("click", () => saveCustomElements(getCustomElements().filter(x => x.id !== item.id)));
+      card.append(info,del); list.append(card);
+    });
+  }
+  async function saveCustomElements(items) {
+    const next = { ...themeSettings, __elements: items };
+    const { error } = await client.from("portfolio_theme_settings").upsert({ id:true, settings:next, updated_at:new Date().toISOString() },{onConflict:"id"});
+    if (error) { themeNotice("Could not save elements: " + error.message,true); return; }
+    themeSettings = next; renderCustomElements(); themeNotice("Element list saved. Refresh the public portfolio to see changes.");
+  }
+  $("#add-element-button").addEventListener("click", async () => {
+    if (elementUploadBusy) return themeNotice("Wait for the file upload to finish.",true);
+    let target = $("#element-target").value === "custom" ? $("#element-custom-target").value.trim() : $("#element-target").value;
+    if (!target) return themeNotice("Choose a target section or enter a CSS selector.",true);
+    if ($("#element-target").value === "custom") { try { document.querySelector(target); } catch { return themeNotice("Enter a valid CSS selector.",true); } }
+    const kind = elementKind.value, content = $("#element-content").value.trim(), url = $("#element-url").value.trim();
+    if (kind === "text" && !content) return themeNotice("Enter the text you want to add.",true);
+    if (kind !== "text") { try { const u = new URL(url); if (!["http:","https:"].includes(u.protocol)) throw new Error(); } catch { return themeNotice("Add a valid image/video URL or upload a file first.",true); } }
+    const items = getCustomElements();
+    if (items.length >= 30) return themeNotice("Maximum 30 custom elements. Remove one before adding another.",true);
+    const item = { id:crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value };
+    await saveCustomElements([...items,item]);
+  });
+  $("#clear-element-form").addEventListener("click", () => { $("#element-content").value=""; $("#element-url").value=""; $("#element-file").value=""; elementUploadedUrl=""; $("#element-upload-status").textContent=""; });
+  renderCustomElements();
+
   function currentThemeSetting() {
     return {
       mode: themeMode.value, bg: themeBg.value, text: themeText.value, accent: themeAccent.value,
