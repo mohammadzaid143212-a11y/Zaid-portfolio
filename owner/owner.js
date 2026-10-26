@@ -317,7 +317,7 @@
     const { data, error } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
     if (error) { themeNotice("Could not load theme settings: " + error.message, true); return; }
     themeSettings = data?.settings || {};
-    populateThemeForm();
+    populateThemeForm(); renderCustomElements();
   }
   themeTarget.addEventListener("change", () => { updateThemeFields(); populateThemeForm(); });
   $("#theme-custom-selector").addEventListener("change", populateThemeForm);
