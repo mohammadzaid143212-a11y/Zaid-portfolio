@@ -252,7 +252,9 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
       const x = Math.max(0,Math.min(100,Number(item.x ?? 50)));
       const y = Math.max(0,Math.min(100,Number(item.y ?? 50)));
       if (overlay && getComputedStyle(target).position === "static") target.style.position = "relative";
-      const elementColor=item.color||"#c9f36a", elementRotation=Math.max(-180,Math.min(180,Number(item.rotation)||0)), elementOpacity=Math.max(10,Math.min(100,Number(item.opacity)||100)), elementRadius=Math.max(0,Math.min(200,Number(item.radius)||0)), elementBorder=Math.max(0,Math.min(10,Number(item.borderWidth)||0)); const elementShadow=({none:"none",soft:"0 8px 24px #0009",glow:"0 0 22px "+elementColor+"99",deep:"0 16px 40px #000"})[item.shadow]||"none"; node.style.cssText = "box-sizing:border-box;z-index:" + (item.layer === "back" ? "1" : "3") + ";width:min(" + Math.max(10,Math.min(100,Number(item.width)||80)) + "%,100%);padding:8px;text-align:center;color:" + elementColor + ";opacity:"+(elementOpacity/100)+";border-radius:"+elementRadius+"px;border:"+elementBorder+"px solid "+elementColor+";box-shadow:"+elementShadow+";";
+      const elementColor=item.color||"#c9f36a", elementRotation=Math.max(-180,Math.min(180,Number(item.rotation)||0)), elementOpacity=Math.max(10,Math.min(100,Number(item.opacity)||100)), elementRadius=Math.max(0,Math.min(200,Number(item.radius)||0)), elementBorder=Math.max(0,Math.min(10,Number(item.borderWidth)||0)); const elementShadow=({none:"none",soft:"0 8px 24px #0009",glow:"0 0 22px "+elementColor+"99",deep:"0 16px 40px #000"})[item.shadow]||"none"; node.style.cssText = "box-sizing:border-box;z-index:" + (item.layer === "back" ? "1" : "3") + ";width:min(var(--owner-element-width," + Math.max(10,Math.min(100,Number(item.width)||80)) + "%),100%);padding:8px;text-align:center;color:" + elementColor + ";opacity:"+(elementOpacity/100)+";border-radius:"+elementRadius+"px;border:"+elementBorder+"px solid "+elementColor+";box-shadow:"+elementShadow+";";
+      const mobile = item.mobile && typeof item.mobile === "object" ? item.mobile : {};
+      if (mobile.width != null && Number.isFinite(Number(mobile.width))) node.style.setProperty("--owner-element-width",Math.max(10,Math.min(100,Number(mobile.width)))+"%");
       if (item.mobile && typeof item.mobile === "object") {
         const mobileX = Math.max(0,Math.min(100,Number(item.mobile.x ?? x)));
         const mobileY = Math.max(0,Math.min(100,Number(item.mobile.y ?? y)));
@@ -263,7 +265,9 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
         document.head.append(responsiveStyle);
       }
       if (overlay) {
-        node.style.position = "absolute"; node.style.left = x + "%"; node.style.top = y + "%";
+        node.style.position = "absolute"; node.style.left = "var(--owner-element-x," + x + "%)"; node.style.top = "var(--owner-element-y," + y + "%)";
+        if (mobile.x != null && Number.isFinite(Number(mobile.x))) node.style.setProperty("--owner-element-x",Math.max(0,Math.min(100,Number(mobile.x)))+"%");
+        if (mobile.y != null && Number.isFinite(Number(mobile.y))) node.style.setProperty("--owner-element-y",Math.max(0,Math.min(100,Number(mobile.y)))+"%");
         node.style.margin = "0"; node.style.transform = "translate(-50%,-50%) rotate("+elementRotation+"deg)";
       } else {
         node.style.position = "relative"; node.style.margin = (item.placement === "top" ? "0 auto 24px" : item.placement === "bottom" ? "24px auto 0" : "24px auto"); node.style.transform = "rotate("+elementRotation+"deg)";
