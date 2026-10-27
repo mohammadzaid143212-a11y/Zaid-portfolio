@@ -239,3 +239,12 @@ html{scroll-snap-type:y proximity}
   #dashboard-view>.studio-overview-slide .studio-nav{margin-top:0}
   #dashboard-view>.manager-card.studio-slide{min-height:calc(100svh - 100px);height:auto;justify-content:flex-start;align-self:flex-start;padding-top:20px;padding-bottom:24px}
 }
+
+
+/* Apply content-first sizing to every mobile module, not just the dashboard. */
+@media(max-width:680px){
+  #dashboard-view>.studio-slide{min-height:0;height:auto;align-self:flex-start;justify-content:flex-start;}
+  #dashboard-view>.studio-overview-slide{min-height:0;height:auto;justify-content:flex-start;}
+  #dashboard-view>.manager-card.studio-slide{min-height:0;height:auto;justify-content:flex-start;padding-top:20px;padding-bottom:24px;}
+  #dashboard-view>.manager-card.studio-slide .manager-heading{align-self:stretch;}
+}
