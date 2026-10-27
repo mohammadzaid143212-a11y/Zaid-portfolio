@@ -575,21 +575,43 @@
         themeNotice("Editing element. Make changes and tap Update element.");
       });
       const del = document.createElement("button"); del.type = "button"; del.className = "quiet-button"; del.textContent = "Remove";
-      del.addEventListener("click", () => saveCustomElements(getCustomElements().filter(x => x.id !== item.id)));
+      del.addEventListener("click", async () => {
+        if (!window.confirm("Remove this custom element? This change will be saved to your theme settings.")) return;
+        del.disabled = true;
+        const saved = await saveCustomElements(getCustomElements().filter(x => x.id !== item.id));
+        if (!saved) del.disabled = false;
+      });
       actions.append(edit,del); card.append(info,actions); list.append(card);
     });
   }
   async function saveCustomElements(items) {
     const next = { ...themeSettings, __elements: items };
-    const { error } = await client.from("portfolio_theme_settings").upsert({ id:true, settings:next, updated_at:new Date().toISOString() },{onConflict:"id"});
-    if (error) { themeNotice("Could not save elements: " + error.message,true); return; }
-    themeSettings = next; renderCustomElements(); themeNotice("Element list saved. Refresh the public portfolio to see changes.");
+    const saveButton = $("#add-element-button");
+    if (saveButton) saveButton.disabled = true;
+    try {
+      const { error } = await client.from("portfolio_theme_settings").upsert({ id:true, settings:next, updated_at:new Date().toISOString() },{onConflict:"id"});
+      if (error) throw error;
+      themeSettings = next;
+      renderCustomElements();
+      themeNotice("Element saved. Use Save & publish in Theme Studio, then refresh the public portfolio to see it.");
+      return true;
+    } catch (err) {
+      themeNotice("Could not save element: " + (err.message || "Please try again."), true);
+      return false;
+    } finally {
+      if (saveButton) saveButton.disabled = false;
+    }
   }
   $("#add-element-button").addEventListener("click", async () => {
     if (elementUploadBusy) return themeNotice("Wait for the file upload to finish.",true);
     let target = $("#element-target").value === "custom" ? $("#element-custom-target").value.trim() : $("#element-target").value;
     if (!target) return themeNotice("Choose a target section or enter a CSS selector.",true);
     if ($("#element-target").value === "custom") { try { document.querySelector(target); } catch { return themeNotice("Enter a valid CSS selector.",true); } }
+    if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") {
+      try {
+        if (!websitePreview.contentDocument.querySelector(target)) return themeNotice("That target was not found on the public website preview. Choose a listed section or check the custom selector.", true);
+      } catch { return themeNotice("The target selector is invalid. Check the selector and try again.", true); }
+    }
     const kind = elementKind.value, content = $("#element-content").value.trim(), url = $("#element-url").value.trim();
     if (kind === "text" && !content) return themeNotice("Enter the text you want to add.",true);
     if (kind !== "text") { try { const u = new URL(url); if (!["http:","https:"].includes(u.protocol)) throw new Error(); } catch { return themeNotice("Add a valid image/video URL or upload a file first.",true); } }
@@ -597,8 +619,17 @@
     if (!editingElementId && items.length >= 30) return themeNotice("Maximum 30 custom elements. Remove one before adding another.",true);
     const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), x:clampPercent(elementX.value), y:clampPercent(elementY.value), overlay:elementOverlay.checked, layer:$("#element-layer").value, animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value, rotation:Math.max(-180,Math.min(180,Number($("#element-rotation").value)||0)), opacity:Math.max(10,Math.min(100,Number($("#element-opacity").value)||100)), radius:Math.max(0,Math.min(200,Number($("#element-radius").value)||0)), borderWidth:Math.max(0,Math.min(10,Number($("#element-border-width").value)||0)), shadow:["none","soft","glow","deep"].includes($("#element-shadow").value)?$("#element-shadow").value:"none" };
     const nextItems = editingElementId ? items.map(x => x.id === editingElementId ? item : x) : [...items,item];
-    await saveCustomElements(nextItems);
-    editingElementId = null; $("#add-element-button").textContent = "Add element";
+    const saved = await saveCustomElements(nextItems);
+    if (!saved) return;
+    editingElementId = null;
+    $("#add-element-button").textContent = "Add element";
+    $("#element-content").value = "";
+    $("#element-url").value = "";
+    $("#element-file").value = "";
+    elementUploadedUrl = "";
+    elementX.value = 50; elementY.value = 50;
+    updatePositionPreview();
+    if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview();
   });
   $("#clear-element-form").addEventListener("click", () => { editingElementId=null; $("#add-element-button").textContent="Add element"; $("#element-content").value=""; $("#element-url").value=""; $("#element-file").value=""; elementUploadedUrl=""; $("#element-upload-status").textContent=""; elementX.value=50; elementY.value=50; elementOverlay.checked=true; updatePositionPreview(); });
   renderCustomElements();
