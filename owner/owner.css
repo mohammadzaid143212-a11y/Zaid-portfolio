@@ -164,3 +164,16 @@ html{scroll-snap-type:y proximity}
  #dashboard-view>.manager-card.studio-slide{padding-top:24px;padding-bottom:24px}
 }
 @media(prefers-reduced-motion:reduce){#dashboard-view{scroll-behavior:auto;scroll-snap-type:x proximity}}
+
+/* Interactive element positioning canvas */
+.position-editor{border:1px solid var(--line);padding:14px;margin:18px 0;background:#0d0d0f}
+.element-position-stage{height:260px;position:relative;overflow:hidden;border:1px solid #ffffff25;background-color:#151518;background-image:linear-gradient(#ffffff0b 1px,transparent 1px),linear-gradient(90deg,#ffffff0b 1px,transparent 1px);background-size:10% 10%;touch-action:pan-y;isolation:isolate}
+.stage-guide{position:absolute;pointer-events:none;opacity:.35}
+.stage-guide-x{left:50%;top:0;bottom:0;border-left:1px dashed var(--accent)}
+.stage-guide-y{top:50%;left:0;right:0;border-top:1px dashed var(--accent)}
+.element-position-handle{position:absolute;z-index:2;transform:translate(-50%,-50%);min-height:42px;padding:8px 12px;border:1px solid var(--accent);background:#c9f36a18;color:var(--accent);font-size:12px;font-weight:700;overflow:hidden;overflow-wrap:anywhere;touch-action:none;cursor:grab}
+.element-position-handle.is-dragging{cursor:grabbing;box-shadow:0 0 0 3px #c9f36a22}
+.element-position-handle img{display:block;max-width:100%;max-height:80px;object-fit:contain}
+.inline-check{display:flex;align-items:center;gap:10px;margin:14px 0}
+.inline-check input{width:auto;margin:0}
+@media(max-width:600px){.position-editor{padding:10px}.element-position-stage{height:220px}}
