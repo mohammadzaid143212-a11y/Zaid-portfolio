@@ -177,3 +177,6 @@ html{scroll-snap-type:y proximity}
 .inline-check{display:flex;align-items:center;gap:10px;margin:14px 0}
 .inline-check input{width:auto;margin:0}
 @media(max-width:600px){.position-editor{padding:10px}.element-position-stage{height:220px}}
+
+/* Actual public website placement preview inside Owner Studio */
+.website-preview-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:18px}.website-preview-heading strong{font-size:13px}.website-preview-frame-wrap{border:1px solid #ffffff2b;background:#0b0b0d;overflow:hidden;border-radius:4px}#element-website-preview{display:block;width:100%;height:460px;border:0;background:#0b0b0d}@media(max-width:600px){#element-website-preview{height:420px}.website-preview-heading{align-items:flex-start;flex-direction:column}}
