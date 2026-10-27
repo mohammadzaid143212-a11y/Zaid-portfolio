@@ -180,3 +180,6 @@ html{scroll-snap-type:y proximity}
 
 /* Actual public website placement preview inside Owner Studio */
 .website-preview-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:18px}.website-preview-heading strong{font-size:13px}.website-preview-frame-wrap{border:1px solid #ffffff2b;background:#0b0b0d;overflow:hidden;border-radius:4px}#element-website-preview{display:block;width:100%;height:460px;border:0;background:#0b0b0d}@media(max-width:600px){#element-website-preview{height:420px}.website-preview-heading{align-items:flex-start;flex-direction:column}}
+
+/* Drag-resize affordance on live website preview marker */
+#element-website-preview{touch-action:pan-y}.website-preview-heading{margin-bottom:8px}

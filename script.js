@@ -189,7 +189,7 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
       const x = Math.max(0,Math.min(100,Number(item.x ?? 50)));
       const y = Math.max(0,Math.min(100,Number(item.y ?? 50)));
       if (overlay && getComputedStyle(target).position === "static") target.style.position = "relative";
-      node.style.cssText = "box-sizing:border-box;z-index:3;width:min(" + Math.max(10,Math.min(100,Number(item.width)||80)) + "%,100%);padding:8px;text-align:center;color:" + (item.color || "#c9f36a") + ";";
+      node.style.cssText = "box-sizing:border-box;z-index:" + (item.layer === "back" ? "1" : "3") + ";width:min(" + Math.max(10,Math.min(100,Number(item.width)||80)) + "%,100%);padding:8px;text-align:center;color:" + (item.color || "#c9f36a") + ";";
       if (overlay) {
         node.style.position = "absolute"; node.style.left = x + "%"; node.style.top = y + "%";
         node.style.margin = "0"; node.style.transform = "translate(-50%,-50%)";
