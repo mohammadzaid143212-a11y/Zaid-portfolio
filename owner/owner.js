@@ -291,7 +291,20 @@
   $("#refresh-projects").addEventListener("click", loadProjects);
   // Visual theme controller: each target has independent settings saved as JSON.
   const themeForm = $("#theme-form"), themeMessage = $("#theme-message");
-  const themeTarget = $("#theme-target"), themeMode = $("#theme-mode");
+  const themeTarget = $("#theme-target"), themeMode = $("#theme-mode"), themeScope = $("#theme-scope");
+  let lastSectionThemeTarget = "hero";
+  themeScope.addEventListener("change", () => {
+    if (themeScope.value === "global") {
+      if (themeTarget.value !== "site") lastSectionThemeTarget = themeTarget.value;
+      themeTarget.value = "site";
+      themeTarget.disabled = true;
+    } else {
+      themeTarget.disabled = false;
+      themeTarget.value = lastSectionThemeTarget === "site" ? "hero" : lastSectionThemeTarget;
+    }
+    updateThemeFields();
+    populateThemeForm();
+  });
   const themeBg = $("#theme-background"), themeText = $("#theme-text"), themeAccent = $("#theme-accent");
   const themeMediaUrl = $("#theme-media-url"), themeMediaFile = $("#theme-media-file");
   const themeMediaFields = $("#theme-media-fields"), themeColorFields = $("#theme-color-fields");
@@ -383,7 +396,17 @@
     themeSettings = data?.settings || {};
     populateThemeForm(); renderCustomElements();
   }
-  themeTarget.addEventListener("change", () => { updateThemeFields(); populateThemeForm(); });
+  themeTarget.addEventListener("change", () => {
+    if (themeTarget.value !== "site") lastSectionThemeTarget = themeTarget.value;
+    if (themeScope.value === "global" && themeTarget.value !== "site") {
+      themeScope.value = "section";
+      themeTarget.disabled = false;
+    }
+    updateThemeFields(); populateThemeForm();
+  });
+  themeScope.value = "global";
+  themeTarget.value = "site";
+  themeTarget.disabled = true;
   $("#theme-custom-selector").addEventListener("change", populateThemeForm);
   themeMode.addEventListener("change", updateThemeFields);
   async function uploadThemeMedia(file) {

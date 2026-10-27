@@ -385,3 +385,8 @@ html{scroll-snap-type:y proximity}
 /* Distinct sidebar destinations for long-form and short-form video management. */
 #long-video-manager .manager-heading,#short-video-manager .manager-heading{margin-bottom:24px}
 #long-video-workspace,#short-video-workspace{min-width:0}
+
+/* Global and section theme scope selector */
+.theme-scope-switch{padding:16px;border:1px solid var(--line);border-radius:12px;background:#ffffff05;margin-bottom:8px}
+.theme-scope-switch label{margin-top:0}
+#theme-target:disabled{opacity:.75;cursor:not-allowed}
