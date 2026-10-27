@@ -1,5 +1,13 @@
 /* Owner Studio auth + project library. Browser code uses only Supabase publishable key. */
 (() => {
+  // Keep element editing in its own module, separate from global theme controls.
+  const elementStudioContent = document.getElementById("element-studio-content");
+  const elementBuilderPanel = document.querySelector("#theme-manager .custom-elements-panel");
+  if (elementStudioContent && elementBuilderPanel) {
+    elementStudioContent.replaceChildren(elementBuilderPanel);
+    elementBuilderPanel.classList.add("element-studio-panel");
+  }
+
   const SUPABASE_URL = "https://rtaedoseedjwljixmrgy.supabase.co";
   const SUPABASE_PUBLIC_KEY = "sb_publishable__Oc_xT1AELiVIQgCgXytTQ_qxLd_ZFo";
   const OWNER_EMAIL = "mohammadzaid143212@gmail.com".toLowerCase();
