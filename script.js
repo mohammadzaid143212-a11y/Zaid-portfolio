@@ -131,6 +131,11 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     "hero-media": ".hero-frame", work: ".work-section", "project-cards": ".project-card",
     about: ".about-section", contact: ".contact-section", footer: ".site-footer"
   };
+  const customFonts = data.settings.__customFonts || [];
+  for (const font of customFonts) {
+    try { const face = new FontFace(font.name, 'url("' + font.url + '")'); await face.load(); document.fonts.add(face); }
+    catch (error) { console.warn("Could not load custom portfolio font:", font.name, error); }
+  }
   const textOverrides = data.settings.__textStudio || {};
   const textSelectors = {
     "hero-description": ".hero-bottom p", "hero-caption": ".frame-caption",
