@@ -53,7 +53,7 @@
     </section>
 
     <section class="dashboard hidden" id="dashboard-view">
-      <section class="studio-slide studio-overview-slide">
+      <section class="studio-slide studio-overview-slide" id="studio-overview">
       <div class="dashboard-heading">
         <div><p class="eyebrow">WELCOME BACK / OWNER</p><h1>Studio overview<span class="period">.</span></h1><p class="intro" id="signed-in-as"></p></div>
         <button class="quiet-button" id="logout-button" type="button">Sign out ↗</button>
@@ -64,12 +64,15 @@
         <article class="stat-card"><span>LONG VIDEOS</span><strong id="long-count">0</strong><p>Documentaries and long-form edits</p></article>
         <article class="stat-card"><span>SHORT VIDEOS</span><strong id="short-count">0</strong><p>Shorts, Reels and vertical edits</p></article>
       </div>
-      <nav class="studio-nav" aria-label="Owner Studio sections">
-        <a href="#theme-manager"><span>01</span> Theme Studio</a>
-        <a href="#element-studio"><span>02</span> Visual Editor</a>
-        <a href="#project-manager"><span>03</span> Project library</a>
-        <a href="/" target="_blank" rel="noopener"><span>↗</span> Public website</a>
-      </nav>
+      <aside class="owner-sidebar" aria-label="Owner Studio navigation">
+        <p class="sidebar-label">WORKSPACE</p>
+        <a class="sidebar-link is-active" href="#studio-overview" data-owner-section="studio-overview"><span class="sidebar-icon">⌂</span><span>Dashboard</span></a>
+        <a class="sidebar-link" href="#theme-manager" data-owner-section="theme-manager"><span class="sidebar-icon">◐</span><span>Theme Studio</span></a>
+        <a class="sidebar-link" href="#project-manager" data-owner-section="project-manager"><span class="sidebar-icon">▣</span><span>Video Manager</span></a>
+        <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span><small>Later</small></a>
+        <a class="sidebar-link" href="/" target="_blank" rel="noopener"><span class="sidebar-icon">↗</span><span>Public website</span></a>
+        <p class="sidebar-note">Select a section to open its workspace.</p>
+      </aside>
       </section>
 
       <section class="manager-card studio-slide" id="theme-manager">
@@ -206,8 +209,12 @@
       </section>
 
       <section class="manager-card studio-slide" id="project-manager">
-        <div class="manager-heading"><div><p class="eyebrow">MODULE / 02</p><h2>Project library</h2><p class="manager-intro">Add videos, edit details, publish them on your portfolio, or remove old work.</p></div></div>
-        <details class="module-details" id="project-controls"><summary><span>Add or edit projects</span><small>Video uploads · details · publishing</small></summary>
+        <div class="manager-heading"><div><p class="eyebrow">VIDEO MANAGER</p><h2>Manage your videos</h2><p class="manager-intro">Choose Long Video or Short Video to manage that type separately.</p></div></div>
+        <div class="video-manager-choices" role="group" aria-label="Choose video type">
+          <button class="video-choice is-active" type="button" data-video-panel="long"><span class="video-choice-icon">▣</span><strong>Long Videos</strong><small>Documentaries · full edits · thumbnails</small><span class="video-choice-action">Open panel ↗</span></button>
+          <button class="video-choice" type="button" data-video-panel="short"><span class="video-choice-icon">▶</span><strong>Short Videos</strong><small>Shorts · Reels · vertical edits</small><span class="video-choice-action">Open panel ↗</span></button>
+        </div>
+        <details class="module-details" id="project-controls" open><summary><span>Add or edit projects</span><small>Video uploads · details · publishing</small></summary>
         <form id="project-form" class="project-form">
           <input type="hidden" id="project-id">
           <label for="project-title">Project title</label>
