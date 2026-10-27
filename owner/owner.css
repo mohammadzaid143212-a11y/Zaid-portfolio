@@ -599,3 +599,9 @@ html{scroll-snap-type:y proximity}
 .adjustment-panel-body{padding:0 16px 16px}
 .adjustment-panel-body .position-editor{margin-top:18px}
 @media(max-width:600px){#adjustment-panel>summary{padding:15px 13px}.adjustment-panel-body{padding:0 10px 12px}}
+
+/* Ensure the standalone Adjustment Panel remains visible in the Owner Studio slide navigation. */
+#dashboard-view #adjustment-studio.is-active{display:flex!important;visibility:visible!important;opacity:1!important;transform:none!important}
+#dashboard-view #adjustment-studio[hidden]{display:none!important}
+#adjustment-studio-content{display:block;width:100%;min-width:0}
+#adjustment-studio-content #adjustment-panel{display:block;width:100%;box-sizing:border-box}
