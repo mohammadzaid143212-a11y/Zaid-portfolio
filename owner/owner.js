@@ -966,6 +966,89 @@
     (async()=>{try{const {data,error}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();if(error)throw error;animationSettings=data?.settings?.__animationStudio||{};}catch{}})();
   }
 
+  // Backup & Restore: export saved theme settings and the project library as one JSON file.
+  const backupDownloadButton = $("#download-backup-button");
+  const backupFileInput = $("#backup-file-input");
+  const restoreBackupButton = $("#restore-backup-button");
+  const backupFileName = $("#backup-file-name");
+  const backupMessage = $("#backup-studio-message");
+  let stagedBackup = null;
+  const backupNotice = (value, isError = false) => setMessage(backupMessage, value, isError);
+  const validBackup = value => Boolean(value && value.format === "zaid-portfolio-backup" && value.version === 1 &&
+    value.settings && typeof value.settings === "object" && !Array.isArray(value.settings) &&
+    Array.isArray(value.projects) && value.projects.every(project => project && typeof project === "object" &&
+      typeof project.title === "string" && ["long", "short"].includes(project.project_type) &&
+      typeof project.video_url === "string"));
+  backupDownloadButton?.addEventListener("click", async () => {
+    backupDownloadButton.disabled = true;
+    backupNotice("Preparing your backup…");
+    try {
+      const [settingsResult, projectsResult] = await Promise.all([
+        client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle(),
+        client.from("portfolio_projects").select("*").order("sort_order", { ascending: true }).order("created_at", { ascending: false })
+      ]);
+      if (settingsResult.error) throw settingsResult.error;
+      if (projectsResult.error) throw projectsResult.error;
+      const payload = {
+        format: "zaid-portfolio-backup",
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        settings: settingsResult.data?.settings || {},
+        projects: projectsResult.data || []
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "zaid-portfolio-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+      document.body.append(anchor); anchor.click(); anchor.remove(); URL.revokeObjectURL(url);
+      backupNotice("Backup downloaded successfully. Store it somewhere safe.");
+    } catch (error) {
+      backupNotice("Could not create backup: " + (error.message || "Please try again."), true);
+    } finally { backupDownloadButton.disabled = false; }
+  });
+  backupFileInput?.addEventListener("change", async () => {
+    stagedBackup = null;
+    restoreBackupButton.disabled = true;
+    const file = backupFileInput.files?.[0];
+    backupFileName.textContent = file ? file.name : "No backup file selected.";
+    if (!file) { backupNotice(""); return; }
+    if (file.size > 10 * 1024 * 1024) {
+      backupNotice("Backup file must be 10 MB or smaller.", true);
+      return;
+    }
+    try {
+      const parsed = JSON.parse(await file.text());
+      if (!validBackup(parsed)) throw new Error("This file is not a supported Zaid Portfolio backup.");
+      stagedBackup = parsed;
+      restoreBackupButton.disabled = false;
+      backupNotice("Backup validated: " + parsed.projects.length + " project(s), exported " + (parsed.exportedAt || "date unknown") + ".");
+    } catch (error) {
+      backupNotice("Could not read backup: " + (error.message || "Choose a valid JSON backup."), true);
+    }
+  });
+  restoreBackupButton?.addEventListener("click", async () => {
+    if (!stagedBackup || !validBackup(stagedBackup)) return backupNotice("Choose a valid backup file first.", true);
+    const count = stagedBackup.projects.length;
+    if (!window.confirm("Restore settings and merge " + count + " project(s)? Saved settings will be replaced. Existing projects not in this backup will NOT be deleted.")) return;
+    restoreBackupButton.disabled = true;
+    backupNotice("Restoring backup…");
+    try {
+      if (stagedBackup.projects.length) {
+        const { error } = await client.from("portfolio_projects").upsert(stagedBackup.projects, { onConflict: "id" });
+        if (error) throw error;
+      }
+      const { error: settingsError } = await client.from("portfolio_theme_settings").upsert({
+        id: true, settings: stagedBackup.settings, updated_at: new Date().toISOString()
+      }, { onConflict: "id" });
+      if (settingsError) throw settingsError;
+      await loadProjects();
+      backupNotice("Backup restored. Refresh the public portfolio to view restored settings.");
+    } catch (error) {
+      backupNotice("Restore did not finish: " + (error.message || "Please check the file and try again."), true);
+    } finally { restoreBackupButton.disabled = !stagedBackup; }
+  });
+
   logoutButton.addEventListener("click", async () => { recoveryMode = false; await client.auth.signOut(); showLogin(); setMessage(message, "You have signed out."); });
   checkSession();
 })();
