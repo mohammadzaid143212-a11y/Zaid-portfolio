@@ -619,7 +619,7 @@
     if (kind !== "text") { try { const u = new URL(url); if (!["http:","https:"].includes(u.protocol)) throw new Error(); } catch { return themeNotice("Add a valid image/video URL or upload a file first.",true); } }
     const items = getCustomElements();
     if (!editingElementId && items.length >= 30) return themeNotice("Maximum 30 custom elements. Remove one before adding another.",true);
-    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), x:clampPercent(elementX.value), y:clampPercent(elementY.value), mobile:$("#element-mobile-enabled").checked ? { x:clampPercent($("#element-mobile-x").value), y:clampPercent($("#element-mobile-y").value), width:Math.max(10,Math.min(100,Number($("#element-mobile-width").value)||90)) } : null, overlay:elementOverlay.checked, layer:$("#element-layer").value, animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value, rotation:Math.max(-180,Math.min(180,Number($("#element-rotation").value)||0)), opacity:Math.max(10,Math.min(100,Number($("#element-opacity").value)||100)), radius:Math.max(0,Math.min(200,Number($("#element-radius").value)||0)), borderWidth:Math.max(0,Math.min(10,Number($("#element-border-width").value)||0)), shadow:["none","soft","glow","deep"].includes($("#element-shadow").value)?$("#element-shadow").value:"none" };
+    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), x:clampPercent(elementX.value), y:clampPercent(elementY.value), mobile:$("#element-mobile-enabled").checked ? { x:clampPercent($("#element-mobile-x").value), y:clampPercent($("#element-mobile-y").value), width:Math.max(10,Math.min(100,Number($("#element-mobile-width").value)||90)) } : null, overlay:elementOverlay.checked, layer:$("#element-layer").value, animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value, rotation:Math.max(-180,Math.min(180,Number($("#element-rotation").value)||0)), opacity:Math.max(10,Math.min(100,Number($("#element-opacity").value)||100)), radius:Math.max(0,Math.min(200,Number($("#element-radius").value)||0)), borderWidth:Math.max(0,Math.min(10,Number($("#element-border-width").value)||0)), shadow:["none","soft","glow","deep"].includes($("#element-shadow").value)?$("#element-shadow").value:"none", mobile: $("#element-mobile-enabled").checked ? { x: clampPercent($("#element-mobile-x").value), y: clampPercent($("#element-mobile-y").value), width: Math.max(10, Math.min(100, Number($("#element-mobile-width").value) || 90)) } : null };
     const nextItems = editingElementId ? items.map(x => x.id === editingElementId ? item : x) : [...items,item];
     const saved = await saveCustomElements(nextItems);
     if (!saved) return;
@@ -646,6 +646,7 @@
     elementX.value = 50;
     elementY.value = 50;
     elementOverlay.checked = true;
+    $("#element-mobile-enabled").checked = false; $("#element-mobile-x").value = 50; $("#element-mobile-y").value = 50; $("#element-mobile-width").value = 90; $("#element-mobile-fields").classList.add("hidden");
     $("#element-color").value = "#c9f36a";
     $("#element-rotation").value = 0;
     $("#element-opacity").value = 100;
@@ -657,6 +658,7 @@
     if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview();
     if (announce) themeNotice("Fields reset. Your saved elements were not changed.");
   }
+  $("#element-mobile-enabled").addEventListener("change", () => $("#element-mobile-fields").classList.toggle("hidden", !$("#element-mobile-enabled").checked));
   $("#clear-element-form").addEventListener("click", () => resetElementForm());
   renderCustomElements();
 
