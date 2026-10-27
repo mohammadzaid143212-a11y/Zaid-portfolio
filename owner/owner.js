@@ -966,6 +966,91 @@
     (async()=>{try{const {data,error}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();if(error)throw error;animationSettings=data?.settings?.__animationStudio||{};}catch{}})();
   }
 
+  // SEO Studio stores site identity metadata in the same settings record as other studio panels.
+  const seoForm = $("#seo-studio-form");
+  if (seoForm) {
+    const seoTitle = $("#seo-page-title"), seoDescription = $("#seo-description");
+    const seoThemeColor = $("#seo-theme-color"), seoImage = $("#seo-social-image");
+    const seoSocialTitle = $("#seo-social-title"), seoSocialDescription = $("#seo-social-description");
+    const seoCount = $("#seo-description-count"), seoPreviewTitle = $("#seo-preview-title");
+    const seoPreviewDescription = $("#seo-preview-description"), seoMessage = $("#seo-studio-message");
+    const seoSaveButton = $("#save-seo-button");
+    let savedSeo = {};
+    const seoNotice = (message, isError = false) => setMessage(seoMessage, message, isError);
+    const safeHttpUrl = value => {
+      if (!value) return "";
+      const url = new URL(value);
+      if (!["https:", "http:"].includes(url.protocol)) throw new Error("Use a valid http(s) URL for the social image.");
+      return url.href;
+    };
+    const seoValue = () => ({
+      title: seoTitle.value.trim().slice(0,70),
+      description: seoDescription.value.trim().slice(0,180),
+      themeColor: /^#[0-9a-f]{6}$/i.test(seoThemeColor.value) ? seoThemeColor.value : "#0b0b0d",
+      image: seoImage.value.trim(),
+      socialTitle: seoSocialTitle.value.trim().slice(0,100),
+      socialDescription: seoSocialDescription.value.trim().slice(0,200)
+    });
+    const paintSeoPreview = () => {
+      const value = seoValue();
+      seoCount.textContent = String(value.description.length);
+      seoPreviewTitle.textContent = value.socialTitle || value.title || "Your website title";
+      seoPreviewDescription.textContent = value.socialDescription || value.description || "Your website description will appear here.";
+      $("#seo-preview").style.setProperty("--seo-preview-accent", value.themeColor);
+    };
+    const populateSeoForm = value => {
+      seoTitle.value = value.title || document.title || "Zaid — Cinematic Video Editor";
+      seoDescription.value = value.description || document.querySelector('meta[name="description"]')?.content || "";
+      seoThemeColor.value = value.themeColor || document.querySelector('meta[name="theme-color"]')?.content || "#0b0b0d";
+      seoImage.value = value.image || "";
+      seoSocialTitle.value = value.socialTitle || "";
+      seoSocialDescription.value = value.socialDescription || "";
+      paintSeoPreview();
+    };
+    seoForm.addEventListener("input", paintSeoPreview);
+    $("#preview-seo-button").addEventListener("click", () => { paintSeoPreview(); seoNotice("Preview refreshed. Save & publish to apply metadata to the public page."); });
+    seoForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      const value = seoValue();
+      if (!value.title || !value.description) return seoNotice("Add a website title and description first.", true);
+      try { value.image = safeHttpUrl(value.image); }
+      catch (error) { return seoNotice(error.message, true); }
+      seoSaveButton.disabled = true; seoNotice("Saving site identity settings…");
+      try {
+        const { data, error: readError } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
+        if (readError) throw readError;
+        const allSettings = data?.settings || {};
+        const { error } = await client.from("portfolio_theme_settings").upsert({
+          id: true, settings: { ...allSettings, __siteSeo: value }, updated_at: new Date().toISOString()
+        }, { onConflict: "id" });
+        if (error) throw error;
+        savedSeo = value; paintSeoPreview();
+        seoNotice("SEO settings saved. Refresh your public portfolio to see the browser metadata update.");
+      } catch (error) { seoNotice("Could not save SEO settings: " + (error.message || "Please try again."), true); }
+      finally { seoSaveButton.disabled = false; }
+    });
+    $("#reset-seo-button").addEventListener("click", async () => {
+      if (!window.confirm("Reset the saved SEO settings and return to the default page metadata?")) return;
+      try {
+        const { data, error: readError } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
+        if (readError) throw readError;
+        const next = { ...(data?.settings || {}) }; delete next.__siteSeo;
+        const { error } = await client.from("portfolio_theme_settings").upsert({ id: true, settings: next, updated_at: new Date().toISOString() }, { onConflict: "id" });
+        if (error) throw error;
+        savedSeo = {}; populateSeoForm({});
+        seoNotice("SEO settings reset. Refresh the public portfolio to restore default metadata.");
+      } catch (error) { seoNotice("Could not reset SEO settings: " + (error.message || "Please try again."), true); }
+    });
+    (async () => {
+      try {
+        const { data, error } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
+        if (error) throw error;
+        savedSeo = data?.settings?.__siteSeo || {};
+      } catch { savedSeo = {}; }
+      populateSeoForm(savedSeo);
+    })();
+  }
+
   // Backup & Restore: export saved theme settings and the project library as one JSON file.
   const backupDownloadButton = $("#download-backup-button");
   const backupFileInput = $("#backup-file-input");
