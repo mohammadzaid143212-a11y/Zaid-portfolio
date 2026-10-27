@@ -185,9 +185,17 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
       const node = document.createElement("div");
       node.className = "owner-added-element";
       node.dataset.elementId = item.id || "";
-      node.style.cssText = "box-sizing:border-box;position:relative;z-index:3;width:min(" + Math.max(10,Math.min(100,Number(item.width)||80)) + "%,100%);margin:24px auto;padding:8px;text-align:center;color:" + (item.color || "#c9f36a") + ";";
-      if (item.placement === "top") node.style.marginTop = "0";
-      if (item.placement === "bottom") node.style.marginBottom = "0";
+      const overlay = item.overlay !== false;
+      const x = Math.max(0,Math.min(100,Number(item.x ?? 50)));
+      const y = Math.max(0,Math.min(100,Number(item.y ?? 50)));
+      if (overlay && getComputedStyle(target).position === "static") target.style.position = "relative";
+      node.style.cssText = "box-sizing:border-box;z-index:3;width:min(" + Math.max(10,Math.min(100,Number(item.width)||80)) + "%,100%);padding:8px;text-align:center;color:" + (item.color || "#c9f36a") + ";";
+      if (overlay) {
+        node.style.position = "absolute"; node.style.left = x + "%"; node.style.top = y + "%";
+        node.style.margin = "0"; node.style.transform = "translate(-50%,-50%)";
+      } else {
+        node.style.position = "relative"; node.style.margin = (item.placement === "top" ? "0 auto 24px" : item.placement === "bottom" ? "24px auto 0" : "24px auto");
+      }
       if (item.animation && animationNames[item.animation] && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         node.style.animation = animationNames[item.animation] + " " + Math.max(.5,Math.min(30,Number(item.duration)||6)) + "s ease-in-out infinite alternate";
       }
