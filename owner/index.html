@@ -57,7 +57,8 @@
         <p class="sidebar-label">WORKSPACE</p>
         <a class="sidebar-link is-active" href="#studio-overview" data-owner-section="studio-overview"><span class="sidebar-icon">⌂</span><span>Dashboard</span></a>
         <a class="sidebar-link" href="#theme-manager" data-owner-section="theme-manager"><span class="sidebar-icon">◐</span><span>Theme Studio</span></a>
-        <a class="sidebar-link" href="#project-manager" data-owner-section="project-manager"><span class="sidebar-icon">▣</span><span>Video Manager</span></a>
+        <a class="sidebar-link" href="#long-video-manager" data-owner-section="long-video-manager"><span class="sidebar-icon">▣</span><span>Long Videos</span></a>
+        <a class="sidebar-link" href="#short-video-manager" data-owner-section="short-video-manager"><span class="sidebar-icon">▶</span><span>Short Videos</span></a>
         <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span><small>Later</small></a>
         <a class="sidebar-link" href="/" target="_blank" rel="noopener"><span class="sidebar-icon">↗</span><span>Public website</span></a>
         <p class="sidebar-note">Select a section to open its workspace.</p>
@@ -210,12 +211,9 @@
         <div id="element-studio-content" class="element-studio-content"><p class="field-help">Loading element tools…</p></div>
       </section>
 
-      <section class="manager-card studio-slide" id="project-manager">
-        <div class="manager-heading"><div><p class="eyebrow">VIDEO MANAGER</p><h2>Manage your videos</h2><p class="manager-intro">Choose Long Video or Short Video to manage that type separately.</p></div></div>
-        <div class="video-manager-choices" role="group" aria-label="Choose video type">
-          <button class="video-choice is-active" type="button" data-video-panel="long"><span class="video-choice-icon">▣</span><strong>Long Videos</strong><small>Documentaries · full edits · thumbnails</small><span class="video-choice-action">Open panel ↗</span></button>
-          <button class="video-choice" type="button" data-video-panel="short"><span class="video-choice-icon">▶</span><strong>Short Videos</strong><small>Shorts · Reels · vertical edits</small><span class="video-choice-action">Open panel ↗</span></button>
-        </div>
+      <section class="manager-card studio-slide" id="long-video-manager" data-video-panel="long">
+        <div class="manager-heading"><div><p class="eyebrow">VIDEO LIBRARY / 01</p><h2>Long Video Manager</h2><p class="manager-intro">Manage documentaries and full-length edits. Add a thumbnail for each long video.</p></div></div>
+        <div id="long-video-workspace"><div id="video-editor-workspace">
         <details class="module-details" id="project-controls" open><summary><span>Add or edit projects</span><small>Video uploads · details · publishing</small></summary>
         <form id="project-form" class="project-form">
           <input type="hidden" id="project-id">
@@ -254,6 +252,11 @@
         <div class="library-heading"><h3>Saved projects</h3><button class="quiet-button" id="refresh-projects" type="button">Refresh ↻</button></div>
         <div id="project-list" class="project-list"><p class="empty-state">Loading your projects…</p></div>
         </details>
+        </div></div>
+      </section>
+      <section class="manager-card studio-slide" id="short-video-manager" data-video-panel="short">
+        <div class="manager-heading"><div><p class="eyebrow">VIDEO LIBRARY / 02</p><h2>Short Video Manager</h2><p class="manager-intro">Manage Shorts, Reels and vertical edits separately. Thumbnail fields are disabled for short videos.</p></div></div>
+        <div id="short-video-workspace"></div>
       </section>
     </section>
   </main>
