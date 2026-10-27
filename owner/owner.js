@@ -50,7 +50,10 @@
       if (!link.dataset.ownerSection) return;
       link.addEventListener("click", event => {
         event.preventDefault();
-        showPanel(link.dataset.ownerSection);
+        const panelId = link.dataset.ownerSection;
+        showPanel(panelId);
+        if (panelId === "long-video-manager") { setVideoPanel("long"); }
+        if (panelId === "short-video-manager") { setVideoPanel("short"); }
       });
     });
     dashboardView.dataset.clickNavigationReady = "true";
@@ -129,28 +132,22 @@
 
 
   // Sidebar navigation: open the selected workspace and keep the active item in sync.
-  const videoManager = document.getElementById("project-manager");
-  const videoChoices = Array.from(document.querySelectorAll("[data-video-panel]"));
+  const videoManager = document.getElementById("long-video-manager");
+  const videoWorkspace = document.getElementById("long-video-workspace");
+  const shortVideoWorkspace = document.getElementById("short-video-workspace");
+  const videoChoices = [];
   function setVideoPanel(type) {
     if (!videoManager) return;
     videoManager.dataset.videoPanel = type;
+    const targetWorkspace = type === "short" ? shortVideoWorkspace : document.getElementById("long-video-workspace");
+    if (targetWorkspace && videoWorkspace && targetWorkspace !== videoWorkspace) targetWorkspace.append(videoWorkspace);
     if (projectType) projectType.value = type;
     toggleThumbnail();
-    videoChoices.forEach(button => {
-      const active = button.dataset.videoPanel === type;
-      button.classList.toggle("is-active", active);
-      button.setAttribute("aria-pressed", String(active));
-    });
     if (projectList) renderProjects();
     const summary = document.querySelector("#project-controls > summary span");
-    if (summary) summary.textContent = type === "long" ? "Long Video panel · add or edit" : "Short Video panel · add or edit";
+    if (summary) summary.textContent = type === "long" ? "Add or edit long videos" : "Add or edit short videos";
   }
-  videoChoices.forEach(button => button.addEventListener("click", () => {
-    setVideoPanel(button.dataset.videoPanel);
-    const controls = document.getElementById("project-controls");
-    if (controls) controls.open = true;
-  }));
-  if (videoChoices.length) setVideoPanel("long");
+  setVideoPanel("long");
 
   function toggleThumbnail() {
     const isLong = projectType.value === "long";
@@ -248,7 +245,7 @@
         $("#project-published").checked = project.is_published; toggleThumbnail();
         $("#save-project-button").innerHTML = 'Update project <span aria-hidden="true">↗</span>';
         $("#cancel-edit-button").classList.remove("hidden"); setMessage(projectMessage, "Editing: " + project.title);
-        $("#project-manager").scrollIntoView({ behavior: "smooth", block: "start" });
+        $("#long-video-manager").scrollIntoView({ behavior: "smooth", block: "start" });
       });
       const del = document.createElement("button"); del.className = "danger-button"; del.type = "button"; del.textContent = "Delete";
       del.addEventListener("click", async () => {
