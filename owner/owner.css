@@ -223,3 +223,28 @@ html{scroll-snap-type:y proximity}
  #dashboard-view>.studio-slide{padding-right:54px!important}
 }
 @media(prefers-reduced-motion:reduce){.studio-slide-arrow{transition:none}}
+
+
+/* Mobile layout correction: remove oversized blank space above Owner Studio content. */
+@media(max-width:680px){
+  .shell{margin:18px auto 32px}
+  #dashboard-view{align-items:flex-start}
+  #dashboard-view>.studio-overview-slide{min-height:calc(100svh - 100px);height:auto;justify-content:flex-start;align-self:flex-start;padding-top:18px;padding-bottom:22px;gap:14px}
+  #dashboard-view>.studio-overview-slide .dashboard-heading{margin:0;gap:14px}
+  #dashboard-view>.studio-overview-slide .dashboard-heading h1{font-size:clamp(32px,8vw,42px)}
+  #dashboard-view>.studio-overview-slide .status-banner{margin-bottom:0;padding:13px}
+  #dashboard-view>.studio-overview-slide .stats{gap:8px}
+  #dashboard-view>.studio-overview-slide .stat-card{padding:10px 13px}
+  #dashboard-view>.studio-overview-slide .stat-card strong{font-size:28px;margin:7px 0 3px}
+  #dashboard-view>.studio-overview-slide .studio-nav{margin-top:0}
+  #dashboard-view>.manager-card.studio-slide{min-height:calc(100svh - 100px);height:auto;justify-content:flex-start;align-self:flex-start;padding-top:20px;padding-bottom:24px}
+}
+
+
+/* Apply content-first sizing to every mobile module, not just the dashboard. */
+@media(max-width:680px){
+  #dashboard-view>.studio-slide{min-height:0;height:auto;align-self:flex-start;justify-content:flex-start;}
+  #dashboard-view>.studio-overview-slide{min-height:0;height:auto;justify-content:flex-start;}
+  #dashboard-view>.manager-card.studio-slide{min-height:0;height:auto;justify-content:flex-start;padding-top:20px;padding-bottom:24px;}
+  #dashboard-view>.manager-card.studio-slide .manager-heading{align-self:stretch;}
+}
