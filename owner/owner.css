@@ -497,3 +497,70 @@ html{scroll-snap-type:y proximity}
     max-width: none !important;
   }
 }
+
+
+/* Visual Builder / Adjustment Workspace polish */
+.element-studio-panel .position-editor,
+.element-studio-panel .theme-control-grid,
+.element-studio-panel .custom-element-item {
+  min-width: 0;
+}
+.element-studio-panel .position-editor {
+  margin-top: 18px;
+  padding: clamp(12px, 2.5vw, 20px);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff04;
+}
+.element-studio-panel .element-position-stage {
+  min-height: 220px;
+  touch-action: pan-y;
+}
+.element-studio-panel .element-position-handle {
+  max-width: calc(100% - 20px);
+  overflow-wrap: anywhere;
+  cursor: grab;
+  touch-action: none;
+}
+.element-studio-panel .element-position-handle.is-dragging {
+  cursor: grabbing;
+}
+.element-studio-panel .website-preview-frame-wrap {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #0b0b0d;
+}
+.element-studio-panel #element-website-preview {
+  display: block;
+  width: 100%;
+  min-height: 320px;
+  border: 0;
+}
+.element-studio-panel .custom-element-item {
+  gap: 12px;
+  align-items: center;
+}
+.element-studio-panel .custom-element-item > div:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.element-studio-panel .custom-element-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.element-studio-panel .custom-element-actions button,
+.element-studio-panel .form-actions button {
+  min-height: 40px;
+}
+@media (max-width: 680px) {
+  .element-studio-panel .element-position-stage { min-height: 190px; }
+  .element-studio-panel #element-website-preview { min-height: 260px; }
+  .element-studio-panel .custom-element-item {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .element-studio-panel .custom-element-actions { width: 100%; }
+  .element-studio-panel .custom-element-actions button { flex: 1 1 auto; }
+}
