@@ -406,6 +406,39 @@
   [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),elementOverlay].forEach(el => el.addEventListener("input", updatePositionPreview));
   $("#element-placement").addEventListener("change", updatePositionPreview);
   updatePositionPreview();
+  // Live same-origin website preview with a temporary draggable placement marker.
+  const websitePreview = $("#element-website-preview");
+  let previewTarget = null, previewMarker = null, previewDrag = false;
+  function refreshWebsitePreview() {
+    let doc;
+    try { doc = websitePreview.contentDocument; } catch { return; }
+    if (!doc || !doc.body) return;
+    if (previewMarker && previewMarker.isConnected) previewMarker.remove();
+    previewMarker = null; previewTarget = null;
+    const targetValue = $("#element-target").value;
+    const selector = targetValue === "custom" ? $("#element-custom-target").value.trim() : targetValue;
+    try { previewTarget = selector ? doc.querySelector(selector) : null; } catch { previewTarget = null; }
+    if (!previewTarget) { $("#element-upload-status").textContent = "Section not found in preview. Choose another section or check the custom selector."; return; }
+    previewTarget.scrollIntoView({block:"start",behavior:"smooth"});
+    if (elementOverlay.checked && getComputedStyle(previewTarget).position === "static") previewTarget.style.position = "relative";
+    previewMarker = doc.createElement("div");
+    previewMarker.setAttribute("role","button"); previewMarker.setAttribute("aria-label","Drag element to position");
+    previewMarker.style.cssText = "box-sizing:border-box;position:absolute;z-index:99999;left:"+clampPercent(elementX.value)+"%;top:"+clampPercent(elementY.value)+"%;transform:translate(-50%,-50%);width:min("+Math.max(10,Math.min(100,Number($("#element-width").value)||80))+"%,100%);min-height:36px;padding:8px;border:2px dashed #c9f36a;background:#08090ddd;text-align:center;cursor:move;touch-action:none;overflow-wrap:anywhere;color:"+($("#element-color").value||"#c9f36a")+";";
+    const kind = elementKind.value, content = $("#element-content").value.trim(), url = $("#element-url").value.trim();
+    if (kind === "text") previewMarker.textContent = content || "Your element";
+    else if (kind === "image" && url) { const img = doc.createElement("img"); img.src = url; img.alt = ""; img.style.cssText = "display:block;width:100%;max-height:30vh;object-fit:contain"; previewMarker.append(img); }
+    else previewMarker.textContent = kind === "video" ? "▶ Video / motion graphic" : "Image / graphic";
+    previewTarget.append(previewMarker);
+    previewMarker.addEventListener("pointerdown", ev => { previewDrag = true; previewMarker.setPointerCapture(ev.pointerId); ev.preventDefault(); });
+    previewMarker.addEventListener("pointermove", ev => { if (!previewDrag || !previewTarget || !previewMarker) return; const rect = previewTarget.getBoundingClientRect(); const x = clampPercent((ev.clientX-rect.left)/rect.width*100); const y = clampPercent((ev.clientY-rect.top)/rect.height*100); elementX.value=Math.round(x); elementY.value=Math.round(y); previewMarker.style.left=x+"%"; previewMarker.style.top=y+"%"; updatePositionPreview(); });
+    const stop = () => { previewDrag = false; }; previewMarker.addEventListener("pointerup",stop); previewMarker.addEventListener("pointercancel",stop);
+    $("#element-upload-status").textContent = "Preview ready. Drag the dashed marker on the website to set its position.";
+  }
+  websitePreview.addEventListener("load", () => window.setTimeout(refreshWebsitePreview, 600));
+  $("#refresh-element-preview").addEventListener("click", refreshWebsitePreview);
+  $("#element-target").addEventListener("change", () => window.setTimeout(refreshWebsitePreview, 250));
+  $("#element-custom-target").addEventListener("change", () => window.setTimeout(refreshWebsitePreview, 250));
+  [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),elementOverlay].forEach(el => el.addEventListener("change", () => { if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview(); }));
   function getCustomElements() { return Array.isArray(themeSettings.__elements) ? themeSettings.__elements : []; }
   function renderCustomElements() {
     const list = $("#custom-element-list"), items = getCustomElements();
