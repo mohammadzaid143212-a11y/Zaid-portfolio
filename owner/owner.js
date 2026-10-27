@@ -631,7 +631,38 @@
     updatePositionPreview();
     if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview();
   });
-  $("#clear-element-form").addEventListener("click", () => { editingElementId=null; $("#add-element-button").textContent="Add element"; $("#element-content").value=""; $("#element-url").value=""; $("#element-file").value=""; elementUploadedUrl=""; $("#element-upload-status").textContent=""; elementX.value=50; elementY.value=50; elementOverlay.checked=true; updatePositionPreview(); });
+  function resetElementForm({ announce = true } = {}) {
+    editingElementId = null;
+    $("#add-element-button").textContent = "Add element";
+    $("#element-target").value = ".hero";
+    $("#element-custom-target").value = "";
+    $("#element-custom-target-field").classList.add("hidden");
+    elementKind.value = "text";
+    $("#element-content").value = "";
+    $("#element-url").value = "";
+    $("#element-file").value = "";
+    elementUploadedUrl = "";
+    $("#element-upload-status").textContent = "";
+    $("#element-placement").value = "center";
+    $("#element-width").value = 80;
+    $("#element-layer").value = "front";
+    $("#element-animation").value = "none";
+    $("#element-duration").value = 6;
+    elementX.value = 50;
+    elementY.value = 50;
+    elementOverlay.checked = true;
+    $("#element-color").value = "#c9f36a";
+    $("#element-rotation").value = 0;
+    $("#element-opacity").value = 100;
+    $("#element-radius").value = 0;
+    $("#element-border-width").value = 0;
+    $("#element-shadow").value = "none";
+    updatePositionPreview();
+    recordPositionHistory();
+    if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview();
+    if (announce) themeNotice("Fields reset. Your saved elements were not changed.");
+  }
+  $("#clear-element-form").addEventListener("click", () => resetElementForm());
   renderCustomElements();
 
   function currentThemeSetting() {
