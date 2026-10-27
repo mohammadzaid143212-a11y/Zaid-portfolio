@@ -148,6 +148,43 @@
     finally { savePasswordButton.disabled = false; savePasswordButton.innerHTML = 'Save new password <span aria-hidden="true">↗</span>'; }
   });
 
+
+  // Sidebar navigation: open the selected workspace and keep the active item in sync.
+  const ownerSidebar = document.querySelector(".owner-sidebar");
+  if (ownerSidebar) {
+    ownerSidebar.addEventListener("click", event => {
+      const link = event.target.closest("[data-owner-section]");
+      if (!link) return;
+      const target = document.getElementById(link.dataset.ownerSection);
+      if (!target) return;
+      event.preventDefault();
+      target.scrollIntoView({behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
+      ownerSidebar.querySelectorAll(".sidebar-link").forEach(item => item.classList.toggle("is-active", item === link));
+    });
+  }
+  const videoManager = document.getElementById("project-manager");
+  const videoChoices = Array.from(document.querySelectorAll("[data-video-panel]"));
+  function setVideoPanel(type) {
+    if (!videoManager) return;
+    videoManager.dataset.videoPanel = type;
+    if (projectType) projectType.value = type;
+    toggleThumbnail();
+    videoChoices.forEach(button => {
+      const active = button.dataset.videoPanel === type;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    if (projectList) renderProjects();
+    const summary = document.querySelector("#project-controls > summary span");
+    if (summary) summary.textContent = type === "long" ? "Long Video panel · add or edit" : "Short Video panel · add or edit";
+  }
+  videoChoices.forEach(button => button.addEventListener("click", () => {
+    setVideoPanel(button.dataset.videoPanel);
+    const controls = document.getElementById("project-controls");
+    if (controls) controls.open = true;
+  }));
+  if (videoChoices.length) setVideoPanel("long");
+
   function toggleThumbnail() {
     const isLong = projectType.value === "long";
     thumbnailField.classList.toggle("hidden", !isLong);
@@ -226,7 +263,9 @@
     updateCounts();
     if (!projects.length) { projectList.innerHTML = '<p class="empty-state">No projects yet. Use the form above to add your first video.</p>'; return; }
     projectList.replaceChildren();
-    projects.forEach(project => {
+    const visibleProjects = projects.filter(project => project.project_type === (videoManager?.dataset.videoPanel || "long"));
+    if (!visibleProjects.length) { projectList.innerHTML = '<p class="empty-state">No '+(videoManager?.dataset.videoPanel === "short" ? "short" : "long")+' videos yet. Add the first one using this panel.</p>'; return; }
+    visibleProjects.forEach(project => {
       const card = document.createElement("article"); card.className = "library-item";
       const info = document.createElement("div"); info.className = "library-item-info";
       const title = document.createElement("h4"); title.textContent = project.title;
