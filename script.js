@@ -126,6 +126,33 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
   const { data, error } = await client.from("portfolio_theme_settings")
     .select("settings").eq("id", true).maybeSingle();
   if (error || !data?.settings) return;
+  // Apply saved SEO/site identity metadata to the live document.
+  const siteSeo = data.settings.__siteSeo || {};
+  if (siteSeo.title) document.title = String(siteSeo.title).slice(0,70);
+  const setMeta = (selector, attribute, value, content) => {
+    if (!content) return;
+    let tag = document.head.querySelector(selector);
+    if (!tag) { tag = document.createElement("meta"); tag.setAttribute(attribute, value); document.head.append(tag); }
+    tag.content = String(content);
+  };
+  if (siteSeo.description) setMeta('meta[name="description"]', "name", "description", String(siteSeo.description).slice(0,180));
+  if (siteSeo.themeColor) setMeta('meta[name="theme-color"]', "name", "theme-color", /^#[0-9a-f]{6}$/i.test(siteSeo.themeColor) ? siteSeo.themeColor : "#0b0b0d");
+  setMeta('meta[property="og:title"]', "property", "og:title", siteSeo.socialTitle || siteSeo.title);
+  setMeta('meta[property="og:description"]', "property", "og:description", siteSeo.socialDescription || siteSeo.description);
+  setMeta('meta[property="og:type"]', "property", "og:type", "website");
+  setMeta('meta[property="og:url"]', "property", "og:url", window.location.href);
+  setMeta('meta[name="twitter:card"]', "name", "twitter:card", siteSeo.image ? "summary_large_image" : "summary");
+  if (siteSeo.image) {
+    try {
+      const imageUrl = new URL(siteSeo.image);
+      if (["https:", "http:"].includes(imageUrl.protocol)) {
+        setMeta('meta[property="og:image"]', "property", "og:image", imageUrl.href);
+        setMeta('meta[name="twitter:image"]', "name", "twitter:image", imageUrl.href);
+      }
+    } catch {}
+  }
+  setMeta('meta[name="twitter:title"]', "name", "twitter:title", siteSeo.socialTitle || siteSeo.title);
+  setMeta('meta[name="twitter:description"]', "name", "twitter:description", siteSeo.socialDescription || siteSeo.description);
   const selectors = {
     site: "body", header: ".site-header", hero: ".hero", "hero-title": ".hero h1",
     "hero-media": ".hero-frame", work: ".work-section", "project-cards": ".project-card",
