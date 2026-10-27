@@ -685,6 +685,9 @@
     const textFont = $("#text-font"), textSize = $("#text-size"), textWeight = $("#text-weight");
     const textAlign = $("#text-align"), textColor = $("#text-color"), textMessage = $("#text-studio-message");
     const textPreview = $("#text-preview-copy");
+    const customFontFile = $("#custom-font-file"), uploadCustomFontButton = $("#upload-custom-font-button");
+    const deleteCustomFontButton = $("#delete-custom-font-button"), customFontMessage = $("#custom-font-message");
+    let customFonts = [];
     const textSelectors = {
       "hero-description": ".hero-bottom p", "hero-caption": ".frame-caption",
       "work-intro": ".section-heading > p",
@@ -695,6 +698,62 @@
     };
     let textOverrides = {};
     const textNotice = (message, error = false) => setMessage(textMessage, message, error);
+    const customFontNotice = (message, error = false) => setMessage(customFontMessage, message, error);
+    const safeFontName = name => name.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9 _-]/g, "").trim().slice(0, 48) || "Custom Font";
+    const refreshCustomFontOptions = () => {
+      [...textFont.options].filter(option => option.dataset.customFont === "true").forEach(option => option.remove());
+      customFonts.forEach(font => {
+        const option = document.createElement("option");
+        option.value = '"' + font.name.replace(/"/g, "") + '", sans-serif';
+        option.textContent = font.name;
+        option.dataset.customFont = "true";
+        textFont.append(option);
+      });
+    };
+    const saveFontSettings = async nextFonts => {
+      const { data, error: readError } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
+      if (readError) throw readError;
+      const settings = { ...(data?.settings || {}), __customFonts: nextFonts };
+      const { error } = await client.from("portfolio_theme_settings").upsert({ id: true, settings, updated_at: new Date().toISOString() }, { onConflict: "id" });
+      if (error) throw error;
+      customFonts = nextFonts; refreshCustomFontOptions();
+    };
+    uploadCustomFontButton.addEventListener("click", async () => {
+      const file = customFontFile.files?.[0];
+      if (!file) return customFontNotice("Choose a font file first.", true);
+      const ext = file.name.split(".").pop().toLowerCase();
+      if (!["woff2","woff","ttf","otf"].includes(ext)) return customFontNotice("Supported formats: WOFF2, WOFF, TTF and OTF.", true);
+      if (file.size > 10 * 1024 * 1024) return customFontNotice("Font file must be 10 MB or smaller.", true);
+      uploadCustomFontButton.disabled = true; customFontNotice("Uploading font…");
+      try {
+        const name = safeFontName(file.name);
+        const path = "fonts/" + crypto.randomUUID() + "-" + file.name.replace(/[^a-zA-Z0-9._-]+/g, "-");
+        const mime = ({woff2:"font/woff2",woff:"font/woff",ttf:"font/ttf",otf:"font/otf"})[ext];
+        const { data, error } = await client.storage.from("portfolio-media").upload(path, file, { cacheControl:"3600", upsert:false, contentType:mime });
+        if (error) throw error;
+        const { data: publicData } = client.storage.from("portfolio-media").getPublicUrl(data.path);
+        const font = { name, url: publicData.publicUrl, path: data.path };
+        await saveFontSettings([...customFonts.filter(item => item.name !== name), font]);
+        const face = new FontFace(name, 'url("' + font.url + '")');
+        await face.load(); document.fonts.add(face);
+        textFont.value = '"' + name + '", sans-serif'; paintTextPreview();
+        customFontFile.value = ""; customFontNotice("Font uploaded and saved. It is now available in Font family.");
+      } catch (error) { customFontNotice("Could not upload font: " + (error.message || "Please try again."), true); }
+      finally { uploadCustomFontButton.disabled = false; }
+    });
+    deleteCustomFontButton.addEventListener("click", async () => {
+      const selected = textFont.selectedOptions[0];
+      const font = customFonts.find(item => selected?.dataset.customFont === "true" && selected.textContent === item.name);
+      if (!font) return customFontNotice("Select one of your custom fonts first.", true);
+      deleteCustomFontButton.disabled = true;
+      try {
+        const { error } = await client.storage.from("portfolio-media").remove([font.path]);
+        if (error) throw error;
+        await saveFontSettings(customFonts.filter(item => item.path !== font.path));
+        textFont.value = ""; paintTextPreview(); customFontNotice("Custom font deleted.");
+      } catch (error) { customFontNotice("Could not delete font: " + (error.message || "Please try again."), true); }
+      finally { deleteCustomFontButton.disabled = false; }
+    });
     const textStyleFromForm = () => ({
       content: textContent.value.slice(0, 600), font: textFont.value,
       size: Math.max(10, Math.min(120, Number(textSize.value) || 18)),
@@ -754,6 +813,8 @@
     (async () => {
       try {
         const { data } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
+        customFonts = data?.settings?.__customFonts || []; refreshCustomFontOptions();
+        for (const font of customFonts) { try { const face = new FontFace(font.name, 'url("' + font.url + '")'); await face.load(); document.fonts.add(face); } catch {} }
         textOverrides = data?.settings?.__textStudio || {};
         populateTextForm();
       } catch { populateTextForm(); }
