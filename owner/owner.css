@@ -313,3 +313,71 @@ html{scroll-snap-type:y proximity}
  .video-choice{min-height:130px;padding:16px}
  .studio-slide-dock{display:none!important}
 }
+
+
+/* Click-only Owner Studio workspace: one panel visible at a time. */
+#dashboard-view{
+  display:block!important;
+  position:relative;
+  width:100%;
+  max-width:100%;
+  overflow:visible!important;
+  overflow-x:visible!important;
+  scroll-snap-type:none!important;
+  scroll-behavior:auto!important;
+  padding:0!important;
+  margin:0!important;
+  touch-action:pan-y;
+}
+#dashboard-view>.studio-slide{
+  display:none!important;
+  width:auto!important;
+  max-width:none!important;
+  min-width:0!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+  flex:none!important;
+  scroll-snap-align:none!important;
+  transform:none!important;
+  opacity:1!important;
+  padding:clamp(22px,4vw,48px)!important;
+}
+#dashboard-view>.studio-slide.is-active{display:flex!important}
+#dashboard-view>.studio-slide[hidden]{display:none!important}
+.owner-sidebar{
+  position:fixed!important;
+  left:auto!important;
+  right:14px!important;
+  top:50%!important;
+  transform:translateY(-50%);
+  width:174px!important;
+  max-height:calc(100dvh - 32px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+  margin:0!important;
+  border-radius:16px;
+  z-index:1001;
+}
+#dashboard-view>.studio-slide{margin-right:202px!important}
+#dashboard-view>.studio-overview-slide{justify-content:flex-start!important}
+.studio-slide-dock{display:none!important}
+@media(max-width:680px){
+  .owner-sidebar{
+    right:7px!important;
+    width:128px!important;
+    padding:8px 6px!important;
+    top:50%!important;
+    max-height:calc(100dvh - 20px)!important;
+    border-radius:12px;
+  }
+  .owner-sidebar .sidebar-link{gap:6px!important;padding:10px 7px!important;font-size:11px!important;white-space:normal!important}
+  .owner-sidebar .sidebar-icon{flex:0 0 25px!important;width:25px!important;height:25px!important}
+  .owner-sidebar .sidebar-label,.owner-sidebar .sidebar-note{font-size:9px!important}
+  #dashboard-view>.studio-slide{margin-right:145px!important;padding:20px 12px!important}
+  #dashboard-view>.studio-overview-slide .stats{grid-template-columns:1fr!important}
+  #dashboard-view>.studio-overview-slide .dashboard-heading h1{font-size:clamp(28px,7vw,38px)!important}
+}

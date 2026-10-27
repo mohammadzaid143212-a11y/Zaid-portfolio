@@ -24,58 +24,37 @@
   function hideViews() { [loginView, recoveryView, dashboardView].forEach(el => el.classList.add("hidden")); }
   function showLogin() { hideViews(); loginView.classList.remove("hidden"); }
   function showRecovery() { recoveryMode = true; hideViews(); recoveryView.classList.remove("hidden"); setMessage(recoveryMessage, ""); }
-  let studioNavReady = false;
   function setupStudioSlides() {
-    if (studioNavReady || !dashboardView) return;
-    const slides = () => Array.from(dashboardView.querySelectorAll(":scope > .studio-slide"));
-    if (!slides().length) return;
-    const dock = document.createElement("nav");
-    dock.className = "studio-slide-dock";
-    dock.setAttribute("aria-label", "Dashboard module navigation");
-    dock.innerHTML = '<button type="button" class="studio-slide-arrow" data-slide="prev" aria-label="Previous module" title="Previous module">←</button><span class="studio-slide-count" aria-live="polite">Dashboard 1 / 4</span><button type="button" class="studio-slide-arrow" data-slide="next" aria-label="Next module" title="Next module">→</button>';
-    document.body.append(dock);
-    const count = dock.querySelector(".studio-slide-count");
-    let activeIndex = 0;
-    const goTo = (index) => {
-      const all = slides();
-      activeIndex = Math.max(0, Math.min(all.length - 1, index));
-      all[activeIndex].scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest", inline: "start" });
-      count.textContent = (activeIndex === 0 ? "Dashboard" : "Module " + activeIndex) + "  " + (activeIndex + 1) + " / " + all.length;
-      dock.querySelector('[data-slide="prev"]').disabled = activeIndex === 0;
-      dock.querySelector('[data-slide="next"]').disabled = activeIndex === all.length - 1;
+    if (!dashboardView || dashboardView.dataset.clickNavigationReady === "true") return;
+    const slides = Array.from(dashboardView.querySelectorAll(":scope > .studio-slide"));
+    const links = Array.from(dashboardView.querySelectorAll("[data-owner-section]"));
+    const showPanel = (id) => {
+      const target = slides.find(slide => slide.id === id);
+      if (!target) return;
+      slides.forEach(slide => {
+        const active = slide === target;
+        slide.classList.toggle("is-active", active);
+        slide.hidden = !active;
+        slide.setAttribute("aria-hidden", String(!active));
+      });
+      links.forEach(link => {
+        const active = link.dataset.ownerSection === id;
+        link.classList.toggle("is-active", active);
+        if (active) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+      });
+      dashboardView.dataset.activePanel = id;
+      window.scrollTo({ top: 0, behavior: "auto" });
     };
-    dock.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-slide]");
-      if (!button) return;
-      goTo(activeIndex + (button.dataset.slide === "next" ? 1 : -1));
+    links.forEach(link => {
+      if (!link.dataset.ownerSection) return;
+      link.addEventListener("click", event => {
+        event.preventDefault();
+        showPanel(link.dataset.ownerSection);
+      });
     });
-    let startX = 0, startY = 0;
-    dashboardView.addEventListener("pointerdown", (event) => {
-      if (event.pointerType === "mouse" && event.button !== 0) return;
-      startX = event.clientX; startY = event.clientY;
-    }, { passive: true });
-    dashboardView.addEventListener("pointerup", (event) => {
-      const dx = event.clientX - startX, dy = event.clientY - startY;
-      if (Math.abs(dx) < 65 || Math.abs(dx) < Math.abs(dy) * 1.25) return;
-      // A rightward swipe advances to the next module, matching the requested workflow.
-      goTo(activeIndex + (dx > 0 ? 1 : -1));
-    }, { passive: true });
-    dashboardView.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight") { event.preventDefault(); goTo(activeIndex + 1); }
-      if (event.key === "ArrowLeft") { event.preventDefault(); goTo(activeIndex - 1); }
-    });
-    dashboardView.addEventListener("scroll", () => {
-      const all = slides();
-      const nextIndex = Math.max(0, Math.min(all.length - 1, Math.round(dashboardView.scrollLeft / Math.max(1, dashboardView.clientWidth))));
-      if (nextIndex !== activeIndex) {
-        activeIndex = nextIndex;
-        count.textContent = (activeIndex === 0 ? "Dashboard" : "Module " + activeIndex) + "  " + (activeIndex + 1) + " / " + all.length;
-        dock.querySelector('[data-slide="prev"]').disabled = activeIndex === 0;
-        dock.querySelector('[data-slide="next"]').disabled = activeIndex === all.length - 1;
-      }
-    }, { passive: true });
-    studioNavReady = true;
-    goTo(0);
+    dashboardView.dataset.clickNavigationReady = "true";
+    showPanel("studio-overview");
   }
   function showDashboard(user) { recoveryMode = false; hideViews(); dashboardView.classList.remove("hidden"); setupStudioSlides(); signedInAs.textContent = user?.email ? "Signed in as " + user.email : "Authenticated owner"; loadProjects(); }
 
@@ -150,18 +129,6 @@
 
 
   // Sidebar navigation: open the selected workspace and keep the active item in sync.
-  const ownerSidebar = document.querySelector(".owner-sidebar");
-  if (ownerSidebar) {
-    ownerSidebar.addEventListener("click", event => {
-      const link = event.target.closest("[data-owner-section]");
-      if (!link) return;
-      const target = document.getElementById(link.dataset.ownerSection);
-      if (!target) return;
-      event.preventDefault();
-      target.scrollIntoView({behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
-      ownerSidebar.querySelectorAll(".sidebar-link").forEach(item => item.classList.toggle("is-active", item === link));
-    });
-  }
   const videoManager = document.getElementById("project-manager");
   const videoChoices = Array.from(document.querySelectorAll("[data-video-panel]"));
   function setVideoPanel(type) {
