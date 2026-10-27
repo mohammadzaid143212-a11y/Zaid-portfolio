@@ -390,3 +390,8 @@ html{scroll-snap-type:y proximity}
 .theme-scope-switch{padding:16px;border:1px solid var(--line);border-radius:12px;background:#ffffff05;margin-bottom:8px}
 .theme-scope-switch label{margin-top:0}
 #theme-target:disabled{opacity:.75;cursor:not-allowed}
+
+/* Text Studio */
+#text-studio-form .text-studio-preview{min-height:110px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+#text-studio-form .text-studio-preview p{margin:0;overflow-wrap:anywhere;line-height:1.5}
+#text-studio-form textarea{width:100%;resize:vertical}
