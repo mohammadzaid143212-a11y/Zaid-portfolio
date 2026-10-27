@@ -189,3 +189,20 @@ html{scroll-snap-type:y proximity}
 
 /* Advanced per-element style controls */
 #element-rotation,#element-opacity,#element-radius,#element-border-width,#element-shadow{min-width:0}
+
+
+/* Owner Studio module separation: global theme controls and element editing are independent. */
+#element-studio .element-studio-panel{margin-top:0;min-width:0}
+#element-studio .position-editor{background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0}
+#element-studio .website-preview-frame-wrap{max-width:100%;overflow:hidden}
+#element-studio .website-preview-frame-wrap iframe{width:100%;min-height:420px;border-radius:10px}
+@media(min-width:900px){
+  #element-studio .element-studio-panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.8fr);gap:20px;align-items:start}
+  #element-studio .element-studio-panel>.position-editor{grid-column:1/-1}
+  #element-studio .element-studio-panel>#custom-element-list{grid-column:1/-1}
+}
+@media(max-width:899px){
+  #element-studio .element-studio-panel{display:flex;flex-direction:column;gap:12px}
+  #element-studio .position-editor{width:100%;box-sizing:border-box}
+  #element-studio .website-preview-frame-wrap iframe{min-height:320px}
+}
