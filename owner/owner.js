@@ -7,6 +7,13 @@
     elementStudioContent.replaceChildren(elementBuilderPanel);
     elementBuilderPanel.classList.add("element-studio-panel");
   }
+  // Keep detailed controls in their own first-class sidebar workspace.
+  const adjustmentStudioContent = document.getElementById("adjustment-studio-content");
+  const adjustmentPanel = document.getElementById("adjustment-panel");
+  if (adjustmentStudioContent && adjustmentPanel) {
+    adjustmentStudioContent.replaceChildren(adjustmentPanel);
+    adjustmentPanel.open = true;
+  }
 
   const SUPABASE_URL = "https://rtaedoseedjwljixmrgy.supabase.co";
   const SUPABASE_PUBLIC_KEY = "sb_publishable__Oc_xT1AELiVIQgCgXytTQ_qxLd_ZFo";
@@ -593,7 +600,8 @@
         $("#element-animation").value = item.animation || "none"; $("#element-duration").value = item.duration || 6;
         $("#element-color").value = item.color || "#c9f36a"; $("#element-rotation").value = item.rotation ?? 0; $("#element-opacity").value = item.opacity ?? 100; $("#element-radius").value = item.radius ?? 0; $("#element-border-width").value = item.borderWidth ?? 0; $("#element-shadow").value = item.shadow || "none"; $("#add-element-button").textContent = "Update element";
         themeNotice("Editing element in Adjustment Panel · Advanced Mode. Make changes and tap Update element.");
-        $("#adjustment-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.querySelector('[data-owner-section="adjustment-studio"]')?.click();
+         $("#adjustment-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
       const del = document.createElement("button"); del.type = "button"; del.className = "quiet-button"; del.textContent = "Remove";
       del.addEventListener("click", async () => {
