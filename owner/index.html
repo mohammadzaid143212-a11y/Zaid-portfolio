@@ -150,6 +150,19 @@
             <p class="field-help">Maximum 50 MB. Video overlays are muted and loop; use a direct MP4/WebM/OGG file URL.</p>
             <div class="upload-progress hidden" id="element-upload-progress"><div class="upload-progress-bar" id="element-upload-bar"></div></div>
             <p class="upload-status" id="element-upload-status" role="status" aria-live="polite"></p>
+            <div class="position-editor">
+              <p class="eyebrow">POSITION CANVAS</p>
+              <p class="field-help">Drag the element inside this preview to choose its position. Coordinates are saved as percentages so the layout adapts to different screen sizes.</p>
+              <div id="element-position-stage" class="element-position-stage" role="group" aria-label="Drag to position the custom element">
+                <span class="stage-guide stage-guide-x"></span><span class="stage-guide stage-guide-y"></span>
+                <button id="element-position-handle" class="element-position-handle" type="button" aria-label="Drag custom element to position" style="left:50%;top:50%">Your element</button>
+              </div>
+              <div class="theme-control-grid">
+                <div><label for="element-x">Horizontal position (%)</label><input id="element-x" type="number" min="0" max="100" value="50"></div>
+                <div><label for="element-y">Vertical position (%)</label><input id="element-y" type="number" min="0" max="100" value="50"></div>
+              </div>
+              <label class="inline-check"><input id="element-overlay" type="checkbox" checked> Overlay positioning (place over the selected section)</label>
+            </div>
             <div class="theme-control-grid">
               <div><label for="element-placement">Placement</label><select id="element-placement"><option value="top">Top</option><option value="center">Center</option><option value="bottom">Bottom</option></select></div>
               <div><label for="element-width">Width (%)</label><input id="element-width" type="number" min="10" max="100" value="80"></div>
