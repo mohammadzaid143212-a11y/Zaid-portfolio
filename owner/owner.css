@@ -206,3 +206,20 @@ html{scroll-snap-type:y proximity}
   #element-studio .position-editor{width:100%;box-sizing:border-box}
   #element-studio .website-preview-frame-wrap iframe{min-height:320px}
 }
+
+
+/* Clear horizontal module navigation dock on the right edge. */
+#dashboard-view{touch-action:pan-y;overscroll-behavior-x:contain;cursor:default}
+.studio-slide-dock{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:1000;display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 8px;border:1px solid var(--line);border-radius:18px;background:rgba(15,15,18,.92);box-shadow:0 12px 40px #0007;backdrop-filter:blur(18px)}
+.studio-slide-arrow{width:42px;height:42px;border:1px solid #ffffff24;border-radius:12px;background:#ffffff08;color:var(--text);font-size:23px;line-height:1;cursor:pointer;transition:background .2s,border-color .2s,opacity .2s}
+.studio-slide-arrow:hover:not(:disabled),.studio-slide-arrow:focus-visible{background:#d5e6a018;border-color:var(--accent);outline:none}
+.studio-slide-arrow:disabled{opacity:.25;cursor:not-allowed}
+.studio-slide-count{writing-mode:vertical-rl;transform:rotate(180deg);font-size:9px;letter-spacing:.12em;color:var(--muted);text-align:center;white-space:nowrap;max-height:120px}
+#dashboard-view>.studio-slide{padding-right:76px}
+@media(max-width:680px){
+ .studio-slide-dock{right:6px;gap:7px;padding:7px 5px;border-radius:15px}
+ .studio-slide-arrow{width:36px;height:36px;border-radius:10px}
+ .studio-slide-count{font-size:8px;max-height:92px}
+ #dashboard-view>.studio-slide{padding-right:54px!important}
+}
+@media(prefers-reduced-motion:reduce){.studio-slide-arrow{transition:none}}
