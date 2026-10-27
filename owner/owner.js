@@ -621,15 +621,7 @@
     const nextItems = editingElementId ? items.map(x => x.id === editingElementId ? item : x) : [...items,item];
     const saved = await saveCustomElements(nextItems);
     if (!saved) return;
-    editingElementId = null;
-    $("#add-element-button").textContent = "Add element";
-    $("#element-content").value = "";
-    $("#element-url").value = "";
-    $("#element-file").value = "";
-    elementUploadedUrl = "";
-    elementX.value = 50; elementY.value = 50;
-    updatePositionPreview();
-    if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview();
+    resetElementForm({ announce: false });
   });
   function resetElementForm({ announce = true } = {}) {
     editingElementId = null;
