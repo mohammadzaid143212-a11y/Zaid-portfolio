@@ -502,6 +502,20 @@
   updatePositionPreview();
   // Live same-origin website preview with a temporary draggable placement marker.
   const websitePreview = $("#element-website-preview");
+   const websitePreviewWrap = websitePreview.closest(".website-preview-frame-wrap");
+   const previewDesktopButton = $("#preview-desktop-mode"), previewMobileButton = $("#preview-mobile-mode");
+   function setWebsitePreviewMode(mode) {
+     const mobile = mode === "mobile";
+     websitePreviewWrap?.classList.toggle("is-mobile-preview", mobile);
+     previewDesktopButton.classList.toggle("is-active", !mobile);
+     previewMobileButton.classList.toggle("is-active", mobile);
+     previewDesktopButton.setAttribute("aria-pressed", String(!mobile));
+     previewMobileButton.setAttribute("aria-pressed", String(mobile));
+     websitePreview.title = mobile ? "Mobile-sized live public portfolio preview" : "Desktop-sized live public portfolio preview";
+     $("#element-history-status").textContent = mobile ? "Mobile preview · approx. 390 px wide" : "Desktop preview · full available width";
+   }
+   previewDesktopButton.addEventListener("click", () => setWebsitePreviewMode("desktop"));
+   previewMobileButton.addEventListener("click", () => setWebsitePreviewMode("mobile"));
   let previewTarget = null, previewMarker = null, previewDrag = false;
   const positionHistory = [];
   let historyIndex = -1, restoringHistory = false;
