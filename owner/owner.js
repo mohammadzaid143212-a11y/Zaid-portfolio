@@ -699,7 +699,7 @@
     let textOverrides = {};
     const textNotice = (message, error = false) => setMessage(textMessage, message, error);
     const customFontNotice = (message, error = false) => setMessage(customFontMessage, message, error);
-    const safeFontName = name => name.replace(/\\.[^.]+$/, "").replace(/[^a-zA-Z0-9 _-]/g, "").trim().slice(0, 48) || "Custom Font";
+    const safeFontName = name => name.replace(/\.[^.]+$/, "").replace(/[^a-zA-Z0-9 _-]/g, "").trim().slice(0, 48) || "Custom Font";
     const refreshCustomFontOptions = () => {
       [...textFont.options].filter(option => option.dataset.customFont === "true").forEach(option => option.remove());
       customFonts.forEach(font => {
