@@ -33,11 +33,11 @@
   function showRecovery() { recoveryMode = true; hideViews(); recoveryView.classList.remove("hidden"); setMessage(recoveryMessage, ""); }
   function setupStudioSlides() {
     if (!dashboardView || dashboardView.dataset.clickNavigationReady === "true") return;
-    const slides = Array.from(dashboardView.querySelectorAll(":scope > .studio-slide"));
+    const slides = Array.from(dashboardView.querySelectorAll(".studio-slide"));
     const links = Array.from(dashboardView.querySelectorAll("[data-owner-section]"));
     const showPanel = (id) => {
-      const target = slides.find(slide => slide.id === id);
-      if (!target) return;
+      const target = slides.find(slide => slide.id === id) || document.getElementById(id);
+      if (!target || !target.classList.contains("studio-slide")) return;
       slides.forEach(slide => {
         const active = slide === target;
         slide.classList.toggle("is-active", active);
@@ -59,6 +59,7 @@
         event.preventDefault();
         const panelId = link.dataset.ownerSection;
         showPanel(panelId);
+        if (panelId === "adjustment-studio") { document.getElementById("adjustment-panel")?.setAttribute("open", ""); }
         if (panelId === "long-video-manager") { setVideoPanel("long"); }
         if (panelId === "short-video-manager") { setVideoPanel("short"); }
       });
