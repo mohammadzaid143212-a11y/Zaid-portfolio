@@ -300,7 +300,7 @@ html{scroll-snap-type:y proximity}
 .video-choice small{font-size:11px;line-height:1.6;color:var(--muted)}
 .video-choice-action{margin-top:auto;color:var(--accent);font-size:11px}
 #project-manager[data-video-panel="long"] #project-type,#project-manager[data-video-panel="short"] #project-type{display:none}
-#project-manager[data-video-panel="long"] #project-type+label{display:none}
+#project-manager[data-video-panel="long"] label[for="project-type"]{display:none}
 #project-manager[data-video-panel="long"] #thumbnail-field{display:block!important}
 #project-manager[data-video-panel="short"] #thumbnail-field{display:none!important}
 @media(max-width:680px){
