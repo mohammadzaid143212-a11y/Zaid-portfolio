@@ -409,6 +409,16 @@
   // Live same-origin website preview with a temporary draggable placement marker.
   const websitePreview = $("#element-website-preview");
   let previewTarget = null, previewMarker = null, previewDrag = false;
+  const positionHistory = [];
+  let historyIndex = -1, restoringHistory = false;
+  function positionSnapshot() { return {x:Number(elementX.value)||0,y:Number(elementY.value)||0,width:Number($("#element-width").value)||80,layer:$("#element-layer").value||"front"}; }
+  function updateHistoryButtons() { $("#element-undo").disabled=historyIndex<=0; $("#element-redo").disabled=historyIndex>=positionHistory.length-1; $("#element-history-status").textContent=positionHistory.length ? "Change "+(historyIndex+1)+" of "+positionHistory.length : "Move or resize to create history."; }
+  function recordPositionHistory() { if(restoringHistory)return; const state=positionSnapshot(), prev=positionHistory[historyIndex]; if(prev&&prev.x===state.x&&prev.y===state.y&&prev.width===state.width&&prev.layer===state.layer)return; positionHistory.splice(historyIndex+1); positionHistory.push(state); if(positionHistory.length>40)positionHistory.shift(); historyIndex=positionHistory.length-1; updateHistoryButtons(); }
+  function applyPositionHistory(index) { if(index<0||index>=positionHistory.length)return; restoringHistory=true; const state=positionHistory[index]; historyIndex=index; elementX.value=state.x; elementY.value=state.y; $("#element-width").value=state.width; $("#element-layer").value=state.layer; updatePositionPreview(); if(previewMarker&&previewMarker.isConnected){previewMarker.style.left=state.x+"%";previewMarker.style.top=state.y+"%";previewMarker.style.width="min("+state.width+"%,100%)";previewMarker.style.zIndex=state.layer==="back"?"1":"99999";} restoringHistory=false; updateHistoryButtons(); }
+  $("#element-undo").addEventListener("click",()=>applyPositionHistory(historyIndex-1));
+  $("#element-redo").addEventListener("click",()=>applyPositionHistory(historyIndex+1));
+  [elementX,elementY,$("#element-width"),$("#element-layer")].forEach(el=>el.addEventListener("change",recordPositionHistory));
+  recordPositionHistory();
   function refreshWebsitePreview() {
     let doc;
     try { doc = websitePreview.contentDocument; } catch { return; }
@@ -428,7 +438,7 @@
     if (kind === "text") previewMarker.textContent = content || "Your element";
     else if (kind === "image" && url) { const img = doc.createElement("img"); img.src = url; img.alt = ""; img.style.cssText = "display:block;width:100%;max-height:30vh;object-fit:contain"; previewMarker.append(img); }
     else previewMarker.textContent = kind === "video" ? "▶ Video / motion graphic" : "Image / graphic";
-    previewTarget.append(previewMarker);
+    const alignmentGuides = doc.createElement("div"); alignmentGuides.className="owner-editor-alignment-guides"; alignmentGuides.style.cssText="position:absolute;inset:0;z-index:99998;pointer-events:none;display:none;"; alignmentGuides.innerHTML="<span style=\"position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed #c9f36a\"></span><span style=\"position:absolute;top:50%;left:0;right:0;border-top:1px dashed #c9f36a\"></span>"; if(getComputedStyle(previewTarget).position==="static")previewTarget.style.position="relative"; previewTarget.append(alignmentGuides,previewMarker);
     const resizeGrip = doc.createElement("button");
     resizeGrip.type = "button"; resizeGrip.setAttribute("aria-label","Resize element"); resizeGrip.title = "Drag to resize";
     resizeGrip.style.cssText = "position:absolute;right:-7px;bottom:-7px;width:18px;height:18px;border:2px solid #08090d;border-radius:3px;background:#c9f36a;cursor:nwse-resize;touch-action:none;padding:0;";
@@ -436,10 +446,10 @@
     let resizing = false, resizeStartX = 0, resizeStartWidth = 80;
     resizeGrip.addEventListener("pointerdown", ev => { resizing=true; resizeStartX=ev.clientX; resizeStartWidth=Math.max(10,Math.min(100,Number($("#element-width").value)||80)); resizeGrip.setPointerCapture(ev.pointerId); ev.stopPropagation(); ev.preventDefault(); });
     resizeGrip.addEventListener("pointermove", ev => { if (!resizing || !previewTarget) return; const rect=previewTarget.getBoundingClientRect(); const next=Math.max(10,Math.min(100,resizeStartWidth+(ev.clientX-resizeStartX)/rect.width*100)); $("#element-width").value=Math.round(next); previewMarker.style.width="min("+next+"%,100%)"; updatePositionPreview(); });
-    const stopResize=()=>{resizing=false;}; resizeGrip.addEventListener("pointerup",stopResize); resizeGrip.addEventListener("pointercancel",stopResize);
+    const stopResize=()=>{if(resizing){resizing=false;recordPositionHistory();}}; resizeGrip.addEventListener("pointerup",stopResize); resizeGrip.addEventListener("pointercancel",stopResize);
     previewMarker.addEventListener("pointerdown", ev => { if (ev.target === resizeGrip) return; previewDrag = true; previewMarker.setPointerCapture(ev.pointerId); ev.preventDefault(); });
-    previewMarker.addEventListener("pointermove", ev => { if (!previewDrag || !previewTarget || !previewMarker) return; const rect = previewTarget.getBoundingClientRect(); const x = clampPercent((ev.clientX-rect.left)/rect.width*100); const y = clampPercent((ev.clientY-rect.top)/rect.height*100); elementX.value=Math.round(x); elementY.value=Math.round(y); previewMarker.style.left=x+"%"; previewMarker.style.top=y+"%"; updatePositionPreview(); });
-    const stop = () => { previewDrag = false; }; previewMarker.addEventListener("pointerup",stop); previewMarker.addEventListener("pointercancel",stop);
+    previewMarker.addEventListener("pointermove", ev => { if (!previewDrag || !previewTarget || !previewMarker) return; const rect = previewTarget.getBoundingClientRect(); let x=(ev.clientX-rect.left)/rect.width*100; let y=(ev.clientY-rect.top)/rect.height*100; const snappedX=Math.abs(x-50)<=2.5, snappedY=Math.abs(y-50)<=2.5; if(snappedX)x=50; if(snappedY)y=50; x=clampPercent(x); y=clampPercent(y); elementX.value=Math.round(x); elementY.value=Math.round(y); previewMarker.style.left=x+"%"; previewMarker.style.top=y+"%"; alignmentGuides.style.display=(snappedX||snappedY)?"block":"none"; updatePositionPreview(); });
+    const stop = () => { if(previewDrag){previewDrag=false;alignmentGuides.style.display="none";recordPositionHistory();} }; previewMarker.addEventListener("pointerup",stop); previewMarker.addEventListener("pointercancel",stop);
     $("#element-upload-status").textContent = "Preview ready. Drag the dashed marker on the website to set its position.";
   }
   websitePreview.addEventListener("load", () => window.setTimeout(refreshWebsitePreview, 600));
