@@ -546,6 +546,16 @@
     const stop = () => { if(previewDrag){previewDrag=false;alignmentGuides.style.display="none";recordPositionHistory();} }; previewMarker.addEventListener("pointerup",stop); previewMarker.addEventListener("pointercancel",stop);
     $("#element-upload-status").textContent = "Preview ready. Drag the dashed marker on the website to set its position.";
   }
+  const previewViewport = $("#element-preview-viewport");
+  function setPreviewViewport() {
+    const mobile = previewViewport.value === "mobile";
+    const wrap = websitePreview.closest(".website-preview-frame-wrap");
+    wrap.classList.toggle("is-mobile-preview", mobile);
+    websitePreview.setAttribute("title", mobile ? "Mobile-width live public portfolio preview (375 pixels)" : "Desktop-width live public portfolio preview");
+    $("#element-upload-status").textContent = mobile ? "Mobile preview enabled (375px). Drag the dashed marker to position your element." : "Desktop preview enabled. Drag the dashed marker to position your element.";
+    window.setTimeout(refreshWebsitePreview, 250);
+  }
+  previewViewport.addEventListener("change", setPreviewViewport);
   websitePreview.addEventListener("load", () => window.setTimeout(refreshWebsitePreview, 600));
   $("#refresh-element-preview").addEventListener("click", refreshWebsitePreview);
   $("#element-target").addEventListener("change", () => window.setTimeout(refreshWebsitePreview, 250));
