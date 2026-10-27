@@ -57,6 +57,7 @@
         <p class="sidebar-label">WORKSPACE</p>
         <a class="sidebar-link is-active" href="#studio-overview" data-owner-section="studio-overview"><span class="sidebar-icon">⌂</span><span>Dashboard</span></a>
         <a class="sidebar-link" href="#theme-manager" data-owner-section="theme-manager"><span class="sidebar-icon">◐</span><span>Theme Studio</span></a>
+        <a class="sidebar-link" href="#text-studio" data-owner-section="text-studio"><span class="sidebar-icon">T</span><span>Text Studio</span></a>
         <a class="sidebar-link" href="#long-video-manager" data-owner-section="long-video-manager"><span class="sidebar-icon">▣</span><span>Long Videos</span></a>
         <a class="sidebar-link" href="#short-video-manager" data-owner-section="short-video-manager"><span class="sidebar-icon">▶</span><span>Short Videos</span></a>
         <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span><small>Later</small></a>
@@ -76,6 +77,40 @@
         <article class="stat-card"><span>SHORT VIDEOS</span><strong id="short-count">0</strong><p>Shorts, Reels and vertical edits</p></article>
       </div>
 
+      </section>
+
+      <section class="manager-card studio-slide" id="text-studio">
+        <div class="manager-heading"><div><p class="eyebrow">MODULE / 04</p><h2>Text Studio</h2><p class="manager-intro">Edit supported portfolio copy and typography without touching code. Preview your changes before publishing.</p></div></div>
+        <form id="text-studio-form" class="project-form">
+          <label for="text-target">Choose text element</label>
+          <select id="text-target">
+            <option value="hero-description">Hero description</option>
+            <option value="hero-caption">Showreel caption</option>
+            <option value="work-intro">Selected Work intro</option>
+            <option value="project-one-title">Project 1 title</option>
+            <option value="project-one-description">Project 1 description</option>
+            <option value="project-two-title">Project 2 title</option>
+            <option value="project-two-description">Project 2 description</option>
+            <option value="project-three-title">Project 3 title</option>
+            <option value="project-three-description">Project 3 description</option>
+            <option value="about-description">About description</option>
+            <option value="work-note">Portfolio note</option>
+          </select>
+          <label for="text-content">Text content</label>
+          <textarea id="text-content" rows="3" maxlength="600" placeholder="Enter your text here"></textarea>
+          <p class="field-help">Text edits are saved for the selected element. Keep copy concise so it fits on mobile screens.</p>
+          <div class="theme-control-grid">
+            <div><label for="text-font">Font family</label><select id="text-font"><option value="">Website default</option><option value="DM Sans, sans-serif">DM Sans</option><option value="Manrope, sans-serif">Manrope</option><option value="Georgia, serif">Georgia</option><option value="Arial, sans-serif">Arial</option></select></div>
+            <div><label for="text-size">Font size (px)</label><input id="text-size" type="number" min="10" max="120" value="18"></div>
+            <div><label for="text-weight">Font weight</label><select id="text-weight"><option value="">Website default</option><option value="400">Regular</option><option value="500">Medium</option><option value="600">Semibold</option><option value="700">Bold</option><option value="800">Extra bold</option></select></div>
+            <div><label for="text-align">Alignment</label><select id="text-align"><option value="">Website default</option><option value="left">Left</option><option value="center">Center</option><option value="right">Right</option></select></div>
+          </div>
+          <label for="text-color">Text color</label><input id="text-color" type="color" value="#f2f0eb">
+          <div class="theme-preview text-studio-preview" id="text-studio-preview"><span class="eyebrow">TEXT PREVIEW</span><p id="text-preview-copy">Your text preview appears here.</p></div>
+          <div class="form-actions"><button class="quiet-button" id="preview-text-button" type="button">Preview changes</button><button class="primary" id="save-text-button" type="submit">Save &amp; publish <span aria-hidden="true">↗</span></button></div>
+          <button class="text-button" id="reset-text-button" type="button">Reset selected text style</button>
+          <p class="notice" id="text-studio-message" role="status" aria-live="polite"></p>
+        </form>
       </section>
 
       <section class="manager-card studio-slide" id="theme-manager">

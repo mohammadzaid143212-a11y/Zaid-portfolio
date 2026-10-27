@@ -678,6 +678,88 @@
   });
   loadThemeSettings();
 
+  // Text Studio stores copy and typography overrides alongside published theme settings.
+  const textForm = $("#text-studio-form");
+  if (textForm) {
+    const textTarget = $("#text-target"), textContent = $("#text-content");
+    const textFont = $("#text-font"), textSize = $("#text-size"), textWeight = $("#text-weight");
+    const textAlign = $("#text-align"), textColor = $("#text-color"), textMessage = $("#text-studio-message");
+    const textPreview = $("#text-preview-copy");
+    const textSelectors = {
+      "hero-description": ".hero-bottom p", "hero-caption": ".frame-caption",
+      "work-intro": ".section-heading > p",
+      "project-one-title": ".project-large .project-info h3", "project-one-description": ".project-large .project-info p",
+      "project-two-title": ".project-grid article:nth-child(2) .project-info h3", "project-two-description": ".project-grid article:nth-child(2) .project-info p",
+      "project-three-title": ".project-grid article:nth-child(3) .project-info h3", "project-three-description": ".project-grid article:nth-child(3) .project-info p",
+      "about-description": ".about-inner > div > p", "work-note": ".work-note"
+    };
+    let textOverrides = {};
+    const textNotice = (message, error = false) => setMessage(textMessage, message, error);
+    const textStyleFromForm = () => ({
+      content: textContent.value.slice(0, 600), font: textFont.value,
+      size: Math.max(10, Math.min(120, Number(textSize.value) || 18)),
+      weight: textWeight.value, align: textAlign.value, color: textColor.value
+    });
+    const paintTextPreview = () => {
+      const value = textStyleFromForm();
+      textPreview.textContent = value.content || "Your text preview appears here.";
+      textPreview.style.fontFamily = value.font || "";
+      textPreview.style.fontSize = value.size + "px";
+      textPreview.style.fontWeight = value.weight || "";
+      textPreview.style.textAlign = value.align || "";
+      textPreview.style.color = value.color || "";
+    };
+    const populateTextForm = () => {
+      const saved = textOverrides[textTarget.value] || {};
+      const target = document.querySelector(textSelectors[textTarget.value]);
+      textContent.value = saved.content ?? target?.textContent?.trim() ?? "";
+      textFont.value = saved.font || ""; textSize.value = saved.size || 18;
+      textWeight.value = saved.weight || ""; textAlign.value = saved.align || "";
+      textColor.value = saved.color || "#f2f0eb"; paintTextPreview(); textNotice("");
+    };
+    ["input","change"].forEach(type => textForm.addEventListener(type, event => {
+      if (event.target !== textTarget) paintTextPreview();
+    }));
+    textTarget.addEventListener("change", populateTextForm);
+    $("#preview-text-button").addEventListener("click", paintTextPreview);
+    textForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      const key = textTarget.value, selector = textSelectors[key], value = textStyleFromForm();
+      if (!selector) return textNotice("Choose a supported text element.", true);
+      const nextOverrides = { ...textOverrides, [key]: value };
+      const saveButton = $("#save-text-button"); saveButton.disabled = true; textNotice("");
+      try {
+        const { data, error: readError } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
+        if (readError) throw readError;
+        const allSettings = data?.settings || {};
+        const nextSettings = { ...allSettings, __textStudio: nextOverrides };
+        const { error } = await client.from("portfolio_theme_settings").upsert({ id: true, settings: nextSettings, updated_at: new Date().toISOString() }, { onConflict: "id" });
+        if (error) throw error;
+        textOverrides = nextOverrides;
+        textNotice("Text saved and published. Refresh your public portfolio to see the update.");
+      } catch (error) { textNotice("Could not save text: " + (error.message || "Please try again."), true); }
+      finally { saveButton.disabled = false; }
+    });
+    $("#reset-text-button").addEventListener("click", async () => {
+      const key = textTarget.value, nextOverrides = { ...textOverrides }; delete nextOverrides[key];
+      try {
+        const { data, error: readError } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
+        if (readError) throw readError;
+        const nextSettings = { ...(data?.settings || {}), __textStudio: nextOverrides };
+        const { error } = await client.from("portfolio_theme_settings").upsert({ id: true, settings: nextSettings, updated_at: new Date().toISOString() }, { onConflict: "id" });
+        if (error) throw error;
+        textOverrides = nextOverrides; populateTextForm(); textNotice("Selected text override reset.");
+      } catch (error) { textNotice("Could not reset text: " + (error.message || "Please try again."), true); }
+    });
+    (async () => {
+      try {
+        const { data } = await client.from("portfolio_theme_settings").select("settings").eq("id", true).maybeSingle();
+        textOverrides = data?.settings?.__textStudio || {};
+        populateTextForm();
+      } catch { populateTextForm(); }
+    })();
+  }
+
   logoutButton.addEventListener("click", async () => { recoveryMode = false; await client.auth.signOut(); showLogin(); setMessage(message, "You have signed out."); });
   checkSession();
 })();

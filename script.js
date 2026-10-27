@@ -131,6 +131,27 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     "hero-media": ".hero-frame", work: ".work-section", "project-cards": ".project-card",
     about: ".about-section", contact: ".contact-section", footer: ".site-footer"
   };
+  const textOverrides = data.settings.__textStudio || {};
+  const textSelectors = {
+    "hero-description": ".hero-bottom p", "hero-caption": ".frame-caption",
+    "work-intro": ".section-heading > p",
+    "project-one-title": ".project-large .project-info h3", "project-one-description": ".project-large .project-info p",
+    "project-two-title": ".project-grid article:nth-child(2) .project-info h3", "project-two-description": ".project-grid article:nth-child(2) .project-info p",
+    "project-three-title": ".project-grid article:nth-child(3) .project-info h3", "project-three-description": ".project-grid article:nth-child(3) .project-info p",
+    "about-description": ".about-inner > div > p", "work-note": ".work-note"
+  };
+  Object.entries(textOverrides).forEach(([key, setting]) => {
+    const selector = textSelectors[key];
+    if (!selector || !setting) return;
+    document.querySelectorAll(selector).forEach(el => {
+      if (typeof setting.content === "string") el.textContent = setting.content;
+      el.style.fontFamily = setting.font || "";
+      el.style.fontSize = setting.size ? setting.size + "px" : "";
+      el.style.fontWeight = setting.weight || "";
+      el.style.textAlign = setting.align || "";
+      el.style.color = setting.color || "";
+    });
+  });
   Object.entries(data.settings).forEach(([key, setting]) => {
     const selector = key.startsWith("custom:") ? key.slice(7) : selectors[key];
     if (!selector || !setting) return;
