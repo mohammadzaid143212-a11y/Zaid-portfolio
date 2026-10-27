@@ -201,6 +201,43 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     });
   });
 
+  // Apply saved Animation Studio presets on the public portfolio.
+  const animationSettings = data.settings.__animationStudio || {};
+  const motionSelectors = {
+    "hero-title": ".hero h1", "hero-description": ".hero-bottom p", "hero-media": ".hero-frame",
+    work: ".work-section", "project-cards": ".project-card", "project-one": ".project-grid article:first-child",
+    about: ".about-section", contact: ".contact-section", header: ".site-header", footer: ".site-footer"
+  };
+  const motionNames = {
+    fade: "portfolioMotionFade", rise: "portfolioMotionRise", "slide-left": "portfolioMotionLeft",
+    "slide-right": "portfolioMotionRight", zoom: "portfolioMotionZoom", float: "portfolioMotionFloat",
+    blur: "portfolioMotionBlur", pulse: "portfolioMotionPulse"
+  };
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const style = document.createElement("style");
+    style.textContent = "@keyframes portfolioMotionFade{from{opacity:0}to{opacity:1}}@keyframes portfolioMotionRise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}@keyframes portfolioMotionLeft{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:translateX(0)}}@keyframes portfolioMotionRight{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:translateX(0)}}@keyframes portfolioMotionZoom{from{opacity:.5;transform:scale(.92)}to{opacity:1;transform:scale(1)}}@keyframes portfolioMotionFloat{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}@keyframes portfolioMotionBlur{from{opacity:0;filter:blur(12px)}to{opacity:1;filter:blur(0)}}@keyframes portfolioMotionPulse{0%{opacity:.8;transform:scale(.98)}50%{opacity:1;transform:scale(1.015)}100%{opacity:.8;transform:scale(.98)}}";
+    document.head.append(style);
+    Object.entries(animationSettings).forEach(([key, setting]) => {
+      const selector = motionSelectors[key], animationName = motionNames[setting?.preset];
+      if (!selector || !animationName || !setting) return;
+      let targets; try { targets = document.querySelectorAll(selector); } catch { return; }
+      targets.forEach(el => {
+        const play = () => {
+          el.style.animation = animationName + " " + Math.max(.3,Math.min(20,Number(setting.duration)||1.2)) + "s " + (setting.easing||"ease-out") + " " + Math.max(0,Math.min(10,Number(setting.delay)||0)) + "s " + (setting.repeat==="infinite"?"infinite":"1") + " both";
+        };
+        if (setting.trigger === "load") play();
+        else if ("IntersectionObserver" in window) {
+          const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) { play(); if (setting.repeat !== "infinite") observer.unobserve(el); }
+            });
+          }, { threshold: .12 });
+          observer.observe(el);
+        } else play();
+      });
+    });
+  }
+
   const customElements = Array.isArray(data.settings.__elements) ? data.settings.__elements : [];
   const animationNames = { "fade-in":"themeFadeIn", float:"themeFloat", pulse:"themePulse", "slow-zoom":"themeSlowZoom", "slide-up":"themeSlideUp", "slide-left":"themeSlideLeft" };
   customElements.slice(0,30).forEach(item => {
