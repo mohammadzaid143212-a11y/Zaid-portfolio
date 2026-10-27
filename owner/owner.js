@@ -345,7 +345,7 @@
   themeMediaFile.addEventListener("change", e => uploadThemeMedia(e.target.files?.[0]));
   // Custom element builder: safe text/image/video elements inserted into selected public sections.
   const elementKind = $("#element-kind"), elementFile = $("#element-file");
-  let elementUploadBusy = false, elementUploadedUrl = "", editingElementId = null;
+  let elementUploadBusy = false, elementUploadedUrl = "", editingElementId = null, dragPositioning = false;
   $("#element-target").addEventListener("change", () => $("#element-custom-target-field").classList.toggle("hidden", $("#element-target").value !== "custom"));
   elementKind.addEventListener("change", () => {
     $("#element-content").disabled = elementKind.value !== "text";
@@ -373,6 +373,39 @@
     finally { elementUploadBusy = false; $("#element-upload-progress").classList.add("hidden"); $("#element-upload-bar").classList.remove("uploading"); $("#add-element-button").disabled = false; elementFile.value = ""; }
   }
   elementFile.addEventListener("change", e => uploadElementFile(e.target.files?.[0]));
+  const positionStage = $("#element-position-stage"), positionHandle = $("#element-position-handle");
+  const elementX = $("#element-x"), elementY = $("#element-y"), elementOverlay = $("#element-overlay");
+  function clampPercent(value) { return Math.max(0, Math.min(100, Number(value) || 0)); }
+  function updatePositionPreview() {
+    const x = clampPercent(elementX.value), y = clampPercent(elementY.value);
+    positionHandle.style.left = x + "%"; positionHandle.style.top = y + "%";
+    const kind = elementKind.value, content = $("#element-content").value.trim(), url = $("#element-url").value.trim();
+    positionHandle.replaceChildren();
+    if (kind === "text") positionHandle.textContent = content || "Your element";
+    else if (kind === "image" && url) { const img = document.createElement("img"); img.src = url; img.alt = ""; positionHandle.append(img); }
+    else positionHandle.textContent = kind === "video" ? "▶ Video / motion graphic" : "Image / graphic";
+    positionHandle.style.color = $("#element-color").value || "#c9f36a";
+    positionHandle.style.width = Math.max(10, Math.min(100, Number($("#element-width").value) || 80)) + "%";
+    positionHandle.classList.toggle("is-overlay", elementOverlay.checked);
+  }
+  function setPositionFromPointer(event) {
+    const rect = positionStage.getBoundingClientRect();
+    elementX.value = Math.round(clampPercent((event.clientX - rect.left) / rect.width * 100));
+    elementY.value = Math.round(clampPercent((event.clientY - rect.top) / rect.height * 100));
+    updatePositionPreview();
+  }
+  positionHandle.addEventListener("pointerdown", event => {
+    dragPositioning = true; positionHandle.setPointerCapture?.(event.pointerId);
+    positionHandle.classList.add("is-dragging"); setPositionFromPointer(event); event.preventDefault();
+  });
+  positionStage.addEventListener("pointermove", event => { if (dragPositioning) setPositionFromPointer(event); });
+  function endPositionDrag() { dragPositioning = false; positionHandle.classList.remove("is-dragging"); }
+  positionHandle.addEventListener("pointerup", endPositionDrag);
+  positionHandle.addEventListener("pointercancel", endPositionDrag);
+  [elementX,elementY].forEach(input => input.addEventListener("input", updatePositionPreview));
+  [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),elementOverlay].forEach(el => el.addEventListener("input", updatePositionPreview));
+  $("#element-placement").addEventListener("change", updatePositionPreview);
+  updatePositionPreview();
   function getCustomElements() { return Array.isArray(themeSettings.__elements) ? themeSettings.__elements : []; }
   function renderCustomElements() {
     const list = $("#custom-element-list"), items = getCustomElements();
@@ -393,6 +426,7 @@
         elementKind.value = item.kind; elementKind.dispatchEvent(new Event("change"));
         $("#element-content").value = item.content || ""; $("#element-url").value = item.url || "";
         $("#element-placement").value = item.placement || "center"; $("#element-width").value = item.width || 80;
+        $("#element-x").value = item.x ?? 50; $("#element-y").value = item.y ?? 50; elementOverlay.checked = item.overlay !== false; updatePositionPreview();
         $("#element-animation").value = item.animation || "none"; $("#element-duration").value = item.duration || 6;
         $("#element-color").value = item.color || "#c9f36a"; $("#add-element-button").textContent = "Update element";
         themeNotice("Editing element. Make changes and tap Update element.");
@@ -418,12 +452,12 @@
     if (kind !== "text") { try { const u = new URL(url); if (!["http:","https:"].includes(u.protocol)) throw new Error(); } catch { return themeNotice("Add a valid image/video URL or upload a file first.",true); } }
     const items = getCustomElements();
     if (!editingElementId && items.length >= 30) return themeNotice("Maximum 30 custom elements. Remove one before adding another.",true);
-    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value };
+    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), x:clampPercent(elementX.value), y:clampPercent(elementY.value), overlay:elementOverlay.checked, animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value };
     const nextItems = editingElementId ? items.map(x => x.id === editingElementId ? item : x) : [...items,item];
     await saveCustomElements(nextItems);
     editingElementId = null; $("#add-element-button").textContent = "Add element";
   });
-  $("#clear-element-form").addEventListener("click", () => { editingElementId=null; $("#add-element-button").textContent="Add element"; $("#element-content").value=""; $("#element-url").value=""; $("#element-file").value=""; elementUploadedUrl=""; $("#element-upload-status").textContent=""; });
+  $("#clear-element-form").addEventListener("click", () => { editingElementId=null; $("#add-element-button").textContent="Add element"; $("#element-content").value=""; $("#element-url").value=""; $("#element-file").value=""; elementUploadedUrl=""; $("#element-upload-status").textContent=""; elementX.value=50; elementY.value=50; elementOverlay.checked=true; updatePositionPreview(); });
   renderCustomElements();
 
   function currentThemeSetting() {
