@@ -58,6 +58,7 @@
         <a class="sidebar-link is-active" href="#studio-overview" data-owner-section="studio-overview"><span class="sidebar-icon">⌂</span><span>Dashboard</span></a>
         <a class="sidebar-link" href="#theme-manager" data-owner-section="theme-manager"><span class="sidebar-icon">◐</span><span>Theme Studio</span></a>
         <a class="sidebar-link" href="#text-studio" data-owner-section="text-studio"><span class="sidebar-icon">T</span><span>Text Studio</span></a>
+        <a class="sidebar-link" href="#animation-studio" data-owner-section="animation-studio"><span class="sidebar-icon">✧</span><span>Animation Studio</span></a>
         <a class="sidebar-link" href="#long-video-manager" data-owner-section="long-video-manager"><span class="sidebar-icon">▣</span><span>Long Videos</span></a>
         <a class="sidebar-link" href="#short-video-manager" data-owner-section="short-video-manager"><span class="sidebar-icon">▶</span><span>Short Videos</span></a>
         <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span><small>Later</small></a>
@@ -254,6 +255,48 @@
         <div class="manager-heading"><div><p class="eyebrow">MODULE / 04</p><h2>Visual Editor</h2>
         <p class="manager-intro">Add text, images, videos and motion graphics, then position and style each element independently.</p></div></div>
         <div id="element-studio-content" class="element-studio-content"><p class="field-help">Loading element tools…</p></div>
+      </section>
+
+      <section class="manager-card studio-slide" id="animation-studio">
+        <div class="manager-heading"><div><p class="eyebrow">MOTION DESIGN / 05</p><h2>Animation Studio</h2><p class="manager-intro">Choose a portfolio element, create a cinematic motion preset, preview it, then publish. Visitors who prefer reduced motion will not receive these animations.</p></div></div>
+        <form id="animation-studio-form" class="project-form">
+          <label for="animation-target">Apply animation to</label>
+          <select id="animation-target">
+            <option value="hero-title">Hero headline</option>
+            <option value="hero-description">Hero description</option>
+            <option value="hero-media">Hero video frame</option>
+            <option value="work">Selected Work section</option>
+            <option value="project-cards">All project cards</option>
+            <option value="project-one">First project card</option>
+            <option value="about">About section</option>
+            <option value="contact">Contact section</option>
+            <option value="header">Header / navigation</option>
+            <option value="footer">Footer</option>
+          </select>
+          <label for="animation-preset">Animation preset</label>
+          <select id="animation-preset">
+            <option value="fade">Cinematic fade</option>
+            <option value="rise">Smooth rise</option>
+            <option value="slide-left">Slide from left</option>
+            <option value="slide-right">Slide from right</option>
+            <option value="zoom">Slow cinematic zoom</option>
+            <option value="float">Gentle float</option>
+            <option value="blur">Focus reveal</option>
+            <option value="pulse">Soft pulse</option>
+          </select>
+          <div class="theme-control-grid">
+            <div><label for="animation-duration">Duration (seconds)</label><input id="animation-duration" type="number" min="0.3" max="20" step="0.1" value="1.2"></div>
+            <div><label for="animation-delay">Delay (seconds)</label><input id="animation-delay" type="number" min="0" max="10" step="0.1" value="0"></div>
+            <div><label for="animation-easing">Easing</label><select id="animation-easing"><option value="ease-out">Smooth ease-out</option><option value="ease-in-out">Cinematic ease-in-out</option><option value="ease">Standard ease</option><option value="linear">Linear</option><option value="cubic-bezier(.16,1,.3,1)">Premium smooth</option></select></div>
+            <div><label for="animation-trigger">Start animation</label><select id="animation-trigger"><option value="scroll">When visitor scrolls to it</option><option value="load">When page loads</option></select></div>
+            <div><label for="animation-repeat">Repeat</label><select id="animation-repeat"><option value="1">Once</option><option value="infinite">Loop continuously</option></select></div>
+          </div>
+          <div class="animation-preview-card" id="animation-preview-card"><span class="eyebrow">LIVE PREVIEW</span><strong id="animation-preview-title">Cinematic motion</strong><p id="animation-preview-copy">A smooth, polished reveal for your portfolio.</p><button type="button" id="replay-animation-preview" class="quiet-button">Replay preview ↻</button></div>
+          <div class="form-actions"><button type="button" class="quiet-button" id="preview-animation-button">Preview selected animation</button><button type="submit" class="primary" id="save-animation-button">Save &amp; publish <span aria-hidden="true">↗</span></button></div>
+          <button type="button" class="text-button" id="reset-animation-button">Reset animation for selected element</button>
+          <p class="notice" id="animation-studio-message" role="status" aria-live="polite"></p>
+          <p class="field-help">Scroll-triggered animations play when the selected area enters view. Continuous motion is optional; subtle one-time reveals are recommended for a cinematic portfolio.</p>
+        </form>
       </section>
 
       <section class="manager-card studio-slide" id="long-video-manager" data-video-panel="long">
