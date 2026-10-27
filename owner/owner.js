@@ -423,13 +423,21 @@
     if (elementOverlay.checked && getComputedStyle(previewTarget).position === "static") previewTarget.style.position = "relative";
     previewMarker = doc.createElement("div");
     previewMarker.setAttribute("role","button"); previewMarker.setAttribute("aria-label","Drag element to position");
-    previewMarker.style.cssText = "box-sizing:border-box;position:absolute;z-index:99999;left:"+clampPercent(elementX.value)+"%;top:"+clampPercent(elementY.value)+"%;transform:translate(-50%,-50%);width:min("+Math.max(10,Math.min(100,Number($("#element-width").value)||80))+"%,100%);min-height:36px;padding:8px;border:2px dashed #c9f36a;background:#08090ddd;text-align:center;cursor:move;touch-action:none;overflow-wrap:anywhere;color:"+($("#element-color").value||"#c9f36a")+";";
+    previewMarker.style.cssText = "box-sizing:border-box;position:absolute;z-index:99999;left:"+clampPercent(elementX.value)+"%;top:"+clampPercent(elementY.value)+"%;transform:translate(-50%,-50%);width:min("+Math.max(10,Math.min(100,Number($("#element-width").value)||80))+"%,100%);min-height:36px;padding:8px 18px 8px 8px;border:2px dashed #c9f36a;background:#08090ddd;text-align:center;cursor:move;touch-action:none;overflow-wrap:anywhere;color:"+($("#element-color").value||"#c9f36a")+";";
     const kind = elementKind.value, content = $("#element-content").value.trim(), url = $("#element-url").value.trim();
     if (kind === "text") previewMarker.textContent = content || "Your element";
     else if (kind === "image" && url) { const img = doc.createElement("img"); img.src = url; img.alt = ""; img.style.cssText = "display:block;width:100%;max-height:30vh;object-fit:contain"; previewMarker.append(img); }
     else previewMarker.textContent = kind === "video" ? "▶ Video / motion graphic" : "Image / graphic";
     previewTarget.append(previewMarker);
-    previewMarker.addEventListener("pointerdown", ev => { previewDrag = true; previewMarker.setPointerCapture(ev.pointerId); ev.preventDefault(); });
+    const resizeGrip = doc.createElement("button");
+    resizeGrip.type = "button"; resizeGrip.setAttribute("aria-label","Resize element"); resizeGrip.title = "Drag to resize";
+    resizeGrip.style.cssText = "position:absolute;right:-7px;bottom:-7px;width:18px;height:18px;border:2px solid #08090d;border-radius:3px;background:#c9f36a;cursor:nwse-resize;touch-action:none;padding:0;";
+    previewMarker.append(resizeGrip);
+    let resizing = false, resizeStartX = 0, resizeStartWidth = 80;
+    resizeGrip.addEventListener("pointerdown", ev => { resizing=true; resizeStartX=ev.clientX; resizeStartWidth=Math.max(10,Math.min(100,Number($("#element-width").value)||80)); resizeGrip.setPointerCapture(ev.pointerId); ev.stopPropagation(); ev.preventDefault(); });
+    resizeGrip.addEventListener("pointermove", ev => { if (!resizing || !previewTarget) return; const rect=previewTarget.getBoundingClientRect(); const next=Math.max(10,Math.min(100,resizeStartWidth+(ev.clientX-resizeStartX)/rect.width*100)); $("#element-width").value=Math.round(next); previewMarker.style.width="min("+next+"%,100%)"; updatePositionPreview(); });
+    const stopResize=()=>{resizing=false;}; resizeGrip.addEventListener("pointerup",stopResize); resizeGrip.addEventListener("pointercancel",stopResize);
+    previewMarker.addEventListener("pointerdown", ev => { if (ev.target === resizeGrip) return; previewDrag = true; previewMarker.setPointerCapture(ev.pointerId); ev.preventDefault(); });
     previewMarker.addEventListener("pointermove", ev => { if (!previewDrag || !previewTarget || !previewMarker) return; const rect = previewTarget.getBoundingClientRect(); const x = clampPercent((ev.clientX-rect.left)/rect.width*100); const y = clampPercent((ev.clientY-rect.top)/rect.height*100); elementX.value=Math.round(x); elementY.value=Math.round(y); previewMarker.style.left=x+"%"; previewMarker.style.top=y+"%"; updatePositionPreview(); });
     const stop = () => { previewDrag = false; }; previewMarker.addEventListener("pointerup",stop); previewMarker.addEventListener("pointercancel",stop);
     $("#element-upload-status").textContent = "Preview ready. Drag the dashed marker on the website to set its position.";
@@ -438,7 +446,7 @@
   $("#refresh-element-preview").addEventListener("click", refreshWebsitePreview);
   $("#element-target").addEventListener("change", () => window.setTimeout(refreshWebsitePreview, 250));
   $("#element-custom-target").addEventListener("change", () => window.setTimeout(refreshWebsitePreview, 250));
-  [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),elementOverlay].forEach(el => el.addEventListener("change", () => { if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview(); }));
+  [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),elementOverlay,$("#element-layer")].forEach(el => el.addEventListener("change", () => { if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview(); }));
   function getCustomElements() { return Array.isArray(themeSettings.__elements) ? themeSettings.__elements : []; }
   function renderCustomElements() {
     const list = $("#custom-element-list"), items = getCustomElements();
@@ -458,7 +466,7 @@
         if ($("#element-target").value === "custom") $("#element-custom-target").value = item.target;
         elementKind.value = item.kind; elementKind.dispatchEvent(new Event("change"));
         $("#element-content").value = item.content || ""; $("#element-url").value = item.url || "";
-        $("#element-placement").value = item.placement || "center"; $("#element-width").value = item.width || 80;
+        $("#element-placement").value = item.placement || "center"; $("#element-width").value = item.width || 80; $("#element-layer").value = item.layer === "back" ? "back" : "front";
         $("#element-x").value = item.x ?? 50; $("#element-y").value = item.y ?? 50; elementOverlay.checked = item.overlay !== false; updatePositionPreview();
         $("#element-animation").value = item.animation || "none"; $("#element-duration").value = item.duration || 6;
         $("#element-color").value = item.color || "#c9f36a"; $("#add-element-button").textContent = "Update element";
@@ -485,7 +493,7 @@
     if (kind !== "text") { try { const u = new URL(url); if (!["http:","https:"].includes(u.protocol)) throw new Error(); } catch { return themeNotice("Add a valid image/video URL or upload a file first.",true); } }
     const items = getCustomElements();
     if (!editingElementId && items.length >= 30) return themeNotice("Maximum 30 custom elements. Remove one before adding another.",true);
-    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), x:clampPercent(elementX.value), y:clampPercent(elementY.value), overlay:elementOverlay.checked, animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value };
+    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), x:clampPercent(elementX.value), y:clampPercent(elementY.value), overlay:elementOverlay.checked, layer:$("#element-layer").value, animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value };
     const nextItems = editingElementId ? items.map(x => x.id === editingElementId ? item : x) : [...items,item];
     await saveCustomElements(nextItems);
     editingElementId = null; $("#add-element-button").textContent = "Add element";
