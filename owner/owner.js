@@ -386,6 +386,11 @@
     else positionHandle.textContent = kind === "video" ? "▶ Video / motion graphic" : "Image / graphic";
     positionHandle.style.color = $("#element-color").value || "#c9f36a";
     positionHandle.style.width = Math.max(10, Math.min(100, Number($("#element-width").value) || 80)) + "%";
+    positionHandle.style.opacity = String(Math.max(10,Math.min(100,Number($("#element-opacity").value)||100))/100);
+    positionHandle.style.borderRadius = Math.max(0,Math.min(200,Number($("#element-radius").value)||0))+"px";
+    positionHandle.style.borderWidth = Math.max(0,Math.min(10,Number($("#element-border-width").value)||0))+"px";
+    positionHandle.style.boxShadow = ({none:"none",soft:"0 8px 24px #0009",glow:"0 0 22px "+($("#element-color").value||"#c9f36a")+"99",deep:"0 16px 40px #000"})[$("#element-shadow").value] || "none";
+    positionHandle.style.transform = "translate(-50%,-50%) rotate("+Math.max(-180,Math.min(180,Number($("#element-rotation").value)||0))+"deg)";
     positionHandle.classList.toggle("is-overlay", elementOverlay.checked);
   }
   function setPositionFromPointer(event) {
@@ -403,7 +408,7 @@
   positionHandle.addEventListener("pointerup", endPositionDrag);
   positionHandle.addEventListener("pointercancel", endPositionDrag);
   [elementX,elementY].forEach(input => input.addEventListener("input", updatePositionPreview));
-  [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),elementOverlay].forEach(el => el.addEventListener("input", updatePositionPreview));
+  [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),$("#element-rotation"),$("#element-opacity"),$("#element-radius"),$("#element-border-width"),$("#element-shadow"),elementOverlay].forEach(el => el.addEventListener("input", updatePositionPreview));
   $("#element-placement").addEventListener("change", updatePositionPreview);
   updatePositionPreview();
   // Live same-origin website preview with a temporary draggable placement marker.
@@ -433,7 +438,7 @@
     if (elementOverlay.checked && getComputedStyle(previewTarget).position === "static") previewTarget.style.position = "relative";
     previewMarker = doc.createElement("div");
     previewMarker.setAttribute("role","button"); previewMarker.setAttribute("aria-label","Drag element to position");
-    previewMarker.style.cssText = "box-sizing:border-box;position:absolute;z-index:99999;left:"+clampPercent(elementX.value)+"%;top:"+clampPercent(elementY.value)+"%;transform:translate(-50%,-50%);width:min("+Math.max(10,Math.min(100,Number($("#element-width").value)||80))+"%,100%);min-height:36px;padding:8px 18px 8px 8px;border:2px dashed #c9f36a;background:#08090ddd;text-align:center;cursor:move;touch-action:none;overflow-wrap:anywhere;color:"+($("#element-color").value||"#c9f36a")+";";
+    const previewColor=$("#element-color").value||"#c9f36a", previewRotation=Math.max(-180,Math.min(180,Number($("#element-rotation").value)||0)), previewOpacity=Math.max(10,Math.min(100,Number($("#element-opacity").value)||100)), previewRadius=Math.max(0,Math.min(200,Number($("#element-radius").value)||0)), previewBorder=Math.max(0,Math.min(10,Number($("#element-border-width").value)||0)), previewShadow=$("#element-shadow").value; const previewShadowCss=({none:"none",soft:"0 8px 24px #0009",glow:"0 0 22px "+previewColor+"99",deep:"0 16px 40px #000"})[previewShadow]||"none"; previewMarker.style.cssText = "box-sizing:border-box;position:absolute;z-index:99999;left:"+clampPercent(elementX.value)+"%;top:"+clampPercent(elementY.value)+"%;transform:translate(-50%,-50%) rotate("+previewRotation+"deg);width:min("+Math.max(10,Math.min(100,Number($("#element-width").value)||80))+"%,100%);min-height:36px;padding:8px 18px 8px 8px;border:"+previewBorder+"px dashed "+previewColor+";border-radius:"+previewRadius+"px;box-shadow:"+previewShadowCss+";opacity:"+(previewOpacity/100)+";background:#08090ddd;text-align:center;cursor:move;touch-action:none;overflow-wrap:anywhere;color:"+previewColor+";";
     const kind = elementKind.value, content = $("#element-content").value.trim(), url = $("#element-url").value.trim();
     if (kind === "text") previewMarker.textContent = content || "Your element";
     else if (kind === "image" && url) { const img = doc.createElement("img"); img.src = url; img.alt = ""; img.style.cssText = "display:block;width:100%;max-height:30vh;object-fit:contain"; previewMarker.append(img); }
@@ -456,7 +461,7 @@
   $("#refresh-element-preview").addEventListener("click", refreshWebsitePreview);
   $("#element-target").addEventListener("change", () => window.setTimeout(refreshWebsitePreview, 250));
   $("#element-custom-target").addEventListener("change", () => window.setTimeout(refreshWebsitePreview, 250));
-  [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),elementOverlay,$("#element-layer")].forEach(el => el.addEventListener("change", () => { if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview(); }));
+  [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),$("#element-rotation"),$("#element-opacity"),$("#element-radius"),$("#element-border-width"),$("#element-shadow"),elementOverlay,$("#element-layer")].forEach(el => el.addEventListener("change", () => { if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview(); }));
   function getCustomElements() { return Array.isArray(themeSettings.__elements) ? themeSettings.__elements : []; }
   function renderCustomElements() {
     const list = $("#custom-element-list"), items = getCustomElements();
@@ -479,7 +484,7 @@
         $("#element-placement").value = item.placement || "center"; $("#element-width").value = item.width || 80; $("#element-layer").value = item.layer === "back" ? "back" : "front";
         $("#element-x").value = item.x ?? 50; $("#element-y").value = item.y ?? 50; elementOverlay.checked = item.overlay !== false; updatePositionPreview();
         $("#element-animation").value = item.animation || "none"; $("#element-duration").value = item.duration || 6;
-        $("#element-color").value = item.color || "#c9f36a"; $("#add-element-button").textContent = "Update element";
+        $("#element-color").value = item.color || "#c9f36a"; $("#element-rotation").value = item.rotation ?? 0; $("#element-opacity").value = item.opacity ?? 100; $("#element-radius").value = item.radius ?? 0; $("#element-border-width").value = item.borderWidth ?? 0; $("#element-shadow").value = item.shadow || "none"; $("#add-element-button").textContent = "Update element";
         themeNotice("Editing element. Make changes and tap Update element.");
       });
       const del = document.createElement("button"); del.type = "button"; del.className = "quiet-button"; del.textContent = "Remove";
@@ -503,7 +508,7 @@
     if (kind !== "text") { try { const u = new URL(url); if (!["http:","https:"].includes(u.protocol)) throw new Error(); } catch { return themeNotice("Add a valid image/video URL or upload a file first.",true); } }
     const items = getCustomElements();
     if (!editingElementId && items.length >= 30) return themeNotice("Maximum 30 custom elements. Remove one before adding another.",true);
-    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), x:clampPercent(elementX.value), y:clampPercent(elementY.value), overlay:elementOverlay.checked, layer:$("#element-layer").value, animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value };
+    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), x:clampPercent(elementX.value), y:clampPercent(elementY.value), overlay:elementOverlay.checked, layer:$("#element-layer").value, animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value, rotation:Math.max(-180,Math.min(180,Number($("#element-rotation").value)||0)), opacity:Math.max(10,Math.min(100,Number($("#element-opacity").value)||100)), radius:Math.max(0,Math.min(200,Number($("#element-radius").value)||0)), borderWidth:Math.max(0,Math.min(10,Number($("#element-border-width").value)||0)), shadow:["none","soft","glow","deep"].includes($("#element-shadow").value)?$("#element-shadow").value:"none" };
     const nextItems = editingElementId ? items.map(x => x.id === editingElementId ? item : x) : [...items,item];
     await saveCustomElements(nextItems);
     editingElementId = null; $("#add-element-button").textContent = "Add element";
