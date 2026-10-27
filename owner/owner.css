@@ -395,3 +395,29 @@ html{scroll-snap-type:y proximity}
 #text-studio-form .text-studio-preview{min-height:110px;display:flex;flex-direction:column;justify-content:center;gap:12px}
 #text-studio-form .text-studio-preview p{margin:0;overflow-wrap:anywhere;line-height:1.5}
 #text-studio-form textarea{width:100%;resize:vertical}
+
+
+/* Animation Studio preview and responsive motion controls */
+.animation-preview-card{--motion-duration:1.2s;--motion-delay:0s;--motion-easing:ease-out;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:12px;min-height:190px;margin:18px 0;padding:clamp(20px,4vw,32px);border:1px solid var(--line);border-radius:14px;background:radial-gradient(ellipse at 80% 15%,#c9f36a22,transparent 45%),linear-gradient(135deg,#17171c,#0b0b0d)}
+.animation-preview-card .eyebrow{color:var(--accent);font-size:10px;letter-spacing:2px}
+.animation-preview-card strong{font:700 clamp(23px,4vw,36px) Manrope,sans-serif;letter-spacing:-1px}
+.animation-preview-card p{max-width:420px;margin:0;color:var(--muted);font-size:13px;line-height:1.7}
+.animation-preview-card.animation-preview-running{animation:studioMotionPreview var(--motion-duration) var(--motion-easing) var(--motion-delay) both}
+.animation-preview-card[data-motion="fade"].animation-preview-running{animation-name:studioMotionFade}
+.animation-preview-card[data-motion="rise"].animation-preview-running{animation-name:studioMotionRise}
+.animation-preview-card[data-motion="slide-left"].animation-preview-running{animation-name:studioMotionLeft}
+.animation-preview-card[data-motion="slide-right"].animation-preview-running{animation-name:studioMotionRight}
+.animation-preview-card[data-motion="zoom"].animation-preview-running{animation-name:studioMotionZoom}
+.animation-preview-card[data-motion="float"].animation-preview-running{animation-name:studioMotionFloat}
+.animation-preview-card[data-motion="blur"].animation-preview-running{animation-name:studioMotionBlur}
+.animation-preview-card[data-motion="pulse"].animation-preview-running{animation-name:studioMotionPulse}
+@keyframes studioMotionPreview{from{opacity:.2}to{opacity:1}}
+@keyframes studioMotionFade{from{opacity:0}to{opacity:1}}
+@keyframes studioMotionRise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes studioMotionLeft{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:translateX(0)}}
+@keyframes studioMotionRight{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:translateX(0)}}
+@keyframes studioMotionZoom{from{opacity:.5;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+@keyframes studioMotionFloat{0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)}}
+@keyframes studioMotionBlur{from{opacity:0;filter:blur(12px)}to{opacity:1;filter:blur(0)}}
+@keyframes studioMotionPulse{0%{opacity:.8;transform:scale(.98)}50%{opacity:1;transform:scale(1.015)}100%{opacity:.8;transform:scale(.98)}}
+@media(prefers-reduced-motion:reduce){.animation-preview-card.animation-preview-running{animation:none!important}}
