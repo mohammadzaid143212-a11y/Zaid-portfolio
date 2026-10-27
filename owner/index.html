@@ -61,7 +61,7 @@
         <a class="sidebar-link" href="#animation-studio" data-owner-section="animation-studio"><span class="sidebar-icon">✧</span><span>Animation Studio</span></a>
         <a class="sidebar-link" href="#long-video-manager" data-owner-section="long-video-manager"><span class="sidebar-icon">▣</span><span>Long Videos</span></a>
         <a class="sidebar-link" href="#short-video-manager" data-owner-section="short-video-manager"><span class="sidebar-icon">▶</span><span>Short Videos</span></a>
-        <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span><small>Later</small></a>
+        <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span></a>
         <a class="sidebar-link" href="/" target="_blank" rel="noopener"><span class="sidebar-icon">↗</span><span>Public website</span></a>
         <p class="sidebar-note">Select a section to open its workspace.</p>
       </aside>
@@ -203,6 +203,9 @@
             <p class="field-help">Maximum 50 MB. Video overlays are muted and loop; use a direct MP4/WebM/OGG file URL.</p>
             <div class="upload-progress hidden" id="element-upload-progress"><div class="upload-progress-bar" id="element-upload-bar"></div></div>
             <p class="upload-status" id="element-upload-status" role="status" aria-live="polite"></p>
+            <details class="adjustment-panel" id="adjustment-panel" open>
+              <summary><span>Adjustment Panel · Advanced Mode</span><small>Position · responsive layout · styling · motion</small></summary>
+              <div class="adjustment-panel-body">
             <div class="position-editor">
               <p class="eyebrow">POSITION CANVAS</p>
               <p class="field-help">Drag the element inside this preview to choose its position. Coordinates are saved as percentages so the layout adapts to different screen sizes.</p>
@@ -235,6 +238,8 @@
             </div>
             <label for="element-color">Text / accent / border color</label><input id="element-color" type="color" value="#c9f36a">
             <p class="field-help">Style each custom element independently. Rotation, opacity, rounded corners, borders and shadows are saved with the element.</p>
+              </div>
+            </details>
             <div class="form-actions"><button class="quiet-button" id="add-element-button" type="button">Add element</button><button class="quiet-button" id="clear-element-form" type="button">Clear fields</button></div>
             <div id="custom-element-list" class="custom-element-list"><p class="empty-state">No custom elements added yet.</p></div>
           </div>
@@ -254,7 +259,7 @@
 
       <section class="manager-card studio-slide" id="element-studio">
         <div class="manager-heading"><div><p class="eyebrow">MODULE / 04</p><h2>Visual Editor</h2>
-        <p class="manager-intro">Add text, images, videos and motion graphics, then position and style each element independently.</p></div></div>
+        <p class="manager-intro">Add and select elements in the workspace, then use the connected Adjustment Panel in Advanced Mode to fine-tune their placement and appearance.</p></div></div>
         <div id="element-studio-content" class="element-studio-content"><p class="field-help">Loading element tools…</p></div>
       </section>
 
