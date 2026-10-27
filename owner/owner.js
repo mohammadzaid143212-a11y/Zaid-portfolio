@@ -502,6 +502,25 @@
   updatePositionPreview();
   // Live same-origin website preview with a temporary draggable placement marker.
   const websitePreview = $("#element-website-preview");
+  const previewFrameWrap = websitePreview?.closest(".website-preview-frame-wrap");
+  const previewDesktopButton = $("#preview-device-desktop"), previewMobileButton = $("#preview-device-mobile");
+  function setPreviewDevice(device) {
+    if (!websitePreview || !previewFrameWrap) return;
+    const mobile = device === "mobile";
+    previewFrameWrap.classList.toggle("is-mobile-preview", mobile);
+    previewFrameWrap.classList.toggle("is-desktop-preview", !mobile);
+    websitePreview.style.width = mobile ? "390px" : "100%";
+    websitePreview.style.maxWidth = mobile ? "100%" : "100%";
+    if (previewDesktopButton) { previewDesktopButton.classList.toggle("is-active", !mobile); previewDesktopButton.setAttribute("aria-pressed", String(!mobile)); }
+    if (previewMobileButton) { previewMobileButton.classList.toggle("is-active", mobile); previewMobileButton.setAttribute("aria-pressed", String(mobile)); }
+    const status = $("#preview-device-status");
+    if (status) status.textContent = mobile ? "Mobile preview · 390px phone viewport. Scroll horizontally if your screen is narrower." : "Desktop preview · full available width";
+    // Reloading makes the public page recalculate its responsive layout at the selected iframe width.
+    try { if (websitePreview.contentWindow) websitePreview.contentWindow.dispatchEvent(new Event("resize")); } catch (_) {}
+  }
+  previewDesktopButton?.addEventListener("click", () => setPreviewDevice("desktop"));
+  previewMobileButton?.addEventListener("click", () => setPreviewDevice("mobile"));
+  setPreviewDevice("desktop");
   let previewTarget = null, previewMarker = null, previewDrag = false;
   const positionHistory = [];
   let historyIndex = -1, restoringHistory = false;
