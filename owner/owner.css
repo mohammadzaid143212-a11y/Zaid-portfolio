@@ -618,3 +618,13 @@ html{scroll-snap-type:y proximity}
 .backup-file-name{overflow-wrap:anywhere}
 #backup-studio .field-help{max-width:680px}
 @media(max-width:680px){.backup-grid{grid-template-columns:1fr}.backup-card{padding:18px}}
+
+
+/* SEO Studio */
+.seo-preview{--seo-preview-accent:#0b0b0d;margin:18px 0;padding:20px;border:1px solid var(--line);border-left:3px solid var(--seo-preview-accent);background:rgba(255,255,255,.025);display:flex;flex-direction:column;gap:8px;overflow-wrap:anywhere}
+.seo-preview .eyebrow{margin:0}
+.seo-preview strong{font-size:18px;font-weight:600;color:#9bb8ff}
+.seo-preview p:not(.eyebrow){margin:0;color:var(--muted);font-size:12px}
+.seo-preview span{font-size:13px;line-height:1.6;color:var(--text)}
+#seo-studio .field-help{max-width:720px}
+#seo-studio textarea{resize:vertical}
