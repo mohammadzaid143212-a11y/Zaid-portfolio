@@ -82,19 +82,31 @@
         <div class="manager-heading"><div><p class="eyebrow">MODULE / 03</p><h2>Visual theme controller</h2><p class="manager-intro">Choose an area, customize its colors or background media, preview changes, then publish them to your public portfolio.</p></div></div>
         <details class="module-details" id="theme-controls"><summary><span>Customize website</span><small>Colors · backgrounds · motion · elements</small></summary>
         <form id="theme-form" class="project-form">
+          <div class="theme-scope-switch">
+            <label for="theme-scope">Theme scope</label>
+            <select id="theme-scope">
+              <option value="global">Global theme · entire website</option>
+              <option value="section">Section theme · selected area</option>
+            </select>
+            <p class="field-help">Global settings set the site's overall background, text and accent colors. Section settings override the look of a specific area.</p>
+          </div>
           <label for="theme-target">Choose website area</label>
           <select id="theme-target">
-            <option value="site">Entire website</option>
-            <option value="header">Header / navigation</option>
-            <option value="hero">Hero section</option>
-            <option value="hero-title">Hero headline</option>
-            <option value="hero-media">Hero video frame</option>
-            <option value="work">Selected Work section</option>
-            <option value="project-cards">Project cards</option>
-            <option value="about">About section</option>
-            <option value="contact">Contact section</option>
-            <option value="footer">Footer</option>
-            <option value="custom">Custom element / CSS selector</option>
+            <optgroup label="Global">
+              <option value="site">Entire website</option>
+            </optgroup>
+            <optgroup label="Individual sections">
+              <option value="header">Header / navigation</option>
+              <option value="hero">Hero section</option>
+              <option value="hero-title">Hero headline</option>
+              <option value="hero-media">Hero video frame</option>
+              <option value="work">Selected Work section</option>
+              <option value="project-cards">Project cards</option>
+              <option value="about">About section</option>
+              <option value="contact">Contact section</option>
+              <option value="footer">Footer</option>
+              <option value="custom">Custom element / CSS selector</option>
+            </optgroup>
           </select>
           <div id="custom-selector-field" class="hidden"><label for="theme-custom-selector">Element selector</label><input id="theme-custom-selector" type="text" placeholder="e.g. .project-info h3"><p class="field-help">Enter a CSS selector for the exact element or group you want to style, such as .availability or .project-info h3.</p></div>
           <label for="theme-mode">Background type</label>
