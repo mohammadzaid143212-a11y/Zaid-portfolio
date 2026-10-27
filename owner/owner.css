@@ -586,3 +586,16 @@ html{scroll-snap-type:y proximity}
 @media(prefers-reduced-motion:reduce){.website-preview-frame-wrap #element-website-preview{transition:none}}
 
 /* Mobile viewport placement marker reflects the mobile-specific saved controls. */
+
+
+/* Connected Visual Builder → Adjustment Panel (Advanced Mode). */
+#adjustment-panel{border:1px solid var(--line);background:rgba(255,255,255,.018);margin:18px 0;padding:0;scroll-margin-top:20px}
+#adjustment-panel>summary{display:flex;flex-direction:column;gap:6px;cursor:pointer;list-style:none;padding:17px 18px;border-bottom:1px solid transparent;font:600 15px Manrope,sans-serif}
+#adjustment-panel>summary::-webkit-details-marker{display:none}
+#adjustment-panel>summary::after{content:"＋";align-self:flex-end;margin-top:-25px;color:var(--accent);font:500 18px "DM Sans",sans-serif}
+#adjustment-panel[open]>summary{border-bottom-color:var(--line)}
+#adjustment-panel[open]>summary::after{content:"−"}
+#adjustment-panel>summary small{font:400 11px "DM Sans",sans-serif;color:var(--muted);line-height:1.5;padding-right:25px}
+.adjustment-panel-body{padding:0 16px 16px}
+.adjustment-panel-body .position-editor{margin-top:18px}
+@media(max-width:600px){#adjustment-panel>summary{padding:15px 13px}.adjustment-panel-body{padding:0 10px 12px}}
