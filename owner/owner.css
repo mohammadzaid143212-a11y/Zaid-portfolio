@@ -571,3 +571,16 @@ html{scroll-snap-type:y proximity}
 .mobile-element-controls .theme-control-grid{margin-top:10px}
 .mobile-element-controls input{min-width:0;width:100%}
 .mobile-element-controls .inline-check{align-items:flex-start}
+
+
+/* Live viewport switch for the Visual Builder website preview. */
+.website-preview-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.preview-viewport-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.preview-viewport-controls button{min-height:38px}
+.preview-viewport-controls button.is-active{border-color:#c9f36a99;background:#c9f36a18;color:var(--accent)}
+.website-preview-frame-wrap{display:flex;justify-content:center;align-items:flex-start;min-width:0;overflow:auto;background:#08090d}
+.website-preview-frame-wrap #element-website-preview{width:100%;max-width:100%;height:520px;flex:0 0 auto;transition:width .2s ease,height .2s ease}
+.website-preview-frame-wrap.is-mobile-preview{padding:14px 8px;max-height:740px}
+.website-preview-frame-wrap.is-mobile-preview #element-website-preview{width:390px;max-width:100%;height:680px;border:1px solid #5b5b63;border-radius:20px;background:#0b0b0d}
+@media(max-width:680px){.preview-viewport-controls{width:100%}.preview-viewport-controls button{flex:1 1 auto}.website-preview-frame-wrap.is-mobile-preview #element-website-preview{width:min(390px,100%);height:620px}}
+@media(prefers-reduced-motion:reduce){.website-preview-frame-wrap #element-website-preview{transition:none}}
