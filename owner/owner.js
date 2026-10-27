@@ -133,7 +133,7 @@
 
   // Sidebar navigation: open the selected workspace and keep the active item in sync.
   const videoManager = document.getElementById("long-video-manager");
-  const videoWorkspace = document.getElementById("long-video-workspace");
+  const videoWorkspace = document.getElementById("video-editor-workspace");
   const shortVideoWorkspace = document.getElementById("short-video-workspace");
   const videoChoices = [];
   function setVideoPanel(type) {
