@@ -259,7 +259,7 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
         const mobileWidth = Math.max(10,Math.min(100,Number(item.mobile.width ?? item.width ?? 80)));
         const responsiveStyle = document.createElement("style");
         const safeId = String(item.id || "").replace(/[^a-zA-Z0-9_-]/g, "");
-        responsiveStyle.textContent = "@media (max-width: 680px) { .owner-added-element[data-element-id=\\""+safeId+"\\"] { width: min("+mobileWidth+"%, 100%) !important; "+(overlay ? "left:"+mobileX+"% !important;top:"+mobileY+"% !important;" : "")+" } }";
+        responsiveStyle.textContent = "@media (max-width: 680px) { .owner-added-element[data-element-id="+safeId+"] { width: min("+mobileWidth+"%, 100%) !important; "+(overlay ? "left:"+mobileX+"% !important;top:"+mobileY+"% !important;" : "")+" } }";
         document.head.append(responsiveStyle);
       }
       if (overlay) {
