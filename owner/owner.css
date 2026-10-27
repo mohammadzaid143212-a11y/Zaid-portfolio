@@ -185,3 +185,7 @@ html{scroll-snap-type:y proximity}
 #element-website-preview{touch-action:pan-y}.website-preview-heading{margin-bottom:8px}
 
 .preview-history-controls{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:10px 0}.preview-history-controls .field-help{margin:0;flex:1 1 140px}.preview-history-controls button:disabled{opacity:.35;cursor:not-allowed}
+
+
+/* Advanced per-element style controls */
+#element-rotation,#element-opacity,#element-radius,#element-border-width,#element-shadow{min-width:0}
