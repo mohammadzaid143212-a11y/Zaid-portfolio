@@ -821,6 +821,66 @@
     })();
   }
 
+  // Animation Studio: save reusable motion settings alongside the published theme.
+  const animationForm = $("#animation-studio-form");
+  if (animationForm) {
+    const target = $("#animation-target"), preset = $("#animation-preset");
+    const duration = $("#animation-duration"), delay = $("#animation-delay");
+    const easing = $("#animation-easing"), trigger = $("#animation-trigger"), repeat = $("#animation-repeat");
+    const previewCard = $("#animation-preview-card"), messageEl = $("#animation-studio-message");
+    const saveBtn = $("#save-animation-button");
+    const targets = {
+      "hero-title": ".hero h1", "hero-description": ".hero-bottom p", "hero-media": ".hero-frame",
+      work: ".work-section", "project-cards": ".project-card", "project-one": ".project-grid article:first-child",
+      about: ".about-section", contact: ".contact-section", header: ".site-header", footer: ".site-footer"
+    };
+    let animationSettings = {};
+    const notice = (message, error=false) => setMessage(messageEl, message, error);
+    const current = () => ({ preset:preset.value, duration:Math.max(.3,Math.min(20,Number(duration.value)||1.2)), delay:Math.max(0,Math.min(10,Number(delay.value)||0)), easing:easing.value, trigger:trigger.value, repeat:repeat.value });
+    const replay = () => {
+      previewCard.classList.remove("animation-preview-running");
+      previewCard.style.setProperty("--motion-duration", current().duration+"s");
+      previewCard.style.setProperty("--motion-delay", current().delay+"s");
+      previewCard.style.setProperty("--motion-easing", current().easing);
+      previewCard.dataset.motion = preset.value;
+      void previewCard.offsetWidth;
+      previewCard.classList.add("animation-preview-running");
+      notice("Preview playing. These settings are not published yet.");
+    };
+    $("#preview-animation-button").addEventListener("click", replay);
+    $("#replay-animation-preview").addEventListener("click", replay);
+    [preset,duration,delay,easing,trigger,repeat,target].forEach(el=>el.addEventListener("change",()=>{previewCard.classList.remove("animation-preview-running");notice("");}));
+    animationForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      const key=target.value, value=current();
+      saveBtn.disabled=true; notice("Publishing animation settings…");
+      try {
+        const {data,error:readError}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();
+        if(readError) throw readError;
+        const settings=data?.settings||{};
+        const nextAnimations={...(settings.__animationStudio||{}),[key]:value};
+        const {error}=await client.from("portfolio_theme_settings").upsert({id:true,settings:{...settings,__animationStudio:nextAnimations},updated_at:new Date().toISOString()},{onConflict:"id"});
+        if(error) throw error;
+        animationSettings=nextAnimations;
+        notice("Animation saved and published. Refresh your public portfolio to see the update.");
+      } catch(error) { notice("Could not save animation: "+(error.message||"Please try again."),true); }
+      finally {saveBtn.disabled=false;}
+    });
+    $("#reset-animation-button").addEventListener("click",async()=>{
+      const key=target.value;
+      try{
+        const {data,error:readError}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();
+        if(readError) throw readError;
+        const settings=data?.settings||{}, nextAnimations={...(settings.__animationStudio||{})};
+        delete nextAnimations[key];
+        const {error}=await client.from("portfolio_theme_settings").upsert({id:true,settings:{...settings,__animationStudio:nextAnimations},updated_at:new Date().toISOString()},{onConflict:"id"});
+        if(error) throw error;
+        animationSettings=nextAnimations;notice("Animation reset for the selected element.");
+      }catch(error){notice("Could not reset animation: "+(error.message||"Please try again."),true);}
+    });
+    (async()=>{try{const {data,error}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();if(error)throw error;animationSettings=data?.settings?.__animationStudio||{};}catch{}})();
+  }
+
   logoutButton.addEventListener("click", async () => { recoveryMode = false; await client.auth.signOut(); showLogin(); setMessage(message, "You have signed out."); });
   checkSession();
 })();
