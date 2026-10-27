@@ -513,6 +513,8 @@
      previewMobileButton.setAttribute("aria-pressed", String(mobile));
      websitePreview.title = mobile ? "Mobile-sized live public portfolio preview" : "Desktop-sized live public portfolio preview";
      $("#element-history-status").textContent = mobile ? "Mobile preview · approx. 390 px wide" : "Desktop preview · full available width";
+      const adjustmentSummary = $("#adjustment-panel > summary small");
+      if (adjustmentSummary) adjustmentSummary.textContent = mobile ? "Mobile layout · styling · motion" : "Desktop layout · styling · motion";
    }
    previewDesktopButton.addEventListener("click", () => setWebsitePreviewMode("desktop"));
    previewMobileButton.addEventListener("click", () => setWebsitePreviewMode("mobile"));
@@ -579,7 +581,9 @@
       const actions = document.createElement("div"); actions.className = "custom-element-actions";
       const edit = document.createElement("button"); edit.type = "button"; edit.className = "quiet-button"; edit.textContent = "Edit";
       edit.addEventListener("click", () => {
-        editingElementId = item.id; $("#element-target").value = ["site","header","hero","hero-title","hero-media","work","project-cards","about","contact","footer"].includes(item.target) ? item.target : "custom";
+        editingElementId = item.id;
+        const adjustmentPanel = $("#adjustment-panel");
+        if (adjustmentPanel) adjustmentPanel.open = true; $("#element-target").value = ["site","header","hero","hero-title","hero-media","work","project-cards","about","contact","footer"].includes(item.target) ? item.target : "custom";
         $("#element-custom-target-field").classList.toggle("hidden", $("#element-target").value !== "custom");
         if ($("#element-target").value === "custom") $("#element-custom-target").value = item.target;
         elementKind.value = item.kind; elementKind.dispatchEvent(new Event("change"));
@@ -588,7 +592,8 @@
         $("#element-x").value = item.x ?? 50; $("#element-y").value = item.y ?? 50; $("#element-mobile-enabled").checked = !!item.mobile; $("#element-mobile-x").value = item.mobile?.x ?? 50; $("#element-mobile-y").value = item.mobile?.y ?? 50; $("#element-mobile-width").value = item.mobile?.width ?? 90; $("#element-mobile-fields").classList.toggle("hidden", !item.mobile); elementOverlay.checked = item.overlay !== false; updatePositionPreview();
         $("#element-animation").value = item.animation || "none"; $("#element-duration").value = item.duration || 6;
         $("#element-color").value = item.color || "#c9f36a"; $("#element-rotation").value = item.rotation ?? 0; $("#element-opacity").value = item.opacity ?? 100; $("#element-radius").value = item.radius ?? 0; $("#element-border-width").value = item.borderWidth ?? 0; $("#element-shadow").value = item.shadow || "none"; $("#add-element-button").textContent = "Update element";
-        themeNotice("Editing element. Make changes and tap Update element.");
+        themeNotice("Editing element in Adjustment Panel · Advanced Mode. Make changes and tap Update element.");
+        $("#adjustment-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
       const del = document.createElement("button"); del.type = "button"; del.className = "quiet-button"; del.textContent = "Remove";
       del.addEventListener("click", async () => {
