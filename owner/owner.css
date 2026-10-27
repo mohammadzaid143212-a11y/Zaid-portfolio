@@ -248,3 +248,34 @@ html{scroll-snap-type:y proximity}
   #dashboard-view>.manager-card.studio-slide{min-height:0;height:auto;justify-content:flex-start;padding-top:20px;padding-bottom:24px;}
   #dashboard-view>.manager-card.studio-slide .manager-heading{align-self:stretch;}
 }
+
+/* Visual Editor usability pass: clearer grouping and tighter responsive controls. */
+#element-studio .element-studio-panel{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;padding:clamp(14px,2.5vw,24px);border:1px solid var(--line);background:rgba(255,255,255,.018);border-radius:12px}
+#element-studio .element-studio-panel>.eyebrow{margin:0 0 2px}
+#element-studio .element-studio-panel>h3{margin:0;font:600 22px Manrope,sans-serif;letter-spacing:-.5px}
+#element-studio .element-studio-panel>.field-help{margin:0 0 4px;max-width:760px}
+#element-studio .element-studio-panel>label{margin:4px 0 0}
+#element-studio .element-studio-panel>input:not([type=checkbox]),#element-studio .element-studio-panel>select,#element-studio .element-studio-panel>input[type=file]{margin-bottom:0;min-width:0}
+#element-studio .element-studio-panel>.theme-control-grid{margin:0;gap:0 14px}
+#element-studio .element-studio-panel .position-editor{margin:4px 0;padding:clamp(12px,2vw,18px)}
+#element-studio .element-studio-panel .position-editor>.field-help{margin-top:0}
+#element-studio .element-studio-panel .website-preview-frame-wrap{margin-top:8px}
+#element-studio .element-studio-panel #element-website-preview{height:360px;min-height:0}
+#element-studio .element-studio-panel .custom-element-list{margin-top:4px}
+#element-studio .element-studio-panel .form-actions{margin-top:4px}
+@media(min-width:900px){
+#element-studio .element-studio-panel{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+#element-studio .element-studio-panel>.eyebrow,#element-studio .element-studio-panel>h3,#element-studio .element-studio-panel>.field-help,#element-studio .element-studio-panel>.position-editor,#element-studio .element-studio-panel>.theme-control-grid,#element-studio .element-studio-panel>.form-actions,#element-studio .element-studio-panel>#custom-element-list{grid-column:1/-1}
+#element-studio .element-studio-panel>.position-editor{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px 18px;align-items:start}
+#element-studio .element-studio-panel>.position-editor>.eyebrow,#element-studio .element-studio-panel>.position-editor>.field-help,#element-studio .element-studio-panel>.position-editor>#element-position-stage,#element-studio .element-studio-panel>.position-editor>.website-preview-heading,#element-studio .element-studio-panel>.position-editor>.preview-history-controls,#element-studio .element-studio-panel>.position-editor>.website-preview-frame-wrap,#element-studio .element-studio-panel>.position-editor>.theme-control-grid{grid-column:1/-1}
+}
+@media(max-width:680px){
+#element-studio .element-studio-panel{gap:10px;padding:12px}
+#element-studio .element-studio-panel>.theme-control-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}
+#element-studio .element-studio-panel .position-editor{padding:10px}
+#element-studio .element-studio-panel #element-website-preview{height:280px}
+#element-studio .element-studio-panel .website-preview-heading{gap:8px}
+#element-studio .element-studio-panel .preview-history-controls{gap:6px}
+#element-studio .element-studio-panel .preview-history-controls button{padding:9px 10px}
+#element-studio .element-studio-panel .custom-element-item{gap:8px;padding:10px}
+}
