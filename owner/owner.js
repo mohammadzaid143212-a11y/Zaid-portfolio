@@ -129,18 +129,6 @@
 
 
   // Sidebar navigation: open the selected workspace and keep the active item in sync.
-  const ownerSidebar = document.querySelector(".owner-sidebar");
-  if (ownerSidebar) {
-    ownerSidebar.addEventListener("click", event => {
-      const link = event.target.closest("[data-owner-section]");
-      if (!link) return;
-      const target = document.getElementById(link.dataset.ownerSection);
-      if (!target) return;
-      event.preventDefault();
-      target.scrollIntoView({behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
-      ownerSidebar.querySelectorAll(".sidebar-link").forEach(item => item.classList.toggle("is-active", item === link));
-    });
-  }
   const videoManager = document.getElementById("project-manager");
   const videoChoices = Array.from(document.querySelectorAll("[data-video-panel]"));
   function setVideoPanel(type) {
