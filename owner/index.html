@@ -63,6 +63,7 @@
         <a class="sidebar-link" href="#short-video-manager" data-owner-section="short-video-manager"><span class="sidebar-icon">▶</span><span>Short Videos</span></a>
         <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span></a>
          <a class="sidebar-link" href="#adjustment-studio" data-owner-section="adjustment-studio"><span class="sidebar-icon">⚙</span><span>Adjustment Panel</span></a>
+        <a class="sidebar-link" href="#backup-studio" data-owner-section="backup-studio"><span class="sidebar-icon">↧</span><span>Backup &amp; Restore</span></a>
         <a class="sidebar-link" href="/" target="_blank" rel="noopener"><span class="sidebar-icon">↗</span><span>Public website</span></a>
         <p class="sidebar-note">Select a section to open its workspace.</p>
       </aside>
@@ -357,6 +358,28 @@
       <section class="manager-card studio-slide" id="short-video-manager" data-video-panel="short">
         <div class="manager-heading"><div><p class="eyebrow">VIDEO LIBRARY / 02</p><h2>Short Video Manager</h2><p class="manager-intro">Manage Shorts, Reels and vertical edits separately. Thumbnail fields are disabled for short videos.</p></div></div>
         <div id="short-video-workspace"></div>
+      <section class="manager-card studio-slide" id="backup-studio">
+        <div class="manager-heading"><div><p class="eyebrow">SAFETY / PORTFOLIO DATA</p><h2>Backup &amp; Restore</h2><p class="manager-intro">Download a copy of your saved portfolio settings and project library, or restore from a backup file. Restoring merges projects by ID and replaces saved settings.</p></div></div>
+        <div class="backup-grid">
+          <article class="backup-card">
+            <p class="eyebrow">01 / EXPORT</p>
+            <h3>Download a backup</h3>
+            <p>Creates one JSON file containing theme, text, animation, custom-element settings and your saved projects.</p>
+            <button class="primary" id="download-backup-button" type="button">Download backup <span aria-hidden="true">↧</span></button>
+          </article>
+          <article class="backup-card">
+            <p class="eyebrow">02 / RESTORE</p>
+            <h3>Restore from file</h3>
+            <p>Choose a backup JSON file. Your current projects are not deleted; matching project IDs are updated and new IDs are added.</p>
+            <label for="backup-file-input">Backup file (.json)</label>
+            <input id="backup-file-input" type="file" accept=".json,application/json">
+            <p class="backup-file-name" id="backup-file-name">No backup file selected.</p>
+            <button class="primary" id="restore-backup-button" type="button" disabled>Validate and restore ↗</button>
+          </article>
+        </div>
+        <p class="notice" id="backup-studio-message" role="status" aria-live="polite"></p>
+        <p class="field-help">Keep backup files somewhere private. A backup may contain unpublished project links and portfolio configuration.</p>
+      </section>
       </section>
     </section>
   </main>
