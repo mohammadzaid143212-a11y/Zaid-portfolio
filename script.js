@@ -107,7 +107,13 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     const copy = document.createElement("div");
     const title = document.createElement("h3"); title.textContent = project.title;
     const desc = document.createElement("p"); desc.textContent = project.description || (project.project_type === "long" ? "Cinematic edit / Long-form" : "Short-form / Social");
-    copy.append(title, desc); info.append(copy);
+    copy.append(title, desc);
+    const detailLink = document.createElement("a");
+    detailLink.className = "project-detail-link";
+    detailLink.href = "/project/?id=" + encodeURIComponent(project.id);
+    detailLink.textContent = "View project ↗";
+    copy.append(detailLink);
+    info.append(copy);
     const arrow = document.createElement("span"); arrow.className = "project-arrow"; arrow.textContent = "↗"; info.append(arrow);
     card.append(art, info); grid.append(card);
   });
