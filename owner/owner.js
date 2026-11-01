@@ -67,7 +67,7 @@
     dashboardView.dataset.clickNavigationReady = "true";
     showPanel("studio-overview");
   }
-  function showDashboard(user) { recoveryMode = false; hideViews(); dashboardView.classList.remove("hidden"); setupStudioSlides(); signedInAs.textContent = user?.email ? "Signed in as " + user.email : "Authenticated owner"; loadProjects(); }
+  function showDashboard(user) { recoveryMode = false; hideViews(); dashboardView.classList.remove("hidden"); setupStudioSlides(); signedInAs.textContent = user?.email ? "Signed in as " + user.email : "Authenticated owner"; loadProjects(); window.dispatchEvent(new CustomEvent("zaid-owner-ready")); }
 
   if (!window.supabase || SUPABASE_PUBLIC_KEY.includes("PASTE_")) {
     setMessage(message, "Setup needed: add your Supabase publishable key in owner/owner.js.", true);
