@@ -81,6 +81,16 @@
   </main>
 
   <footer class="site-footer"><a class="wordmark" href="#home">ZAID<span>®</span></a><span>BUILT WITH INTENTION © <span id="year"></span></span><a href="#home">BACK TO TOP ↑</a></footer>
+  <div class="zaid-ai" id="zaid-ai">
+    <button class="zaid-ai-launch" id="zaid-ai-launch" type="button" aria-expanded="false" aria-controls="zaid-ai-panel" aria-label="Chat with Zaid's portfolio assistant">✦ <span>Ask about Zaid</span></button>
+    <section class="zaid-ai-panel" id="zaid-ai-panel" aria-label="Portfolio assistant" hidden>
+      <header class="zaid-ai-header"><div><span class="zaid-ai-status"></span><strong>Zaid’s Assistant</strong><small>Portfolio guide · Online when available</small></div><button id="zaid-ai-close" type="button" aria-label="Close chat">×</button></header>
+      <div class="zaid-ai-messages" id="zaid-ai-messages" aria-live="polite"><div class="zaid-ai-bubble assistant">Hi! I can help you explore Zaid’s published work, editing focus and portfolio. What would you like to know?</div></div>
+      <div class="zaid-ai-suggestions"><button type="button" data-ai-prompt="What kind of video editing does Zaid do?">Editing services</button><button type="button" data-ai-prompt="Show me Zaid’s published projects.">Projects</button><button type="button" data-ai-prompt="I’d like to hire or contact Zaid.">Hire Zaid</button></div>
+      <form class="zaid-ai-form" id="zaid-ai-form"><input id="zaid-ai-input" maxlength="1200" autocomplete="off" placeholder="Ask something…" aria-label="Your message" required><button id="zaid-ai-send" type="submit" aria-label="Send message">↑</button></form>
+      <p class="zaid-ai-note">Chats are not saved in this first test. Free Gemini AI may process prompts to improve Google products. Don’t share private or sensitive information.</p>
+    </section>
+  </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js"></script>
 </body>
