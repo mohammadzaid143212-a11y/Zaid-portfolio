@@ -10,9 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="owner.css">
+  <link rel="stylesheet" href="advanced.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1/dist/tus.min.js"></script>
   <script defer src="owner.js"></script>
+  <script defer src="advanced.js"></script>
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -66,6 +68,10 @@
          <a class="sidebar-link" href="#adjustment-studio" data-owner-section="adjustment-studio"><span class="sidebar-icon">⚙</span><span>Adjustment Panel</span></a>
         <a class="sidebar-link" href="#backup-studio" data-owner-section="backup-studio"><span class="sidebar-icon">↧</span><span>Backup &amp; Restore</span></a>
         <a class="sidebar-link" href="#seo-studio" data-owner-section="seo-studio"><span class="sidebar-icon">⌕</span><span>SEO Studio</span></a>
+        <a class="sidebar-link" href="#version-studio" data-owner-section="version-studio"><span class="sidebar-icon">↶</span><span>Version History</span></a>
+        <a class="sidebar-link" href="#media-library" data-owner-section="media-library"><span class="sidebar-icon">▧</span><span>Media Library</span></a>
+        <a class="sidebar-link" href="#analytics-studio" data-owner-section="analytics-studio"><span class="sidebar-icon">⌁</span><span>Analytics</span></a>
+        <a class="sidebar-link" href="#performance-studio" data-owner-section="performance-studio"><span class="sidebar-icon">⚡</span><span>Performance</span></a>
         <a class="sidebar-link" href="/" target="_blank" rel="noopener"><span class="sidebar-icon">↗</span><span>Public website</span></a>
         <p class="sidebar-note">Select a section to open its workspace.</p>
       </aside>
@@ -390,6 +396,49 @@
           <button class="text-button" id="reset-seo-button" type="button">Reset SEO settings</button>
           <p class="notice" id="seo-studio-message" role="status" aria-live="polite"></p>
           <p class="field-help">Note: social crawlers and search engines may not execute browser JavaScript. This panel updates the live page metadata, but guaranteed crawler-visible SEO may require static HTML/build-time metadata too.</p>
+        </form>
+      </section>
+      <section class="manager-card studio-slide" id="version-studio">
+        <div class="manager-heading"><div><p class="eyebrow">SAFETY / CHANGE CONTROL</p><h2>Version History</h2><p class="manager-intro">Restore earlier project and theme states. Restore points are created automatically before supported save actions and can also be created manually.</p></div></div>
+        <div class="advanced-actions">
+          <button class="primary" id="create-version" type="button">Create restore point ↗</button>
+          <button class="quiet-button" id="undo-version" type="button">Undo</button>
+          <button class="quiet-button" id="redo-version" type="button">Redo</button>
+        </div>
+        <p class="notice" id="version-message" role="status" aria-live="polite"></p>
+        <div class="advanced-list" id="version-list"><p class="empty-state">Loading restore points…</p></div>
+        <p class="field-help">Keeps the latest 40 restore points. Undo and redo stacks are available during the current browser session; saved restore points remain available across sessions.</p>
+      </section>
+      <section class="manager-card studio-slide" id="media-library">
+        <div class="manager-heading"><div><p class="eyebrow">ASSET CONTROL / STORAGE</p><h2>Media Library</h2><p class="manager-intro">Browse uploaded videos, thumbnails, theme backgrounds and fonts. Files referenced by projects or theme settings are protected from accidental deletion.</p></div></div>
+        <div class="advanced-actions"><button class="quiet-button" id="refresh-media" type="button">Refresh media ↻</button></div>
+        <p class="notice" id="media-message" role="status" aria-live="polite"></p>
+        <div class="media-library-grid" id="media-list"><p class="empty-state">Loading media…</p></div>
+      </section>
+      <section class="manager-card studio-slide" id="analytics-studio">
+        <div class="manager-heading"><div><p class="eyebrow">AUDIENCE / PERFORMANCE</p><h2>Analytics Dashboard</h2><p class="manager-intro">See basic page visits and project views from the last seven days. Analytics use a random browser identifier and do not collect names, email addresses or IP addresses in this table.</p></div></div>
+        <div class="advanced-actions"><button class="quiet-button" id="refresh-analytics" type="button">Refresh analytics ↻</button></div>
+        <div class="advanced-grid">
+          <article class="advanced-stat"><span>UNIQUE BROWSERS</span><strong id="analytics-visitors">—</strong><p>Random browser IDs seen</p></article>
+          <article class="advanced-stat"><span>PAGE VIEWS</span><strong id="analytics-pageviews">—</strong><p>Portfolio and detail pages</p></article>
+          <article class="advanced-stat"><span>PROJECT VIEWS</span><strong id="analytics-projectviews">—</strong><p>Individual project pages</p></article>
+        </div>
+        <h3 style="margin-top:28px">Project views</h3>
+        <div id="analytics-project-list" class="advanced-list"><p class="empty-state">Loading analytics…</p></div>
+        <p class="notice" id="analytics-message" role="status" aria-live="polite"></p>
+        <p class="field-help">Counts are sampled up to 2,000 events. Tracking starts after this update is deployed and does not backfill earlier visits.</p>
+      </section>
+      <section class="manager-card studio-slide" id="performance-studio">
+        <div class="manager-heading"><div><p class="eyebrow">SITE DELIVERY / OPTIMISATION</p><h2>Loading &amp; Performance</h2><p class="manager-intro">Control lightweight loading behaviour on the public portfolio. Changes are stored with your portfolio settings and applied on the next page load.</p></div></div>
+        <form id="performance-form" class="project-form">
+          <div class="performance-options">
+            <label class="performance-option"><input id="perf-lazy-images" type="checkbox" checked><span><strong>Lazy-load images</strong><small>Load images as visitors approach them, reducing initial page work.</small></span></label>
+            <label class="performance-option"><input id="perf-video-preload" type="checkbox" checked><span><strong>Use metadata video preload</strong><small>Load video metadata first instead of downloading full videos immediately.</small></span></label>
+            <label class="performance-option"><input id="perf-pause-mobile" type="checkbox"><span><strong>Pause decorative background videos on mobile</strong><small>Can reduce mobile data and battery use. Project videos remain playable.</small></span></label>
+            <label class="performance-option"><input id="perf-disable-reveals" type="checkbox"><span><strong>Disable scroll reveal animations</strong><small>Show content immediately instead of waiting for scroll animation triggers.</small></span></label>
+          </div>
+          <button class="primary" id="save-performance" type="submit">Save performance settings ↗</button>
+          <p class="notice" id="performance-message" role="status" aria-live="polite"></p>
         </form>
       </section>
       <section class="manager-card studio-slide" id="backup-studio">
