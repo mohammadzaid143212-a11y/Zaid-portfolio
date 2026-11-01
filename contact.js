@@ -1,7 +1,7 @@
-// Configure these once your preferred contact details are known.
-const CONTACT_EMAIL = "hello@example.com"; // Replace with your real project email.
-const WHATSAPP_NUMBER = ""; // International digits only, e.g. country code + number without "+".
-const INSTAGRAM_URL = ""; // Full profile URL, e.g. https://instagram.com/yourhandle
+// Public contact destinations supplied by the portfolio owner.
+const CONTACT_EMAIL = "mohammadzaid143212@gmail.com";
+const WHATSAPP_NUMBER = "918857020261"; // India country code + 10-digit number.
+const INSTAGRAM_URL = "https://www.instagram.com/the_shaikhzaid/";
 
 const inquiryForm = document.querySelector("#inquiry-form");
 const formStatus = document.querySelector("#form-status");
@@ -42,7 +42,7 @@ if (inquiryForm) {
       window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + body, "_blank", "noopener,noreferrer");
       formStatus.textContent = "WhatsApp opened with your inquiry prepared. Please review and send it.";
     } else if (method === "instagram") {
-      if (!INSTAGRAM_URL || !INSTAGRAM_URL.startsWith("https://instagram.com/")) {
+      if (!INSTAGRAM_URL || new URL(INSTAGRAM_URL).hostname !== "www.instagram.com") {
         formStatus.textContent = "Instagram is selected, but the page owner must add their Instagram profile link first.";
         return;
       }
