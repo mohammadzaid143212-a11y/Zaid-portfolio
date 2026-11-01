@@ -331,62 +331,16 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
 })();
 
 
-// Public portfolio assistant (chat-only). Messages are not persisted in this first phase.
+// Public portfolio assistant. Configuration is controlled from Owner Studio.
 (() => {
-  const root = document.getElementById("zaid-ai");
-  if (!root) return;
-  const launch = document.getElementById("zaid-ai-launch");
-  const panel = document.getElementById("zaid-ai-panel");
-  const close = document.getElementById("zaid-ai-close");
-  const form = document.getElementById("zaid-ai-form");
-  const input = document.getElementById("zaid-ai-input");
-  const send = document.getElementById("zaid-ai-send");
-  const messages = document.getElementById("zaid-ai-messages");
-  const suggestions = root.querySelector(".zaid-ai-suggestions");
-  let busy = false;
-  function toggle(open) {
-    panel.hidden = !open;
-    launch.setAttribute("aria-expanded", String(open));
-    if (open) input.focus();
-  }
-  function addBubble(text, who) {
-    const bubble = document.createElement("div");
-    bubble.className = "zaid-ai-bubble " + who;
-    bubble.textContent = text;
-    messages.append(bubble);
-    messages.scrollTop = messages.scrollHeight;
-    return bubble;
-  }
-  launch.addEventListener("click", () => toggle(panel.hidden));
-  close.addEventListener("click", () => toggle(false));
-  suggestions.addEventListener("click", event => {
-    const button = event.target.closest("[data-ai-prompt]");
-    if (!button || busy) return;
-    input.value = button.dataset.aiPrompt;
-    form.requestSubmit();
-  });
-  form.addEventListener("submit", async event => {
-    event.preventDefault();
-    const message = input.value.trim();
-    if (!message || busy) return;
-    addBubble(message, "visitor");
-    input.value = "";
-    suggestions.hidden = true;
-    busy = true; send.disabled = true;
-    const waiting = addBubble("Thinking…", "assistant");
-    try {
-      const response = await fetch("/api/ai-chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message })
-      });
-      const data = await response.json();
-      waiting.textContent = data.answer || data.error || "The assistant is temporarily unavailable.";
-    } catch {
-      waiting.textContent = "I can’t connect right now. Please try again or use the contact page.";
-    } finally {
-      busy = false; send.disabled = false; input.focus();
-      messages.scrollTop = messages.scrollHeight;
-    }
-  });
+  const root=document.getElementById("zaid-ai");if(!root)return;
+  const launch=document.getElementById("zaid-ai-launch"),panel=document.getElementById("zaid-ai-panel"),close=document.getElementById("zaid-ai-close"),form=document.getElementById("zaid-ai-form"),input=document.getElementById("zaid-ai-input"),send=document.getElementById("zaid-ai-send"),messages=document.getElementById("zaid-ai-messages"),suggestions=root.querySelector(".zaid-ai-suggestions"),title=panel.querySelector(".zaid-ai-header strong");
+  let busy=false;
+  function toggle(open){panel.hidden=!open;launch.setAttribute("aria-expanded",String(open));if(open)input.focus()}
+  function addBubble(text,who){const bubble=document.createElement("div");bubble.className="zaid-ai-bubble "+who;bubble.textContent=text;messages.append(bubble);messages.scrollTop=messages.scrollHeight;return bubble}
+  async function loadConfig(){try{const r=await fetch("/api/ai-chat",{headers:{"Accept":"application/json"}});if(!r.ok)throw Error("unavailable");const cfg=await r.json();if(cfg.enabled===false){root.hidden=true;return}if(cfg.name)title.textContent=cfg.name;if(cfg.welcome){messages.replaceChildren();addBubble(cfg.welcome,"assistant")}if(Array.isArray(cfg.suggestions)){suggestions.replaceChildren();cfg.suggestions.slice(0,6).forEach(prompt=>{const b=document.createElement("button");b.type="button";b.dataset.aiPrompt=prompt;b.textContent=prompt;suggestions.append(b)});suggestions.hidden=!cfg.suggestions.length}}catch{addBubble("I’m temporarily unavailable. Please use the contact page to reach Zaid.","assistant");form.hidden=true}}
+  launch.addEventListener("click",()=>toggle(panel.hidden));close.addEventListener("click",()=>toggle(false));
+  suggestions.addEventListener("click",event=>{const b=event.target.closest("[data-ai-prompt]");if(!b||busy)return;input.value=b.dataset.aiPrompt;form.requestSubmit()});
+  form.addEventListener("submit",async event=>{event.preventDefault();const message=input.value.trim();if(!message||busy)return;addBubble(message,"visitor");input.value="";suggestions.hidden=true;busy=true;send.disabled=true;const waiting=addBubble("Thinking…","assistant");try{const response=await fetch("/api/ai-chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message})}),data=await response.json();waiting.textContent=data.answer||data.error||"The assistant is temporarily unavailable."}catch{waiting.textContent="I can’t connect right now. Please use the contact page."}finally{busy=false;send.disabled=false;input.focus();messages.scrollTop=messages.scrollHeight}});
+  loadConfig();
 })();
