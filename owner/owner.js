@@ -202,11 +202,50 @@
     try {
       const safeName = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "").slice(-90) || (isVideo ? "video" : "thumbnail");
       const path = (isVideo ? "videos/" : "thumbnails/") + crypto.randomUUID() + "-" + safeName;
-      const { data, error } = await client.storage.from("portfolio-media").upload(path, file, {
-        cacheControl: "3600", upsert: false, contentType: file.type
-      });
-      if (error) throw error;
-      const { data: publicData } = client.storage.from("portfolio-media").getPublicUrl(data.path);
+      let uploadedPath = path;
+      if (isVideo) {
+        if (!window.tus || typeof window.tus.Upload !== "function") {
+          throw new Error("Resumable upload library did not load. Refresh the page and try again.");
+        }
+        const { data: authData, error: authError } = await client.auth.getSession();
+        if (authError) throw authError;
+        const accessToken = authData.session?.access_token;
+        if (!accessToken) throw new Error("Your owner session expired. Please sign in again.");
+        await new Promise((resolve, reject) => {
+          const upload = new window.tus.Upload(file, {
+            endpoint: "https://rtaedoseedjwljixmrgy.storage.supabase.co/storage/v1/upload/resumable",
+            retryDelays: [0, 3000, 5000, 10000, 20000],
+            headers: { authorization: "Bearer " + accessToken, apikey: SUPABASE_PUBLIC_KEY },
+            uploadDataDuringCreation: true,
+            removeFingerprintOnSuccess: true,
+            chunkSize: 6 * 1024 * 1024,
+            metadata: {
+              bucketName: "portfolio-media",
+              objectName: path,
+              contentType: file.type,
+              cacheControl: "3600"
+            },
+            onError: reject,
+            onProgress: (bytesUploaded, bytesTotal) => {
+              const percent = Math.min(100, Math.round((bytesUploaded / bytesTotal) * 100));
+              bar.style.width = percent + "%";
+              uploadStatus(kind, "Uploading " + file.name + " — " + percent + "%");
+            },
+            onSuccess: resolve
+          });
+          upload.findPreviousUploads().then(previous => {
+            if (previous.length) upload.resumeFromPreviousUpload(previous[0]);
+            upload.start();
+          }).catch(reject);
+        });
+      } else {
+        const { data, error } = await client.storage.from("portfolio-media").upload(path, file, {
+          cacheControl: "3600", upsert: false, contentType: file.type
+        });
+        if (error) throw error;
+        uploadedPath = data.path;
+      }
+      const { data: publicData } = client.storage.from("portfolio-media").getPublicUrl(uploadedPath);
       urlInput.value = publicData.publicUrl;
       uploadStatus(kind, "Upload complete: " + file.name);
       fileInput.value = "";
