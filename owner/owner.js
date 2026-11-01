@@ -202,11 +202,50 @@
     try {
       const safeName = file.name.normalize("NFKD").replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "").slice(-90) || (isVideo ? "video" : "thumbnail");
       const path = (isVideo ? "videos/" : "thumbnails/") + crypto.randomUUID() + "-" + safeName;
-      const { data, error } = await client.storage.from("portfolio-media").upload(path, file, {
-        cacheControl: "3600", upsert: false, contentType: file.type
-      });
-      if (error) throw error;
-      const { data: publicData } = client.storage.from("portfolio-media").getPublicUrl(data.path);
+      let uploadedPath = path;
+      if (isVideo) {
+        if (!window.tus || typeof window.tus.Upload !== "function") {
+          throw new Error("Resumable upload library did not load. Refresh the page and try again.");
+        }
+        const { data: authData, error: authError } = await client.auth.getSession();
+        if (authError) throw authError;
+        const accessToken = authData.session?.access_token;
+        if (!accessToken) throw new Error("Your owner session expired. Please sign in again.");
+        await new Promise((resolve, reject) => {
+          const upload = new window.tus.Upload(file, {
+            endpoint: "https://rtaedoseedjwljixmrgy.storage.supabase.co/storage/v1/upload/resumable",
+            retryDelays: [0, 3000, 5000, 10000, 20000],
+            headers: { authorization: "Bearer " + accessToken, apikey: SUPABASE_PUBLIC_KEY },
+            uploadDataDuringCreation: true,
+            removeFingerprintOnSuccess: true,
+            chunkSize: 6 * 1024 * 1024,
+            metadata: {
+              bucketName: "portfolio-media",
+              objectName: path,
+              contentType: file.type,
+              cacheControl: "3600"
+            },
+            onError: reject,
+            onProgress: (bytesUploaded, bytesTotal) => {
+              const percent = Math.min(100, Math.round((bytesUploaded / bytesTotal) * 100));
+              bar.style.width = percent + "%";
+              uploadStatus(kind, "Uploading " + file.name + " — " + percent + "%");
+            },
+            onSuccess: resolve
+          });
+          upload.findPreviousUploads().then(previous => {
+            if (previous.length) upload.resumeFromPreviousUpload(previous[0]);
+            upload.start();
+          }).catch(reject);
+        });
+      } else {
+        const { data, error } = await client.storage.from("portfolio-media").upload(path, file, {
+          cacheControl: "3600", upsert: false, contentType: file.type
+        });
+        if (error) throw error;
+        uploadedPath = data.path;
+      }
+      const { data: publicData } = client.storage.from("portfolio-media").getPublicUrl(uploadedPath);
       urlInput.value = publicData.publicUrl;
       uploadStatus(kind, "Upload complete: " + file.name);
       fileInput.value = "";
@@ -248,7 +287,7 @@
       const edit = document.createElement("button"); edit.className = "quiet-button"; edit.type = "button"; edit.textContent = "Edit";
       edit.addEventListener("click", () => {
         editingId = project.id; $("#project-id").value = project.id; $("#project-title").value = project.title;
-        projectType.value = project.project_type; $("#project-description").value = project.description || "";
+        projectType.value = project.project_type; $("#project-sort-order").value = Number.isInteger(project.sort_order) ? project.sort_order : 0; $("#project-description").value = project.description || "";
         $("#project-video").value = project.video_url; $("#project-thumbnail").value = project.thumbnail_url || "";
         $("#project-published").checked = project.is_published; toggleThumbnail();
         $("#save-project-button").innerHTML = 'Update project <span aria-hidden="true">↗</span>';
@@ -283,7 +322,8 @@
     catch { return setMessage(projectMessage, "Enter a valid http(s) video URL.", true); }
     const thumbnail = $("#project-thumbnail").value.trim();
     if (thumbnail) { try { const u = new URL(thumbnail); if (!["https:", "http:"].includes(u.protocol)) throw new Error(); } catch { return setMessage(projectMessage, "Enter a valid thumbnail URL or leave it blank.", true); } }
-    const payload = { title, project_type: projectType.value, description: $("#project-description").value.trim(), video_url: videoUrl, thumbnail_url: projectType.value === "long" ? thumbnail : "", is_published: $("#project-published").checked };
+    const sortOrder = Number.parseInt($("#project-sort-order").value, 10);
+    const payload = { title, project_type: projectType.value, description: $("#project-description").value.trim(), video_url: videoUrl, thumbnail_url: projectType.value === "long" ? thumbnail : "", is_published: $("#project-published").checked, sort_order: Number.isFinite(sortOrder) ? Math.max(0, Math.min(9999, sortOrder)) : 0 };
     const button = $("#save-project-button"); button.disabled = true; button.textContent = editingId ? "Updating…" : "Saving…"; setMessage(projectMessage, "");
     try {
       const result = editingId

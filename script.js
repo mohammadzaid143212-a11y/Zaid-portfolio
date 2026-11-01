@@ -107,7 +107,13 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     const copy = document.createElement("div");
     const title = document.createElement("h3"); title.textContent = project.title;
     const desc = document.createElement("p"); desc.textContent = project.description || (project.project_type === "long" ? "Cinematic edit / Long-form" : "Short-form / Social");
-    copy.append(title, desc); info.append(copy);
+    copy.append(title, desc);
+    const detailLink = document.createElement("a");
+    detailLink.className = "project-detail-link";
+    detailLink.href = "/project/?id=" + encodeURIComponent(project.id);
+    detailLink.textContent = "View project ↗";
+    copy.append(detailLink);
+    info.append(copy);
     const arrow = document.createElement("span"); arrow.className = "project-arrow"; arrow.textContent = "↗"; info.append(arrow);
     card.append(art, info); grid.append(card);
   });
@@ -321,5 +327,66 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
       }
       target.append(node);
     });
+  });
+})();
+
+
+// Public portfolio assistant (chat-only). Messages are not persisted in this first phase.
+(() => {
+  const root = document.getElementById("zaid-ai");
+  if (!root) return;
+  const launch = document.getElementById("zaid-ai-launch");
+  const panel = document.getElementById("zaid-ai-panel");
+  const close = document.getElementById("zaid-ai-close");
+  const form = document.getElementById("zaid-ai-form");
+  const input = document.getElementById("zaid-ai-input");
+  const send = document.getElementById("zaid-ai-send");
+  const messages = document.getElementById("zaid-ai-messages");
+  const suggestions = root.querySelector(".zaid-ai-suggestions");
+  let busy = false;
+  function toggle(open) {
+    panel.hidden = !open;
+    launch.setAttribute("aria-expanded", String(open));
+    if (open) input.focus();
+  }
+  function addBubble(text, who) {
+    const bubble = document.createElement("div");
+    bubble.className = "zaid-ai-bubble " + who;
+    bubble.textContent = text;
+    messages.append(bubble);
+    messages.scrollTop = messages.scrollHeight;
+    return bubble;
+  }
+  launch.addEventListener("click", () => toggle(panel.hidden));
+  close.addEventListener("click", () => toggle(false));
+  suggestions.addEventListener("click", event => {
+    const button = event.target.closest("[data-ai-prompt]");
+    if (!button || busy) return;
+    input.value = button.dataset.aiPrompt;
+    form.requestSubmit();
+  });
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    const message = input.value.trim();
+    if (!message || busy) return;
+    addBubble(message, "visitor");
+    input.value = "";
+    suggestions.hidden = true;
+    busy = true; send.disabled = true;
+    const waiting = addBubble("Thinking…", "assistant");
+    try {
+      const response = await fetch("/api/ai-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      });
+      const data = await response.json();
+      waiting.textContent = data.answer || data.error || "The assistant is temporarily unavailable.";
+    } catch {
+      waiting.textContent = "I can’t connect right now. Please try again or use the contact page.";
+    } finally {
+      busy = false; send.disabled = false; input.focus();
+      messages.scrollTop = messages.scrollHeight;
+    }
   });
 })();
