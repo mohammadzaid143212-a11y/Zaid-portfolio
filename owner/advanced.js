@@ -6,7 +6,11 @@
   const $ = (s) => document.querySelector(s);
   if (!window.supabase) return;
   const db = window.supabase.createClient(URL, KEY);
-  let active = false, initializing = false, busy = false, versions = [], undoStack = [], redoStack = [];
+  let active = false, initializing = false, busy = false, versions = [];
+  const stackState = (() => { try { return JSON.parse(sessionStorage.getItem("zaid-version-stacks") || "{}"); } catch { return {}; } })();
+  let undoStack = Array.isArray(stackState.undo) ? stackState.undo : [];
+  let redoStack = Array.isArray(stackState.redo) ? stackState.redo : [];
+  function persistStacks(){ try { sessionStorage.setItem("zaid-version-stacks",JSON.stringify({undo:undoStack.slice(-20),redo:redoStack.slice(-20)})); } catch {} }
   const note = (id, msg, bad=false) => { const el=$(id); if(el){el.textContent=msg;el.classList.toggle("error",bad);} };
   async function ownerSession() {
     const {data,error}=await db.auth.getSession();
@@ -72,7 +76,7 @@
     if(!window.confirm("Restore this saved version? Current projects and theme settings will be replaced by this restore point.")) return;
     try {
       const current=await snapshot("Before restore");
-      undoStack.push(current); redoStack=[];
+      undoStack.push(current); redoStack=[]; persistStacks();
       await restoreSnapshot(v.snapshot);
     } catch(e){note("#version-message",e.message||"Restore failed.",true);}
   }
@@ -85,21 +89,21 @@
     });
     $("#undo-version")?.addEventListener("click",async()=>{
       if(!undoStack.length){note("#version-message","No more changes to undo in this session.");return;}
-      try{const now=await snapshot("Before undo");redoStack.push(now);const prev=undoStack.pop();await restoreSnapshot(prev);}
+      try{const now=await snapshot("Before undo");redoStack.push(now);const prev=undoStack.pop();persistStacks();await restoreSnapshot(prev);}
       catch(e){note("#version-message",e.message||"Undo failed.",true);}
     });
     $("#redo-version")?.addEventListener("click",async()=>{
       if(!redoStack.length){note("#version-message","No changes to redo in this session.");return;}
-      try{const now=await snapshot("Before redo");undoStack.push(now);const next=redoStack.pop();await restoreSnapshot(next);}
+      try{const now=await snapshot("Before redo");undoStack.push(now);const next=redoStack.pop();persistStacks();await restoreSnapshot(next);}
       catch(e){note("#version-message",e.message||"Redo failed.",true);}
     });
   }
   function interceptSaves() {
     document.addEventListener("submit",async(event)=>{
       const form=event.target;
-      if(!(form instanceof HTMLFormElement)||!form.closest("#dashboard-view")||form.id==="performance-form"||form.dataset.versionGuard==="skip"||busy)return;
+      if(!(form instanceof HTMLFormElement)||!form.closest("#dashboard-view")||form.dataset.versionGuard==="skip"||busy)return;
       event.preventDefault();event.stopImmediatePropagation();busy=true;
-      try{const before=await snapshot("Before "+form.id.replace(/-form$/,"").replace(/-/g," ")+" update");await saveVersion("Before "+form.id.replace(/-form$/,"").replace(/-/g," ")+" update",before);undoStack.push(before);redoStack=[];}
+      try{const before=await snapshot("Before "+form.id.replace(/-form$/,"").replace(/-/g," ")+" update");await saveVersion("Before "+form.id.replace(/-form$/,"").replace(/-/g," ")+" update",before);undoStack.push(before);redoStack=[];persistStacks();}
       catch(e){note("#version-message","Automatic restore point could not be saved: "+(e.message||"unknown error"),true);}
       finally{busy=false;form.dataset.versionGuard="skip";form.requestSubmit();delete form.dataset.versionGuard;}
     },true);
