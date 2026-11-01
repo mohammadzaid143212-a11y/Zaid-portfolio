@@ -35,7 +35,7 @@
     return snap;
   }
   async function trimVersions() {
-    const {data,error}=await db.from("portfolio_versions").select("id").order("created_at",{ascending:false}).range(40,200);
+    const {data,error}=await db.from("portfolio_versions").select("id").order("created_at",{ascending:false}).range(40,999);
     if(error) throw error;
     if(data?.length) { const {error:delErr}=await db.from("portfolio_versions").delete().in("id",data.map(x=>x.id)); if(delErr) throw delErr; }
   }
