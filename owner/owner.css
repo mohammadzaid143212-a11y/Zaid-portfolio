@@ -628,3 +628,7 @@ html{scroll-snap-type:y proximity}
 .seo-preview span{font-size:13px;line-height:1.6;color:var(--text)}
 #seo-studio .field-help{max-width:720px}
 #seo-studio textarea{resize:vertical}
+
+
+/* Keep the dashboard (including its fixed sidebar) hidden until authentication succeeds. */
+#dashboard-view.hidden { display: none !important; }
