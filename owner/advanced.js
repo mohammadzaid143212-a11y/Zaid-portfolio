@@ -133,7 +133,7 @@
       ]);
       if(projects.error)throw projects.error;if(theme.error)throw theme.error;
       const settings=theme.data?.settings||{};
-      const referenced=[...(projects.data||[]).flatMap(p=>[p.video_url,p.thumbnail_url]),...JSON.stringify(settings).match(/https?:[^"' ]+/g)||[]];
+      const referenced=[...(projects.data||[]).flatMap(p=>[p.video_url,p.thumbnail_url]),...(JSON.stringify(settings).match(/https?:[^"' ]+/g)||[])];
       list.replaceChildren();
       if(!files.length){const p=document.createElement("p");p.className="empty-state";p.textContent="No uploaded media found.";list.append(p);return;}
       files.forEach(file=>{
@@ -208,13 +208,14 @@
   }
   function bindPerformance(){ $("#performance-form")?.addEventListener("submit",async e=>{e.preventDefault();const b=$("#save-performance");b.disabled=true;try{await savePerformance();}catch(err){note("#performance-message",err.message||"Could not save settings.",true);}finally{b.disabled=false;}}); }
   async function init(){
+    if(active)return;
     const session=await ownerSession();if(!session)return;
     active=true;
     bindVersionControls();interceptSaves();bindMedia();bindAnalytics();bindPerformance();
     await Promise.all([initVersions(),loadPerformance()]);
     $("#refresh-media")?.click();$("#refresh-analytics")?.click();
   }
-  db.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_IN"&&session?.user?.email?.toLowerCase()===OWNER)init();});
+  window.addEventListener("zaid-owner-ready",init);
   document.addEventListener("DOMContentLoaded",init);
   if(document.readyState!=="loading")init();
 })();
