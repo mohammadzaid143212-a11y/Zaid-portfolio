@@ -630,7 +630,5 @@ html{scroll-snap-type:y proximity}
 #seo-studio textarea{resize:vertical}
 
 
-/* Keep the dashboard and its fixed sidebar hidden until authentication succeeds. */
-#dashboard-view.hidden {
-  display: none !important;
-}
+/* Keep the dashboard (including its fixed sidebar) hidden until authentication succeeds. */
+#dashboard-view.hidden { display: none !important; }
