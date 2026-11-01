@@ -248,7 +248,7 @@
       const edit = document.createElement("button"); edit.className = "quiet-button"; edit.type = "button"; edit.textContent = "Edit";
       edit.addEventListener("click", () => {
         editingId = project.id; $("#project-id").value = project.id; $("#project-title").value = project.title;
-        projectType.value = project.project_type; $("#project-description").value = project.description || "";
+        projectType.value = project.project_type; $("#project-sort-order").value = Number.isInteger(project.sort_order) ? project.sort_order : 0; $("#project-description").value = project.description || "";
         $("#project-video").value = project.video_url; $("#project-thumbnail").value = project.thumbnail_url || "";
         $("#project-published").checked = project.is_published; toggleThumbnail();
         $("#save-project-button").innerHTML = 'Update project <span aria-hidden="true">↗</span>';
@@ -283,7 +283,8 @@
     catch { return setMessage(projectMessage, "Enter a valid http(s) video URL.", true); }
     const thumbnail = $("#project-thumbnail").value.trim();
     if (thumbnail) { try { const u = new URL(thumbnail); if (!["https:", "http:"].includes(u.protocol)) throw new Error(); } catch { return setMessage(projectMessage, "Enter a valid thumbnail URL or leave it blank.", true); } }
-    const payload = { title, project_type: projectType.value, description: $("#project-description").value.trim(), video_url: videoUrl, thumbnail_url: projectType.value === "long" ? thumbnail : "", is_published: $("#project-published").checked };
+    const sortOrder = Number.parseInt($("#project-sort-order").value, 10);
+    const payload = { title, project_type: projectType.value, description: $("#project-description").value.trim(), video_url: videoUrl, thumbnail_url: projectType.value === "long" ? thumbnail : "", is_published: $("#project-published").checked, sort_order: Number.isFinite(sortOrder) ? Math.max(0, Math.min(9999, sortOrder)) : 0 };
     const button = $("#save-project-button"); button.disabled = true; button.textContent = editingId ? "Updating…" : "Saving…"; setMessage(projectMessage, "");
     try {
       const result = editingId
