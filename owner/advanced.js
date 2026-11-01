@@ -6,7 +6,7 @@
   const $ = (s) => document.querySelector(s);
   if (!window.supabase) return;
   const db = window.supabase.createClient(URL, KEY);
-  let active = false, busy = false, versions = [], undoStack = [], redoStack = [];
+  let active = false, initializing = false, busy = false, versions = [], undoStack = [], redoStack = [];
   const note = (id, msg, bad=false) => { const el=$(id); if(el){el.textContent=msg;el.classList.toggle("error",bad);} };
   async function ownerSession() {
     const {data,error}=await db.auth.getSession();
@@ -95,10 +95,9 @@
     });
   }
   function interceptSaves() {
-    const guarded=new Set(["project-form","theme-form","text-studio-form","animation-studio-form","seo-studio-form"]);
     document.addEventListener("submit",async(event)=>{
       const form=event.target;
-      if(!(form instanceof HTMLFormElement)||!guarded.has(form.id)||form.dataset.versionGuard==="skip"||busy)return;
+      if(!(form instanceof HTMLFormElement)||!form.closest("#dashboard-view")||form.id==="performance-form"||form.dataset.versionGuard==="skip"||busy)return;
       event.preventDefault();event.stopImmediatePropagation();busy=true;
       try{const before=await snapshot("Before "+form.id.replace(/-form$/,"").replace(/-/g," ")+" update");await saveVersion("Before "+form.id.replace(/-form$/,"").replace(/-/g," ")+" update",before);undoStack.push(before);redoStack=[];}
       catch(e){note("#version-message","Automatic restore point could not be saved: "+(e.message||"unknown error"),true);}
@@ -208,14 +207,15 @@
   }
   function bindPerformance(){ $("#performance-form")?.addEventListener("submit",async e=>{e.preventDefault();const b=$("#save-performance");b.disabled=true;try{await savePerformance();}catch(err){note("#performance-message",err.message||"Could not save settings.",true);}finally{b.disabled=false;}}); }
   async function init(){
-    if(active)return;
-    const session=await ownerSession();if(!session)return;
-    active=true;
+    if(active||initializing)return;
+    initializing=true;
+    const session=await ownerSession();
+    if(!session){initializing=false;return;}
+    active=true;initializing=false;
     bindVersionControls();interceptSaves();bindMedia();bindAnalytics();bindPerformance();
     await Promise.all([initVersions(),loadPerformance()]);
     $("#refresh-media")?.click();$("#refresh-analytics")?.click();
   }
   window.addEventListener("zaid-owner-ready",init);
-  document.addEventListener("DOMContentLoaded",init);
-  if(document.readyState!=="loading")init();
+  if(document.readyState!=="loading")init(); else document.addEventListener("DOMContentLoaded",init,{once:true});
 })();
