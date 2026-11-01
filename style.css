@@ -75,3 +75,6 @@ h1{animation:rise-in .9s cubic-bezier(.2,.7,.2,1) both}
 .zaid-ai-note{font-size:9px;line-height:1.45;color:#77767a;padding:0 15px 12px;margin:0}
 @media(max-width:600px){.zaid-ai{right:14px;bottom:14px}.zaid-ai-launch{padding:13px 16px}.zaid-ai-panel{right:-2px;bottom:58px;width:calc(100vw - 24px);height:min(590px,calc(100dvh - 95px))}}
 @media(prefers-reduced-motion:reduce){.zaid-ai *{scroll-behavior:auto}}
+
+/* Individual published project links */
+.project-detail-link{display:inline-flex;align-items:center;gap:8px;margin-top:12px;color:var(--accent);font-size:10px;letter-spacing:1.1px;text-transform:uppercase;text-decoration:none;border-bottom:1px solid #c9f36a55;padding-bottom:5px;position:relative;z-index:3}.project-detail-link:hover{border-color:var(--accent);transform:translateX(2px)}
