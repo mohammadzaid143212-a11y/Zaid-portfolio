@@ -33,18 +33,17 @@
   function showRecovery() { recoveryMode = true; hideViews(); recoveryView.classList.remove("hidden"); setMessage(recoveryMessage, ""); }
   function setupStudioSlides() {
     if (!dashboardView || dashboardView.dataset.clickNavigationReady === "true") return;
-    const slides = Array.from(dashboardView.querySelectorAll(".studio-slide"));
-    const links = Array.from(dashboardView.querySelectorAll("[data-owner-section]"));
     const showPanel = (id) => {
-      const target = slides.find(slide => slide.id === id) || document.getElementById(id);
-      if (!target || !target.classList.contains("studio-slide")) return;
+      const slides = Array.from(dashboardView.querySelectorAll(".studio-slide"));
+      const target = slides.find(slide => slide.id === id);
+      if (!target) return;
       slides.forEach(slide => {
         const active = slide === target;
         slide.classList.toggle("is-active", active);
         slide.hidden = !active;
         slide.setAttribute("aria-hidden", String(!active));
       });
-      links.forEach(link => {
+      dashboardView.querySelectorAll("[data-owner-section]").forEach(link => {
         const active = link.dataset.ownerSection === id;
         link.classList.toggle("is-active", active);
         if (active) link.setAttribute("aria-current", "page");
@@ -53,17 +52,17 @@
       dashboardView.dataset.activePanel = id;
       window.scrollTo({ top: 0, behavior: "auto" });
     };
-    links.forEach(link => {
-      if (!link.dataset.ownerSection) return;
-      link.addEventListener("click", event => {
-        event.preventDefault();
-        const panelId = link.dataset.ownerSection;
-        showPanel(panelId);
-        if (panelId === "adjustment-studio") { document.getElementById("adjustment-panel")?.setAttribute("open", ""); }
-        if (panelId === "long-video-manager") { setVideoPanel("long"); }
-        if (panelId === "short-video-manager") { setVideoPanel("short"); }
-      });
+    dashboardView.addEventListener("click", event => {
+      const link = event.target.closest("[data-owner-section]");
+      if (!link || !dashboardView.contains(link)) return;
+      event.preventDefault();
+      const panelId = link.dataset.ownerSection;
+      showPanel(panelId);
+      if (panelId === "adjustment-studio") document.getElementById("adjustment-panel")?.setAttribute("open", "");
+      if (panelId === "long-video-manager") setVideoPanel("long");
+      if (panelId === "short-video-manager") setVideoPanel("short");
     });
+    dashboardView.addEventListener("zaid-owner-panels-updated", () => showPanel(dashboardView.dataset.activePanel || "studio-overview"));
     dashboardView.dataset.clickNavigationReady = "true";
     showPanel("studio-overview");
   }
