@@ -78,3 +78,89 @@ h1{animation:rise-in .9s cubic-bezier(.2,.7,.2,1) both}
 
 /* Individual published project links */
 .project-detail-link{display:inline-flex;align-items:center;gap:8px;margin-top:12px;color:var(--accent);font-size:10px;letter-spacing:1.1px;text-transform:uppercase;text-decoration:none;border-bottom:1px solid #c9f36a55;padding-bottom:5px;position:relative;z-index:3}.project-detail-link:hover{border-color:var(--accent);transform:translateX(2px)}
+
+
+/* =========================================================
+   ZAID / CINEMATIC LUXURY — visual identity refresh
+   Palette: obsidian, warm ivory, champagne, oxblood.
+   Presentation-only overrides; portfolio data and interactions unchanged.
+   ========================================================= */
+:root{
+  --bg:#090909;--panel:#121110;--text:#eee9df;--muted:#a39b90;
+  --accent:#c6a875;--line:rgba(221,202,168,.20);--max:1320px;
+  --champagne:#c6a875;--ivory:#eee9df;--oxblood:#542c30;
+}
+body{background:var(--bg);color:var(--ivory);font-family:"DM Sans",sans-serif}
+.site-header{height:94px;border-bottom-color:var(--line);background:rgba(9,9,9,.88);backdrop-filter:blur(18px)}
+.wordmark{font-family:"Cormorant Garamond",serif;font-size:30px;font-weight:700;letter-spacing:.04em}
+.wordmark span{color:var(--champagne)}
+.nav-links{font-size:11px;letter-spacing:.13em;text-transform:uppercase;gap:38px}
+.nav-links a:hover,.site-footer a:hover{color:var(--champagne)}
+.availability{letter-spacing:.12em;text-transform:uppercase;font-size:9px}
+.status-dot,.eyebrow-line{background:var(--champagne);box-shadow:0 0 14px #c6a87566}
+.hero{padding-top:clamp(76px,10vw,138px)}
+.eyebrow,.section-kicker{font-size:9px;letter-spacing:.24em;color:#c9bda9}
+h1,h2{font-family:"Cormorant Garamond",serif;font-weight:500;letter-spacing:-.045em}
+h1{font-size:clamp(76px,12vw,166px);line-height:.78;margin:42px 0 32px}
+.muted{color:#77716b;font-style:italic}
+.hero-bottom{margin-bottom:68px}
+.hero-bottom p{max-width:420px;color:#b8afa3;font-size:14px}
+.circle-link{width:56px;height:56px;border-color:#8c7652;color:var(--champagne)}
+.circle-link:hover{background:var(--champagne);color:#090909;border-color:var(--champagne)}
+.hero-frame{height:clamp(300px,52vw,660px);border:1px solid #c6a87540;background:#15110f}
+.hero-video{opacity:.56;filter:brightness(.55) saturate(.62) contrast(1.08)}
+.hero-frame:before{background:linear-gradient(90deg,#080706b8,#08070630 56%,#0807066b),linear-gradient(0deg,#050505f2,transparent 65%)}
+.frame-overlay{inset:24px;border-color:#d7c5a52b}
+.frame-copy,.art-label,.art-bottom{letter-spacing:.22em;color:#d0c1a8;font-size:8px}
+.play-mark{width:76px;height:76px;border-color:#d4c09a99;color:#e5d4b4;background:#08070630}
+.frame-caption{font-family:"Cormorant Garamond",serif;font-size:clamp(22px,3vw,36px);font-style:italic;color:#f0e7d8}
+.hero-meta{color:#82786c;letter-spacing:.18em;font-size:8px}
+.work-section{padding-top:clamp(100px,13vw,180px);padding-bottom:clamp(90px,12vw,160px)}
+.section-heading{margin-bottom:54px}
+.section-heading h2,.about-inner h2{font-size:clamp(54px,7vw,92px);line-height:.92}
+.accent,.text-link span,.contact-link span,.project-detail-link{color:var(--champagne)}
+.section-heading>p{color:#a69b8d}
+.project-grid{gap:56px 28px}
+.project-art{border:1px solid #c6a87524;background-color:#15110f;min-height:340px}
+.project-large .project-art{height:clamp(350px,48vw,610px)}
+.art-one{background:radial-gradient(ellipse at 68% 38%,#76634d 0,#44392f 22%,#211c19 53%,#0d0c0b 82%)}
+.art-two{background:radial-gradient(ellipse at 60% 50%,#76563a 0,#453324 26%,#211a15 56%,#0d0c0b 82%)}
+.art-three{background:radial-gradient(ellipse at 50% 45%,#604447 0,#352629 30%,#1c1718 58%,#0d0c0b 82%)}
+.art-title{font-family:"Cormorant Garamond",serif;font-weight:500;font-size:clamp(48px,7vw,92px);letter-spacing:-.035em}
+.project-card:not(.project-large) .art-title{font-size:clamp(42px,5vw,66px)}
+.project-info{padding:20px 2px}
+.project-info h3{font-family:"Cormorant Garamond",serif;font-size:24px;font-weight:600;letter-spacing:0}
+.project-info p{color:#9b9184}
+.project-arrow{border-color:#8c765255;color:var(--champagne)}
+.project-card:hover .project-arrow{border-color:var(--champagne);color:var(--champagne)}
+.work-note{color:#8e806d;letter-spacing:.16em}
+.about-section{background:linear-gradient(110deg,#15110f,#0e0d0c 70%);border-color:#c6a87524;padding:clamp(80px,10vw,140px) 0}
+.about-inner{gap:70px}
+.about-inner h2{font-size:clamp(48px,6.5vw,84px)}
+.about-inner p{color:#b4aa9d;font-size:14px}
+.text-link{border-color:#9a8058;letter-spacing:.15em}
+.contact-section{padding-top:clamp(100px,14vw,180px);padding-bottom:clamp(100px,13vw,170px)}
+.contact-section h2{font-family:"Cormorant Garamond",serif;font-weight:500;font-size:clamp(58px,9vw,116px)}
+.contact-link{font-family:"Cormorant Garamond",serif;font-size:clamp(28px,4vw,44px);border-color:#9a8058}
+.contact-note,.media-credit{color:#8e8579}
+.site-footer{border-color:var(--line);color:#958b7d;letter-spacing:.15em}
+.zaid-ai-launch,.zaid-ai-form button{background:var(--champagne);color:#100e0b}
+.zaid-ai-launch{border-color:#c6a87580;box-shadow:0 14px 48px #0009}
+.zaid-ai-panel{background:#12100f;border-color:#c6a87555;border-radius:4px}
+.zaid-ai-header,.zaid-ai-form{border-color:#c6a87530}
+.zaid-ai-status{background:var(--champagne);box-shadow:0 0 10px #c6a87588}
+.zaid-ai-bubble.assistant{background:#211c18;color:#eee6d9;border-color:#c6a87518}
+.zaid-ai-bubble.visitor{background:var(--champagne);color:#100e0b}
+.zaid-ai-form input:focus{border-color:#c6a875}
+.zaid-ai-suggestions button{background:#1d1915;border-color:#c6a87545;color:#e3d4bd}
+.project-detail-link{border-color:#c6a87566}
+@media(max-width:680px){
+ .site-header{height:72px}.wordmark{font-size:27px}
+ .hero{padding-top:76px}h1{font-size:clamp(66px,17vw,108px);line-height:.82}
+ .hero-bottom{margin-bottom:38px}.hero-meta{font-size:7px;letter-spacing:.1em}
+ .frame-overlay{inset:12px}.project-large .project-art,.project-art{height:310px}
+ .work-section{padding-top:90px;padding-bottom:90px}
+ .about-inner{gap:30px}.about-inner h2{font-size:clamp(46px,11vw,64px)}
+ .contact-section h2{font-size:clamp(56px,13vw,82px)}
+}
+@media(prefers-reduced-motion:reduce){.hero-video,.play-mark{animation:none!important}}

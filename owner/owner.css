@@ -666,3 +666,85 @@ html{scroll-snap-type:y proximity}
   #dashboard-view select, #dashboard-view textarea { max-width: 100%; min-width: 0; }
   #dashboard-view .field-row { display: grid; grid-template-columns: minmax(0,1fr); gap: 12px; }
 }
+
+
+/* =========================================================
+   ZAID OWNER STUDIO / CINEMATIC LUXURY CONTROL ROOM
+   Premium restrained surfaces; all controls and data remain intact.
+   ========================================================= */
+:root{
+ --bg:#090909;--panel:#12100f;--line:rgba(198,168,117,.22);
+ --muted:#a69b8e;--text:#eee8dd;--accent:#c6a875;
+ --studio-gold:#c6a875;--studio-ivory:#eee8dd;--studio-wine:#542c30;
+}
+html,body{background:#090909;color:var(--studio-ivory)}
+body{font-family:"DM Sans",sans-serif;background:radial-gradient(ellipse at 78% 0%,#8b6c3b12,transparent 34%),#090909}
+.topbar{height:82px;background:rgba(9,9,9,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
+.brand{font-family:"Cormorant Garamond",serif;font-size:31px;letter-spacing:.04em;font-weight:700}
+.brand span{color:var(--studio-gold)}
+.private-label{font-size:9px;letter-spacing:.22em;color:#c7b9a5}
+.private-label i,.status-dot{background:var(--studio-gold);box-shadow:0 0 13px #c6a87566}
+.shell{width:min(1200px,calc(100% - 48px));margin:clamp(30px,6vh,70px) auto 90px}
+.auth-card,.manager-card,.stat-card,.project-card,.backup-card,.seo-preview{
+ border:1px solid var(--line);border-radius:3px;
+ background:linear-gradient(145deg,#171310,#0e0d0c 72%);
+ box-shadow:0 20px 70px #0005;
+}
+.auth-card{border-radius:3px}
+.auth-card h1,.dashboard h1,.manager-heading h2,.manager-card h3,.backup-card h3{
+ font-family:"Cormorant Garamond",serif;font-weight:600;letter-spacing:-.025em
+}
+.auth-card h1,.dashboard h1{font-size:clamp(48px,7vw,76px)}
+.auth-card h1 span{color:#8d7960}
+.eyebrow,.manager-heading .eyebrow{color:var(--studio-gold);letter-spacing:.23em}
+.auth-card input,.manager-card input:not([type=checkbox]):not([type=color]):not([type=range]),
+.manager-card select,.manager-card textarea{
+ background:#0b0a09;border-color:#6e583a66;color:var(--studio-ivory);border-radius:2px
+}
+.auth-card input:focus,.manager-card input:focus,.manager-card textarea:focus,.manager-card select:focus{
+ border-color:var(--studio-gold);outline:1px solid #c6a87522
+}
+.primary,.auth-card .primary,.manager-card .primary,.backup-card .primary{
+ background:var(--studio-gold);color:#100e0b;border:1px solid var(--studio-gold);
+ border-radius:2px;font-weight:700;letter-spacing:.03em;min-height:48px
+}
+.primary:hover,.auth-card .primary:hover,.manager-card .primary:hover{background:#d8bd8c}
+.owner-sidebar{
+ background:rgba(17,15,13,.96)!important;border:1px solid #c6a87544!important;
+ border-radius:3px!important;backdrop-filter:blur(18px);box-shadow:0 18px 55px #0009
+}
+.sidebar-link{border-radius:2px!important;color:#c5b9a9!important;letter-spacing:.015em}
+.sidebar-link:hover,.sidebar-link.is-active{
+ background:#c6a87518!important;border-color:#c6a87555!important;color:#ead8b7!important
+}
+.sidebar-icon{color:var(--studio-gold)!important}
+.manager-heading h2{font-size:clamp(40px,6vw,62px);line-height:.95}
+.manager-intro,.intro{color:#b0a596}
+.manager-card,.stat-card,.backup-card{border-radius:3px!important;background:linear-gradient(145deg,#171310,#100e0d)!important;border-color:var(--line)!important}
+.manager-card h3,.backup-card h3{font-size:28px}
+.manager-card p,.manager-card small,.field-help{color:#a99d8e}
+.manager-card button:not(.primary),.manager-card .secondary{
+ border-radius:2px;border-color:#8d714a66
+}
+.manager-card input[type=checkbox]{accent-color:var(--studio-gold)}
+.manager-card input[type=range]{accent-color:var(--studio-gold)}
+.manager-card input[type=color]{border:1px solid #c6a87566;background:#0b0a09}
+.stat-card>span{color:#c5ae87;letter-spacing:.2em}
+.stat-card strong,.stat-card .stat-number{font-family:"Cormorant Garamond",serif}
+.project-item,.saved-project,.project-list article{border-color:var(--line)!important;background:#110f0d!important}
+.notice{color:#c6a875}
+.error{color:#df9292}
+#adjustment-panel,.seo-preview,.backup-card{border-radius:3px}
+#adjustment-panel>summary::after{color:var(--studio-gold)}
+.seo-preview{--seo-preview-accent:#c6a875}
+.seo-preview strong{color:#dfc79e}
+.element-studio-panel .website-preview-frame-wrap{border-color:#c6a87544;background:#090909}
+.animation-preview-card{background:radial-gradient(ellipse at 80% 15%,#c6a87520,transparent 45%),linear-gradient(135deg,#191512,#0b0a09)}
+.animation-preview-card .eyebrow{color:var(--studio-gold)}
+.zaid-ai-launch{background:var(--studio-gold);color:#100e0b}
+@media(max-width:680px){
+ .shell{width:calc(100% - 28px);margin:28px auto 60px}
+ .topbar{height:70px;padding:0 18px}
+ .brand{font-size:28px}
+}
+@media(prefers-reduced-motion:reduce){.owner-sidebar,.manager-card,.primary{transition:none!important}}
