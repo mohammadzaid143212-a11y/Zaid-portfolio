@@ -89,3 +89,13 @@ body{background:var(--zaid-ink)}
 .project-card{translate:0 var(--story-depth,0px)}
 @media(max-width:760px){.chapter-rail{left:12px;gap:12px}.chapter-rail a i{width:12px}.chapter-rail a.is-current i{width:22px}.chapter-caption{left:12px;bottom:14px;font-size:7px}.chapter-rail a span{display:none}}
 @media(prefers-reduced-motion:reduce){.scroll-progress span{will-change:auto}.chapter-rail a,.chapter-rail a i,.chapter-rail a span{transition:none}.project-card{translate:none!important}}
+
+
+/* Kinetic editorial typography and restrained chapter transition. */
+.cinematic-title .title-line{display:inline-block;overflow:visible}
+.cinematic-title .title-word{display:inline-block;animation:zaidWordRise .95s cubic-bezier(.2,.72,.18,1) both;animation-delay:calc(.16s + var(--word-index,0)*.105s);will-change:transform,opacity,filter}
+.cinematic-title .muted .title-word{animation-delay:calc(.48s + var(--word-index,0)*.105s)}
+.chapter-transition-curtain{position:fixed;z-index:1100;inset:0 0 auto;height:100vh;pointer-events:none;background:linear-gradient(145deg,#171311 0%,#4b3425 48%,#090909 100%);transform:scaleY(0);transform-origin:bottom;opacity:0}
+@keyframes zaidWordRise{from{opacity:0;transform:translate3d(0,38px,0) skewY(3deg);filter:blur(9px)}to{opacity:1;transform:translate3d(0,0,0) skewY(0);filter:blur(0)}}
+@media(max-width:680px){.cinematic-title .title-word{animation-duration:.8s}}
+@media(prefers-reduced-motion:reduce){.cinematic-title .title-word{animation:none!important;opacity:1;filter:none;transform:none}.chapter-transition-curtain{display:none}}
