@@ -96,7 +96,7 @@
       addText(info, "p", "field-help", new Date(item.created_at).toLocaleString() + " · " + statusLabel(item.status));
       addText(info, "p", "", item.email);
       addText(info, "p", "", "Project: " + item.project_type + " · Budget: " + item.budget);
-      addText(info, "p", "", "Deadline: " + (item.deadline || "Flexible"));
+      addText(info, "p", "", "Deadline: " + (item.deadline || "Flexible") + " · Preferred: " + (item.preferred_contact || "email"));
       if (item.details) addText(info, "p", "", item.details);
       const actions = document.createElement("div"); actions.className = "library-actions";
       const status = document.createElement("select"); status.setAttribute("aria-label", "Inquiry status for " + (item.name || "client"));
@@ -112,6 +112,7 @@
       });
       const email = document.createElement("a"); email.className = "quiet-button"; email.href = "mailto:" + encodeURIComponent(item.email); email.textContent = "Email client ↗";
       actions.append(status, email);
+      if (item.preferred_contact === "whatsapp") { const whatsapp = document.createElement("a"); whatsapp.className = "quiet-button"; whatsapp.href = "https://wa.me/918857020261?text=" + encodeURIComponent("Hi " + item.name + ", thanks for your project inquiry. I’m following up about: " + item.project_type); whatsapp.target = "_blank"; whatsapp.rel = "noopener noreferrer"; whatsapp.textContent = "WhatsApp ↗"; actions.append(whatsapp); }
       card.append(info, actions); list.append(card);
     });
   }
