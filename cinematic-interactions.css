@@ -1,0 +1,45 @@
+/* ZAID immersive hybrid layer — additive, presentation-only. */
+:root{--zaid-ink:#090909;--zaid-paper:#e9e1d3;--zaid-champagne:#c6a875;--zaid-wine:#542c30}
+html{scroll-padding-top:90px}
+body{background:var(--zaid-ink)}
+.site-header{position:sticky;top:0;z-index:100}
+.site-header:after{content:"";position:absolute;left:5.5%;right:5.5%;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--zaid-champagne),transparent);opacity:.34}
+.hero h1{animation:zaidHeroIn 1.1s cubic-bezier(.2,.7,.2,1) both}
+.hero .eyebrow{animation:zaidHeroIn .8s .12s both}
+.hero-bottom{animation:zaidHeroIn .9s .22s both}
+.hero-frame{isolation:isolate;box-shadow:0 30px 100px #0008}
+.hero-frame:after{content:"";position:absolute;inset:-30%;z-index:1;pointer-events:none;background:linear-gradient(110deg,transparent 38%,#e5d2b31c 50%,transparent 62%);transform:translateX(-70%) skewX(-12deg);animation:zaidLightSweep 9s 1.2s ease-in-out infinite}
+.hero-video{transform:scale(1.04);transition:transform 1.4s cubic-bezier(.2,.7,.2,1),filter 1.4s}
+.hero-frame:hover .hero-video{transform:scale(1.1);filter:brightness(.68) saturate(.78)}
+/* Hybrid editorial interlude: the About section becomes warm paper. */
+.about-section{background:var(--zaid-paper);color:#191613;border:0;position:relative;overflow:hidden}
+.about-section:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;background:radial-gradient(ellipse at 82% 15%,#c6a875 0,transparent 42%),linear-gradient(120deg,transparent 55%,#542c3010)}
+.about-inner{position:relative;z-index:1}
+.about-inner .section-kicker{color:#705d48}
+.about-inner h2{color:#1b1713}
+.about-inner h2 .muted{color:#887b6b}
+.about-inner p{color:#51483f}
+.about-inner .text-link{color:#30271e;border-color:#9c8058}
+.about-inner .text-link span{color:#795a35}
+.project-card{transform:translateZ(0);transition:transform .55s cubic-bezier(.2,.7,.2,1),filter .55s}
+.project-art{isolation:isolate}
+.project-art:before{transition:transform 1s cubic-bezier(.2,.7,.2,1),opacity .6s}
+.project-card:hover{transform:translateY(-8px)}
+.project-card:hover .project-art:before{transform:scale(1.045)}
+.project-arrow{transition:transform .35s,border-color .35s,background .35s}
+.project-card:hover .project-arrow{transform:rotate(45deg);background:#c6a87512}
+.contact-section{position:relative}
+.contact-section:before{content:"";display:block;width:100%;height:1px;margin:0 0 56px;background:linear-gradient(90deg,transparent,#c6a87555,transparent)}
+.contact-link{transition:color .3s,border-color .3s}
+.contact-link:hover{color:var(--zaid-champagne);border-color:var(--zaid-champagne)}
+/* Existing IntersectionObserver reveal classes get a more cinematic entrance. */
+.reveal-ready .reveal{opacity:0;transform:translateY(34px);filter:blur(5px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1),filter .9s}
+.reveal-ready .reveal.is-visible{opacity:1;transform:none;filter:none}
+.project-card.reveal:nth-child(2){transition-delay:.08s}
+.project-card.reveal:nth-child(3){transition-delay:.16s}
+.zaid-ai-launch{transition:transform .3s,box-shadow .3s}
+.zaid-ai-launch:hover{transform:translateY(-3px);box-shadow:0 18px 55px #000a}
+@keyframes zaidHeroIn{from{opacity:0;transform:translateY(24px);filter:blur(7px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes zaidLightSweep{0%,62%{transform:translateX(-75%) skewX(-12deg);opacity:0}72%{opacity:1}100%{transform:translateX(75%) skewX(-12deg);opacity:0}}
+@media(max-width:680px){.site-header{position:sticky}.about-section{padding-top:76px;padding-bottom:76px}.hero-frame:after{animation-duration:13s}.project-card:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.hero h1,.hero .eyebrow,.hero-bottom{animation:none!important}.hero-frame:after{display:none}.reveal-ready .reveal{opacity:1;transform:none;filter:none;transition:none}.project-card,.project-art:before,.hero-video{transition:none!important}}
