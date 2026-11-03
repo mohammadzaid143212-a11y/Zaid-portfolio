@@ -38,7 +38,10 @@ const required = [
   ["owner/inquiries.js", "client-inquiry-list"],
   ["owner/owner.js", "positionHistory"],
   ["owner/advanced.js", "portfolio_versions"],
-  ["analytics.js", "portfolio_analytics"]
+  ["analytics.js", "portfolio_analytics"],
+  ["script.js", '["https:", "http:"]'],
+  ["project/project.js", 'host === "youtube.com" || host.endsWith(".youtube.com")'],
+  ["public-effects.js", "prefers-reduced-motion"]
 ];
 for (const [file, marker] of required) {
   const full = path.join(root, file);
