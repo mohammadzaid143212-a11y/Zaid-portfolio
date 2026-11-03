@@ -547,6 +547,72 @@
   [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),$("#element-rotation"),$("#element-opacity"),$("#element-radius"),$("#element-border-width"),$("#element-shadow"),elementOverlay].forEach(el => el.addEventListener("input", updatePositionPreview));
   $("#element-placement").addEventListener("change", updatePositionPreview);
   updatePositionPreview();
+
+  // Local Visual Builder drafts never write to Supabase or publish the public site.
+  const elementDraftKey = "zaid-portfolio:visual-builder-draft:v1";
+  const draftFieldIds = ["element-target","element-custom-target","element-kind","element-content","element-url","element-placement","element-width","element-x","element-y","element-overlay","element-layer","element-mobile-enabled","element-mobile-x","element-mobile-y","element-mobile-width","element-animation","element-duration","element-color","element-rotation","element-opacity","element-radius","element-border-width","element-shadow"];
+  let draftSaveTimer = null;
+  function collectElementDraft() {
+    const fields = {};
+    draftFieldIds.forEach(id => { const el = document.getElementById(id); if (el) fields[id] = el.type === "checkbox" ? el.checked : el.value; });
+    return { version: 1, savedAt: new Date().toISOString(), fields, editingElementId };
+  }
+  function setElementDraftStatus(message, error = false) {
+    const status = $("#element-draft-status");
+    if (!status) return;
+    status.textContent = message;
+    status.dataset.state = error ? "error" : "saved";
+  }
+  function saveElementDraft(automatic = false) {
+    try {
+      localStorage.setItem(elementDraftKey, JSON.stringify(collectElementDraft()));
+      setElementDraftStatus(automatic ? "Autosaved locally · " + new Date().toLocaleTimeString() : "Draft saved in this browser · " + new Date().toLocaleTimeString());
+      return true;
+    } catch (err) {
+      setElementDraftStatus("Could not save draft in this browser. Check available storage.", true);
+      return false;
+    }
+  }
+  function scheduleElementDraftSave() {
+    if (draftSaveTimer) window.clearTimeout(draftSaveTimer);
+    setElementDraftStatus("Unsaved changes · autosaving…");
+    draftSaveTimer = window.setTimeout(() => { draftSaveTimer = null; saveElementDraft(true); }, 650);
+  }
+  function restoreElementDraft() {
+    let draft;
+    try { draft = JSON.parse(localStorage.getItem(elementDraftKey) || "null"); }
+    catch { setElementDraftStatus("Saved draft could not be read.", true); return; }
+    if (!draft || draft.version !== 1 || !draft.fields) { setElementDraftStatus("No saved Visual Builder draft found.", true); return; }
+    draftFieldIds.forEach(id => {
+      if (!(id in draft.fields)) return;
+      const el = document.getElementById(id);
+      if (el) el.type === "checkbox" ? el.checked = !!draft.fields[id] : el.value = draft.fields[id];
+    });
+    editingElementId = draft.editingElementId || null;
+    elementKind.dispatchEvent(new Event("change"));
+    $("#element-custom-target-field").classList.toggle("hidden", $("#element-target").value !== "custom");
+    $("#element-mobile-fields").classList.toggle("hidden", !$("#element-mobile-enabled").checked);
+    $("#add-element-button").textContent = editingElementId ? "Update element" : "Add element";
+    updatePositionPreview();
+    recordPositionHistory();
+    if (websitePreview.contentDocument?.readyState === "complete") refreshWebsitePreview();
+    const when = draft.savedAt ? new Date(draft.savedAt).toLocaleString() : "an earlier session";
+    setElementDraftStatus("Draft restored · saved " + when);
+  }
+  draftFieldIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.addEventListener("input", scheduleElementDraftSave); el.addEventListener("change", scheduleElementDraftSave); }
+  });
+  $("#save-element-draft").addEventListener("click", () => saveElementDraft(false));
+  $("#restore-element-draft").addEventListener("click", restoreElementDraft);
+  $("#discard-element-draft").addEventListener("click", () => {
+    if (!window.confirm("Discard the saved Visual Builder draft from this browser?")) return;
+    localStorage.removeItem(elementDraftKey);
+    setElementDraftStatus("Saved draft discarded. Your published portfolio and saved elements were not changed.");
+  });
+  window.addEventListener("beforeunload", () => {
+    if (draftSaveTimer) { window.clearTimeout(draftSaveTimer); saveElementDraft(true); }
+  });
   // Live same-origin website preview with a temporary draggable placement marker.
   const websitePreview = $("#element-website-preview");
    const websitePreviewWrap = websitePreview.closest(".website-preview-frame-wrap");
@@ -563,7 +629,7 @@
      websitePreview.title = mobile ? "Mobile-sized live public portfolio preview" : "Desktop-sized live public portfolio preview";
      const adjustmentSummary = $("#adjustment-panel > summary small");
      if (adjustmentSummary) adjustmentSummary.textContent = mobile ? "Mobile layout · styling · motion" : "Desktop layout · styling · motion";
-     if (typeof applyPositionHistory === "function") applyPositionHistory(historyIndex, { preserveIndex: true, refresh: false });
+     if (typeof applyPositionHistory === "function") applyPositionHistory(historyIndexes[activeHistoryKey()], { refresh: false });
      updateHistoryButtons();
      if (websitePreview.contentDocument?.readyState === "complete") window.setTimeout(refreshWebsitePreview, 80);
    }
