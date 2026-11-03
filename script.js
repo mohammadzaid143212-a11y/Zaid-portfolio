@@ -49,11 +49,12 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
 
   function videoInfo(rawUrl, isShort) {
     let url;
-    try { url = new URL(rawUrl); } catch { return { kind: "link", url: rawUrl }; }
+    try { url = new URL(rawUrl); } catch { return { kind: "link", url: "#" }; }
+    if (!["https:", "http:"].includes(url.protocol)) return { kind: "link", url: "#" };
     const host = url.hostname.replace(/^www\./, "");
     let id = "";
     if (host === "youtu.be") id = url.pathname.split("/").filter(Boolean)[0] || "";
-    if (host.endsWith("youtube.com")) {
+    if (host === "youtube.com" || host.endsWith(".youtube.com")) {
       if (url.pathname === "/watch") id = url.searchParams.get("v") || "";
       else if (url.pathname.startsWith("/shorts/") || url.pathname.startsWith("/embed/")) id = url.pathname.split("/")[2] || "";
     }
@@ -62,7 +63,7 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
       const vimeoId = url.pathname.split("/").filter(Boolean).pop();
       if (vimeoId && /^\d+$/.test(vimeoId)) return { kind: "iframe", url: "https://player.vimeo.com/video/" + vimeoId + (isShort ? "?autoplay=1&muted=1&loop=1&title=0&byline=0" : "") };
     }
-    if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(url.pathname + url.search)) return { kind: "video", url: url.href };
+    if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url.pathname + url.search)) return { kind: "video", url: url.href };
     return { kind: "link", url: url.href };
   }
 
@@ -91,8 +92,10 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
       art.append(video);
     } else {
       if (project.thumbnail_url) {
-        art.style.backgroundImage = "linear-gradient(0deg,#050506cc,transparent 65%),url(" + JSON.stringify(project.thumbnail_url).slice(1,-1) + ")";
-        art.style.backgroundSize = "cover"; art.style.backgroundPosition = "center";
+        const thumbnail = document.createElement("img");
+        thumbnail.src = project.thumbnail_url; thumbnail.alt = ""; thumbnail.loading = "lazy"; thumbnail.decoding = "async";
+        thumbnail.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover";
+        art.append(thumbnail);
       }
       const link = document.createElement("a"); link.href = media.url; link.target = "_blank"; link.rel = "noopener noreferrer";
       link.textContent = project.project_type === "short" ? "Watch short video ↗" : "Watch project ↗";

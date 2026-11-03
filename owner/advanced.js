@@ -110,7 +110,7 @@
   }
   async function initVersions(){try{await loadVersions();}catch(e){note("#version-message",e.message||"Version history unavailable.",true);}}
   async function collectMedia() {
-    const found=[]; const folders=["videos","thumbnails","themes","fonts"]; const storage=db.storage.from("portfolio-media");
+    const found=[]; const folders=["videos","thumbnails","themes","fonts","elements"]; const storage=db.storage.from("portfolio-media");
     async function walk(folder,depth=0){
       if(depth>2)return;
       const {data,error}=await storage.list(folder,{limit:100,offset:0,sortBy:{column:"name",order:"asc"}});

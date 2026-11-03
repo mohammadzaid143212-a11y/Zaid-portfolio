@@ -32,6 +32,7 @@
       <section class="contact-form-panel">
         <div class="form-heading"><span class="section-kicker">01 / PROJECT DETAILS</span><span class="required-note">* REQUIRED</span></div>
         <form id="inquiry-form">
+          <input name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px" aria-label="Leave this field empty">
           <div class="field-row">
             <label>Your name *<input name="name" autocomplete="name" placeholder="Name" required maxlength="100"></label>
             <label>Email address *<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required maxlength="160"></label>
@@ -61,7 +62,7 @@
             <label class="method-option"><input type="radio" name="method" value="instagram"><span class="method-icon">◎</span><span><strong>Instagram</strong><small>Send the inquiry through Instagram</small></span><span class="radio-dot"></span></label>
           </div>
           <button class="submit-inquiry" type="submit">Prepare inquiry <span>↗</span></button>
-          <p class="form-footnote">Your email app or selected contact channel will open with your project details ready to send. No message is sent automatically.</p>
+          <p class="form-footnote">Your inquiry is saved to the project inbox. Your selected contact channel then opens with the details ready; no message is sent automatically.</p>
           <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
         </form>
       </section>
