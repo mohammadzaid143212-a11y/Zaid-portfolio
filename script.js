@@ -139,6 +139,7 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
   data.forEach((project, index) => {
     const card = document.createElement("article");
     card.className = "project-card" + (project.project_type === "long" && index === 0 ? " project-large" : "");
+    card.dataset.projectType = project.project_type === "short" ? "short" : "long";
     const art = document.createElement("div");
     art.className = "project-art live-project-art";
     art.style.background = "#111114";
