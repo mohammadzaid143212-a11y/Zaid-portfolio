@@ -26,7 +26,7 @@
     const host = url.hostname.replace(/^www\./,"");
     let videoId = "";
     if (host === "youtu.be") videoId = url.pathname.split("/").filter(Boolean)[0] || "";
-    if (host.endsWith("youtube.com")) {
+    if (host === "youtube.com" || host.endsWith(".youtube.com")) {
       if (url.pathname === "/watch") videoId = url.searchParams.get("v") || "";
       else if (url.pathname.startsWith("/shorts/") || url.pathname.startsWith("/embed/")) videoId = url.pathname.split("/")[2] || "";
     }
