@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=cinematic-luxury-1" />
   <link rel="stylesheet" href="cinematic-interactions.css?v=hybrid-immersive-1" />
-  <link rel="stylesheet" href="motion-runtime.css" />
+  <link rel="stylesheet" href="motion-runtime.css" />\n  <link rel="stylesheet" href="horizontal-gallery.css" />
 </head>
 <body>
   <div id="portfolio-intro-root" aria-hidden="true"></div>
@@ -67,7 +67,7 @@
         <p>A few frames from stories brought to life.<br>More projects coming soon.</p>
       </div>
       <div class="gallery-toolbar" aria-label="Filter selected work"><span class="gallery-count" aria-live="polite">SELECTED FRAMES / <b id="gallery-visible-count">ALL</b></span><div class="gallery-filters"><button type="button" class="gallery-filter is-active" data-gallery-filter="all" aria-pressed="true">ALL WORK</button><button type="button" class="gallery-filter" data-gallery-filter="long" aria-pressed="false">LONG FORM</button><button type="button" class="gallery-filter" data-gallery-filter="short" aria-pressed="false">SHORT FORM</button></div></div>
-      <div class="project-grid">
+      <div class="gallery-navigation" aria-label="Project gallery navigation"><button type="button" id="gallery-prev" aria-label="Scroll projects left">←</button><span>DRAG / SWIPE TO EXPLORE</span><button type="button" id="gallery-next" aria-label="Scroll projects right">→</button></div>\n      <div class="project-grid cinematic-horizontal-gallery">
         <article class="project-card project-large">
           <div class="project-art art-one"><span class="art-label">01 / DOCUMENTARY</span><span class="art-title">Beyond<br>the frame.</span><span class="art-bottom">STORY · ATMOSPHERE · IMPACT</span></div>
           <div class="project-info"><div><h3>Documentary Film</h3><p>Storytelling / Cinematic edit</p></div><span class="project-arrow">↗</span></div>
@@ -122,7 +122,7 @@
   <link rel="stylesheet" href="transition-runtime.css">\n  <link rel="stylesheet" href="doors-runtime.css">
   <script src="loading-intro-runtime.js"></script>
   <script src="transition-runtime.js"></script>\n  <script src="doors-runtime.js"></script>
-  <script src="project-gallery.js"></script>
+  <script src="project-gallery.js"></script>\n  <script src="horizontal-gallery.js"></script>
   <script src="performance.js"></script><script src="public-effects.js"></script>
   <script src="script.js"></script>
 </body>
