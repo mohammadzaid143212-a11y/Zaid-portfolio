@@ -551,31 +551,95 @@
   const websitePreview = $("#element-website-preview");
    const websitePreviewWrap = websitePreview.closest(".website-preview-frame-wrap");
    const previewDesktopButton = $("#preview-desktop-mode"), previewMobileButton = $("#preview-mobile-mode");
+   let previewMode = "desktop";
    function setWebsitePreviewMode(mode) {
-     const mobile = mode === "mobile";
+     previewMode = mode === "mobile" ? "mobile" : "desktop";
+     const mobile = previewMode === "mobile";
      websitePreviewWrap?.classList.toggle("is-mobile-preview", mobile);
      previewDesktopButton.classList.toggle("is-active", !mobile);
      previewMobileButton.classList.toggle("is-active", mobile);
      previewDesktopButton.setAttribute("aria-pressed", String(!mobile));
      previewMobileButton.setAttribute("aria-pressed", String(mobile));
      websitePreview.title = mobile ? "Mobile-sized live public portfolio preview" : "Desktop-sized live public portfolio preview";
-     $("#element-history-status").textContent = mobile ? "Mobile preview · approx. 390 px wide" : "Desktop preview · full available width";
-      const adjustmentSummary = $("#adjustment-panel > summary small");
-      if (adjustmentSummary) adjustmentSummary.textContent = mobile ? "Mobile layout · styling · motion" : "Desktop layout · styling · motion";
+     const adjustmentSummary = $("#adjustment-panel > summary small");
+     if (adjustmentSummary) adjustmentSummary.textContent = mobile ? "Mobile layout · styling · motion" : "Desktop layout · styling · motion";
+     if (typeof applyPositionHistory === "function") applyPositionHistory(historyIndex, { preserveIndex: true, refresh: false });
+     updateHistoryButtons();
+     if (websitePreview.contentDocument?.readyState === "complete") window.setTimeout(refreshWebsitePreview, 80);
    }
    previewDesktopButton.addEventListener("click", () => setWebsitePreviewMode("desktop"));
    previewMobileButton.addEventListener("click", () => setWebsitePreviewMode("mobile"));
   let previewTarget = null, previewMarker = null, previewDrag = false;
-  const positionHistory = [];
-  let historyIndex = -1, restoringHistory = false;
-  function positionSnapshot() { return {x:Number(elementX.value)||0,y:Number(elementY.value)||0,width:Number($("#element-width").value)||80,layer:$("#element-layer").value||"front"}; }
-  function updateHistoryButtons() { $("#element-undo").disabled=historyIndex<=0; $("#element-redo").disabled=historyIndex>=positionHistory.length-1; $("#element-history-status").textContent=positionHistory.length ? "Change "+(historyIndex+1)+" of "+positionHistory.length : "Move or resize to create history."; }
-  function recordPositionHistory() { if(restoringHistory)return; const state=positionSnapshot(), prev=positionHistory[historyIndex]; if(prev&&prev.x===state.x&&prev.y===state.y&&prev.width===state.width&&prev.layer===state.layer)return; positionHistory.splice(historyIndex+1); positionHistory.push(state); if(positionHistory.length>40)positionHistory.shift(); historyIndex=positionHistory.length-1; updateHistoryButtons(); }
-  function applyPositionHistory(index) { if(index<0||index>=positionHistory.length)return; restoringHistory=true; const state=positionHistory[index]; historyIndex=index; elementX.value=state.x; elementY.value=state.y; $("#element-width").value=state.width; $("#element-layer").value=state.layer; updatePositionPreview(); if(previewMarker&&previewMarker.isConnected){previewMarker.style.left=state.x+"%";previewMarker.style.top=state.y+"%";previewMarker.style.width="min("+state.width+"%,100%)";previewMarker.style.zIndex=state.layer==="back"?"1":"99999";} restoringHistory=false; updateHistoryButtons(); }
-  $("#element-undo").addEventListener("click",()=>applyPositionHistory(historyIndex-1));
-  $("#element-redo").addEventListener("click",()=>applyPositionHistory(historyIndex+1));
-  [elementX,elementY,$("#element-width"),$("#element-layer")].forEach(el=>el.addEventListener("change",recordPositionHistory));
+  const positionHistory = { desktop: [], mobile: [] };
+  const historyIndexes = { desktop: -1, mobile: -1 };
+  let restoringHistory = false;
+  function activeHistoryKey() { return previewMode === "mobile" ? "mobile" : "desktop"; }
+  function activePreviewPosition() {
+    return previewMode === "mobile"
+      ? { x: Number($("#element-mobile-x").value) || 0, y: Number($("#element-mobile-y").value) || 0, width: Number($("#element-mobile-width").value) || 90 }
+      : { x: Number(elementX.value) || 0, y: Number(elementY.value) || 0, width: Number($("#element-width").value) || 80 };
+  }
+  function positionSnapshot() {
+    return {
+      x: Number(elementX.value) || 0, y: Number(elementY.value) || 0,
+      width: Number($("#element-width").value) || 80, layer: $("#element-layer").value || "front",
+      mobileEnabled: $("#element-mobile-enabled").checked,
+      mobileX: Number($("#element-mobile-x").value) || 0,
+      mobileY: Number($("#element-mobile-y").value) || 0,
+      mobileWidth: Number($("#element-mobile-width").value) || 90
+    };
+  }
+  function updateHistoryButtons() {
+    const key = activeHistoryKey(), stack = positionHistory[key], index = historyIndexes[key];
+    $("#element-undo").disabled = index <= 0;
+    $("#element-redo").disabled = index >= stack.length - 1;
+    $("#element-history-status").textContent = stack.length
+      ? (key === "mobile" ? "Mobile" : "Desktop") + " · Change " + (index + 1) + " of " + stack.length
+      : (key === "mobile" ? "Mobile" : "Desktop") + " · Move or resize to create history.";
+  }
+  function recordPositionHistory() {
+    if (restoringHistory) return;
+    const key = activeHistoryKey(), stack = positionHistory[key], state = positionSnapshot(), prev = stack[historyIndexes[key]];
+    if (prev && JSON.stringify(prev) === JSON.stringify(state)) return;
+    stack.splice(historyIndexes[key] + 1);
+    stack.push(state);
+    if (stack.length > 40) stack.shift();
+    historyIndexes[key] = stack.length - 1;
+    updateHistoryButtons();
+  }
+  function applyPositionHistory(index, options = {}) {
+    const key = activeHistoryKey(), stack = positionHistory[key];
+    if (index < 0 || index >= stack.length) return;
+    restoringHistory = true;
+    const state = stack[index];
+    historyIndexes[key] = index;
+    elementX.value = state.x; elementY.value = state.y; $("#element-width").value = state.width;
+    $("#element-layer").value = state.layer;
+    $("#element-mobile-enabled").checked = !!state.mobileEnabled;
+    $("#element-mobile-x").value = state.mobileX; $("#element-mobile-y").value = state.mobileY;
+    $("#element-mobile-width").value = state.mobileWidth;
+    $("#element-mobile-fields").classList.toggle("hidden", !state.mobileEnabled);
+    const active = key === "mobile"
+      ? { x: state.mobileX, y: state.mobileY, width: state.mobileWidth }
+      : { x: state.x, y: state.y, width: state.width };
+    updatePositionPreview();
+    if (previewMarker && previewMarker.isConnected) {
+      previewMarker.style.left = active.x + "%"; previewMarker.style.top = active.y + "%";
+      previewMarker.style.width = "min(" + active.width + "%,100%)";
+      previewMarker.style.zIndex = state.layer === "back" ? "1" : "99999";
+    }
+    restoringHistory = false;
+    updateHistoryButtons();
+    if (options.refresh !== false && websitePreview.contentDocument?.readyState === "complete") window.setTimeout(refreshWebsitePreview, 50);
+  }
+  $("#element-undo").addEventListener("click", () => applyPositionHistory(historyIndexes[activeHistoryKey()] - 1));
+  $("#element-redo").addEventListener("click", () => applyPositionHistory(historyIndexes[activeHistoryKey()] + 1));
+  [elementX, elementY, $("#element-width"), $("#element-layer"), $("#element-mobile-enabled"), $("#element-mobile-x"), $("#element-mobile-y"), $("#element-mobile-width")].forEach(el => {
+    el.addEventListener("change", recordPositionHistory);
+    el.addEventListener("input", () => { if (el.type === "number") updatePositionPreview(); });
+  });
   recordPositionHistory();
+
   function refreshWebsitePreview() {
     let doc;
     try { doc = websitePreview.contentDocument; } catch { return; }
