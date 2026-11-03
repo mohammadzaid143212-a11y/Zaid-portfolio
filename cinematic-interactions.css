@@ -72,3 +72,20 @@ body{background:var(--zaid-ink)}
 .showcase-detail-link{display:inline-block;margin-top:26px;padding-bottom:9px;border-bottom:1px solid #c6a875;color:#e9e1d3;font-size:9px;letter-spacing:1.5px}
 @media(max-width:760px){.project-showcase-dialog{width:calc(100% - 20px);max-height:calc(100% - 20px)}.showcase-shell{grid-template-columns:1fr;min-height:0}.showcase-media,.showcase-media iframe,.showcase-media video{min-height:clamp(220px,55vw,380px)}.showcase-copy{padding:24px}.showcase-title{font-size:36px}.project-expand-button{right:10px;bottom:10px;padding:10px 11px}}
 @media(prefers-reduced-motion:reduce){.project-expand-button{transition:none}}
+
+
+/* Scroll-driven editorial chapters and progress system. */
+.scroll-progress{position:fixed;z-index:1200;top:0;left:0;right:0;height:2px;background:#ffffff12;pointer-events:none}
+.scroll-progress span{display:block;width:100%;height:100%;background:linear-gradient(90deg,#8d6e46,#d7bd8b);transform:scaleX(0);transform-origin:left center;will-change:transform}
+.chapter-rail{position:fixed;z-index:100;left:clamp(14px,2.2vw,34px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:15px}
+.chapter-rail a{display:flex;align-items:center;gap:9px;color:#8e8981;text-decoration:none;font:500 9px "DM Sans",sans-serif;letter-spacing:1px;opacity:.7;transition:opacity .3s,color .3s}
+.chapter-rail a i{display:block;width:17px;height:1px;background:#8e8981;transition:width .35s,background .35s}
+.chapter-rail a span{opacity:0;transform:translateX(-4px);transition:opacity .3s,transform .3s}
+.chapter-rail a:hover,.chapter-rail a.is-current{opacity:1;color:#d6b982}
+.chapter-rail a:hover i,.chapter-rail a.is-current i{width:30px;background:#c6a875}
+.chapter-rail a:hover span,.chapter-rail a.is-current span{opacity:1;transform:none}
+.chapter-caption{position:fixed;z-index:90;left:clamp(14px,2.2vw,34px);bottom:25px;display:flex;gap:10px;align-items:center;color:#9b958c;font:500 8px "DM Sans",sans-serif;letter-spacing:1.8px;pointer-events:none}
+.chapter-caption span:first-child{color:#c6a875}
+.project-card{translate:0 var(--story-depth,0px)}
+@media(max-width:760px){.chapter-rail{left:12px;gap:12px}.chapter-rail a i{width:12px}.chapter-rail a.is-current i{width:22px}.chapter-caption{left:12px;bottom:14px;font-size:7px}.chapter-rail a span{display:none}}
+@media(prefers-reduced-motion:reduce){.scroll-progress span{will-change:auto}.chapter-rail a,.chapter-rail a i,.chapter-rail a span{transition:none}.project-card{translate:none!important}}
