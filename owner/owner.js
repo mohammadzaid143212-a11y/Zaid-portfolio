@@ -629,7 +629,7 @@
      websitePreview.title = mobile ? "Mobile-sized live public portfolio preview" : "Desktop-sized live public portfolio preview";
      const adjustmentSummary = $("#adjustment-panel > summary small");
      if (adjustmentSummary) adjustmentSummary.textContent = mobile ? "Mobile layout · styling · motion" : "Desktop layout · styling · motion";
-     if (typeof applyPositionHistory === "function") applyPositionHistory(historyIndex, { preserveIndex: true, refresh: false });
+     if (typeof applyPositionHistory === "function") applyPositionHistory(historyIndexes[activeHistoryKey()], { refresh: false });
      updateHistoryButtons();
      if (websitePreview.contentDocument?.readyState === "complete") window.setTimeout(refreshWebsitePreview, 80);
    }
