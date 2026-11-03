@@ -11,10 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="owner.css?v=cinematic-luxury-1">
   <link rel="stylesheet" href="cinematic-studio.css?v=hybrid-immersive-1">
-  <link rel="stylesheet" href="advanced.css"><link rel="stylesheet" href="motion-studio.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="advanced.css"><link rel="stylesheet" href="motion-studio.css"><link rel="stylesheet" href="three-d-studio.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1/dist/tus.min.js"></script>
   <script defer src="owner.js"></script>
-  <script defer src="advanced.js"></script><script defer src="motion-studio.js"></script><script defer src="next-tools.js?v=owner-panels-fix-1"></script><script defer src="inquiries.js?v=portfolio-inbox-1"></script><style>.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:none!important}.zaid-cursor-dot,.zaid-cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:9999999;border-radius:50%;will-change:transform}.zaid-cursor-dot{width:5px;height:5px;background:var(--zaid-cursor-color)}.zaid-cursor-ring{width:var(--zaid-cursor-size);height:var(--zaid-cursor-size);border:1px solid var(--zaid-cursor-color);transition:width .16s,height .16s}.zaid-cursor-ring.is-hover{width:calc(var(--zaid-cursor-size)*1.45);height:calc(var(--zaid-cursor-size)*1.45)}@media(hover:none),(pointer:coarse){.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:auto!important}.zaid-cursor-dot,.zaid-cursor-ring{display:none!important}}</style>\n</head>
+  <script defer src="advanced.js"></script><script defer src="motion-studio.js"></script><script defer src="three-d-studio.js"></script><script defer src="next-tools.js?v=owner-panels-fix-1"></script><script defer src="inquiries.js?v=portfolio-inbox-1"></script><style>.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:none!important}.zaid-cursor-dot,.zaid-cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:9999999;border-radius:50%;will-change:transform}.zaid-cursor-dot{width:5px;height:5px;background:var(--zaid-cursor-color)}.zaid-cursor-ring{width:var(--zaid-cursor-size);height:var(--zaid-cursor-size);border:1px solid var(--zaid-cursor-color);transition:width .16s,height .16s}.zaid-cursor-ring.is-hover{width:calc(var(--zaid-cursor-size)*1.45);height:calc(var(--zaid-cursor-size)*1.45)}@media(hover:none),(pointer:coarse){.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:auto!important}.zaid-cursor-dot,.zaid-cursor-ring{display:none!important}}</style>\n</head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
   <header class="topbar">
@@ -60,7 +60,7 @@
         <a class="sidebar-link is-active" href="#studio-overview" data-owner-section="studio-overview"><span class="sidebar-icon">⌂</span><span>Dashboard</span></a>
         <a class="sidebar-link" href="#theme-manager" data-owner-section="theme-manager"><span class="sidebar-icon">◐</span><span>Theme Studio</span></a>
         <a class="sidebar-link" href="#text-studio" data-owner-section="text-studio"><span class="sidebar-icon">T</span><span>Text Studio</span></a>
-        <a class="sidebar-link" href="#animation-studio" data-owner-section="animation-studio"><span class="sidebar-icon">✧</span><span>Animation Studio</span></a>
+        <a class="sidebar-link" href="#animation-studio" data-owner-section="animation-studio"><span class="sidebar-icon">✧</span><span>Animation Studio</span></a>        <a class="sidebar-link" href="#three-d-studio" data-owner-section="three-d-studio"><span class="sidebar-icon">◇</span><span>3D Presentation Studio</span></a>
         <a class="sidebar-link" href="#long-video-manager" data-owner-section="long-video-manager"><span class="sidebar-icon">▣</span><span>Long Videos</span></a>
         <a class="sidebar-link" href="#short-video-manager" data-owner-section="short-video-manager"><span class="sidebar-icon">▶</span><span>Short Videos</span></a>
         <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span></a>
@@ -307,6 +307,34 @@
     </div>
     <div class="motion-bottom-note"><span>ⓘ</span> Your changes are stored in existing portfolio settings. Reduced-motion preferences are respected on the public website.</div><p class="notice" id="motion-studio-message" role="status" aria-live="polite"></p>
   </div>
+</section>
+
+<section class="manager-card studio-slide" id="three-d-studio">
+ <div class="manager-heading"><div><p class="eyebrow">SPATIAL DESIGN / 3D WORKSPACE</p><h2>3D Presentation Studio</h2><p class="manager-intro">Create dimensional typography and device-style presentations with live perspective controls. Preview the scene, then publish the 3D treatment to a portfolio section.</p></div></div>
+ <div class="three-d-studio" id="three-d-studio-app">
+  <div class="three-d-topbar"><span><i></i> SPATIAL DESIGN LAB</span><small id="three-d-status">Preview mode</small></div>
+  <div class="three-d-layout">
+   <aside class="three-d-tools"><p class="three-d-kicker">01 / SCENE TYPE</p>
+    <div class="three-d-scene-options"><button type="button" class="is-active" data-scene="type"><b>3D TYPE</b><small>Dimensional headline</small></button><button type="button" data-scene="device"><b>DEVICE MOCKUP</b><small>Floating screen</small></button><button type="button" data-scene="glass"><b>GLASS OBJECT</b><small>Glassmorphism panel</small></button></div>
+    <p class="three-d-kicker">02 / CONTENT</p><label for="three-d-title">Display text</label><input id="three-d-title" maxlength="44" value="BEYOND THE FRAME"><label for="three-d-subtitle">Supporting line</label><input id="three-d-subtitle" maxlength="90" value="Stories built with depth and intention.">
+    <label for="three-d-target">Apply to portfolio</label><select id="three-d-target"><option value="hero-title">Main headline</option><option value="hero-media">Hero video area</option><option value="work">Selected Work</option><option value="about">About section</option></select>
+   </aside>
+   <section class="three-d-canvas-column"><div class="three-d-canvas-head"><span>03 / LIVE 3D CANVAS</span><small>Drag controls to change perspective</small></div>
+    <div class="three-d-canvas" id="three-d-canvas"><div class="three-d-grid"></div><div class="three-d-scene" id="three-d-scene" data-scene="type"><div class="three-d-depth" id="three-d-depth"><span class="three-d-scene-label">ZAID® / VISUAL STORYTELLING</span><strong id="three-d-preview-title">BEYOND THE FRAME</strong><span class="three-d-preview-sub" id="three-d-preview-sub">Stories built with depth and intention.</span><div class="three-d-device-screen"><span>ZAID®</span><b>THE ART<br>OF MOTION</b><small>DOCUMENTARY / FILM</small></div><div class="three-d-glass-card"><span>01 — SELECTED WORK</span><b>DESIGN<br>IN DEPTH.</b></div></div></div><span class="three-d-canvas-foot">INTERACTIVE PREVIEW · CSS 3D</span></div>
+    <div class="three-d-canvas-actions"><button type="button" class="quiet-button" id="three-d-reset">Reset camera</button><button type="button" class="quiet-button" id="three-d-auto">Auto rotate: Off</button></div>
+   </section>
+   <aside class="three-d-inspector"><p class="three-d-kicker">04 / CAMERA &amp; DEPTH</p>
+    <div class="three-d-range"><label for="three-d-rotate-x">Tilt X <output id="three-d-rotate-x-value">-12°</output></label><input id="three-d-rotate-x" type="range" min="-45" max="45" value="-12"></div>
+    <div class="three-d-range"><label for="three-d-rotate-y">Rotate Y <output id="three-d-rotate-y-value">-22°</output></label><input id="three-d-rotate-y" type="range" min="-60" max="60" value="-22"></div>
+    <div class="three-d-range"><label for="three-d-depth-value">Depth <output id="three-d-depth-value-label">120px</output></label><input id="three-d-depth-value" type="range" min="0" max="240" step="10" value="120"></div>
+    <div class="three-d-range"><label for="three-d-perspective">Camera perspective <output id="three-d-perspective-label">900px</output></label><input id="three-d-perspective" type="range" min="400" max="1800" step="50" value="900"></div>
+    <div class="three-d-range"><label for="three-d-scale">Object scale <output id="three-d-scale-label">100%</output></label><input id="three-d-scale" type="range" min="60" max="130" step="5" value="100"></div>
+    <label for="three-d-finish">Surface finish</label><select id="three-d-finish"><option value="metal">Brushed metal</option><option value="gold">Warm gold</option><option value="glass">Frosted glass</option><option value="neon">Neon edge</option></select>
+    <label for="three-d-motion">Interaction</label><select id="three-d-motion"><option value="pointer">Follow pointer</option><option value="static">Static camera</option><option value="auto">Slow auto rotation</option></select>
+    <div class="three-d-publish"><button type="button" class="quiet-button" id="three-d-clear">Remove published 3D</button><button type="button" class="primary" id="three-d-publish">Save &amp; publish ↗</button></div>
+   </aside>
+  </div><p class="three-d-note">3D scenes use CSS perspective and transforms, so they remain lightweight and responsive. Visitors with reduced-motion enabled receive a static presentation.</p><p class="notice" id="three-d-message" role="status" aria-live="polite"></p>
+ </div>
 </section>
 
 <section class="manager-card studio-slide" id="long-video-manager" data-video-panel="long">
