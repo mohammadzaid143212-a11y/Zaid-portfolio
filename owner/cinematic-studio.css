@@ -1,0 +1,28 @@
+/* ZAID Owner Studio immersive hybrid layer — CSS only, no workflow changes. */
+:root{--accent:#c6a875;--zaid-paper:#e9e1d3;--zaid-wine:#542c30;--line:rgba(198,168,117,.22)}
+body{background:radial-gradient(ellipse at 82% 0%,#c6a87513,transparent 34%),#090909}
+.topbar{background:#090909d9;backdrop-filter:blur(18px);border-color:#c6a87530}
+.brand{font-family:"Cormorant Garamond",serif;font-size:31px;letter-spacing:.04em}
+.private-label{color:#d5c8b5}
+.private-label i,.status-dot{background:var(--accent);box-shadow:0 0 13px #c6a87577}
+.auth-card,.manager-card,.stat-card,.coming-card{border-color:#c6a8752b;background:linear-gradient(145deg,#c6a8750b,#ffffff03);box-shadow:0 18px 65px #0003}
+.auth-card h1,.dashboard h1,.manager-heading h2,.coming-card h2{font-family:"Cormorant Garamond",serif;font-weight:500;letter-spacing:-.035em}
+.auth-card h1 span{color:#9b8970}
+.eyebrow{color:#d0b98f}
+.primary{background:var(--accent);color:#15110c;transition:transform .25s,box-shadow .25s,filter .25s}
+.primary:hover{transform:translateY(-2px);box-shadow:0 9px 28px #c6a87522;filter:brightness(1.06)}
+.quiet-button,.manager-card button:not(.primary){border-color:#c6a8753b}
+.quiet-button:hover{border-color:var(--accent);color:#e7d7bc}
+.studio-slide-dock{border-color:#c6a8753b;background:#100e0ceF;box-shadow:0 16px 48px #0009}
+.studio-slide-arrow{border-color:#c6a87538}
+.studio-slide-arrow:hover:not(:disabled),.studio-slide-arrow:focus-visible{background:#c6a8751c;border-color:var(--accent)}
+.studio-slide-count{color:#c1ae91}
+.sidebar-link.is-active{border-color:#c6a87555;background:linear-gradient(90deg,#c6a87520,transparent);color:#ead9bb}
+.sidebar-link:hover{border-color:#c6a87545}
+.manager-heading h2{font-size:clamp(30px,5vw,42px)}
+.manager-card{transition:border-color .3s,box-shadow .3s}
+.manager-card:focus-within{border-color:#c6a87555;box-shadow:0 20px 70px #0005}
+.project-form input:focus,.project-form select:focus,.project-form textarea:focus,.auth-card input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #c6a87518}
+.module-details>summary,.adjustment-panel>summary{border-color:#c6a87530}
+@media(max-width:680px){.topbar{backdrop-filter:blur(12px)}.manager-card{padding:16px}.studio-slide-dock{background:#100e0cf2}}
+@media(prefers-reduced-motion:reduce){.primary,.manager-card{transition:none}}
