@@ -98,6 +98,44 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     }, { passive: true });
   }
 
+  // Accessible cinematic quick-view for published projects; full detail pages remain available.
+  let showcaseDialog = document.getElementById("project-showcase-dialog");
+  if (!showcaseDialog) {
+    showcaseDialog = document.createElement("dialog");
+    showcaseDialog.id = "project-showcase-dialog";
+    showcaseDialog.className = "project-showcase-dialog";
+    showcaseDialog.setAttribute("aria-label", "Project showcase");
+    showcaseDialog.innerHTML = '<div class="showcase-shell"><button class="showcase-close" type="button" aria-label="Close project showcase">×</button><div class="showcase-media"></div><div class="showcase-copy"><p class="showcase-kicker">SELECTED WORK</p><h2 class="showcase-title"></h2><p class="showcase-description"></p><a class="showcase-detail-link">OPEN PROJECT DETAILS ↗</a></div></div>';
+    document.body.append(showcaseDialog);
+    showcaseDialog.querySelector(".showcase-close").addEventListener("click", () => showcaseDialog.close());
+    showcaseDialog.addEventListener("click", event => { if (event.target === showcaseDialog) showcaseDialog.close(); });
+    showcaseDialog.addEventListener("close", () => showcaseDialog.querySelector(".showcase-media").replaceChildren());
+  }
+  function openProjectShowcase(project, media) {
+    const mediaHost = showcaseDialog.querySelector(".showcase-media");
+    const title = showcaseDialog.querySelector(".showcase-title");
+    const description = showcaseDialog.querySelector(".showcase-description");
+    const detail = showcaseDialog.querySelector(".showcase-detail-link");
+    mediaHost.replaceChildren();
+    title.textContent = project.title || "Selected project";
+    description.textContent = project.description || (project.project_type === "long" ? "Cinematic edit / Long-form" : "Short-form / Social");
+    detail.href = "/project/?id=" + encodeURIComponent(project.id);
+    if (media.kind === "iframe") {
+      const frame = document.createElement("iframe"); frame.src = media.url; frame.title = project.title || "Project video";
+      frame.allow = "autoplay; fullscreen; picture-in-picture; encrypted-media"; frame.allowFullscreen = true;
+      frame.referrerPolicy = "strict-origin-when-cross-origin"; mediaHost.append(frame);
+    } else if (media.kind === "video") {
+      const video = document.createElement("video"); video.src = media.url; video.controls = true; video.playsInline = true;
+      video.preload = "metadata"; if (project.thumbnail_url) video.poster = project.thumbnail_url;
+      if (project.project_type === "short") { video.autoplay = true; video.muted = true; video.loop = true; }
+      mediaHost.append(video);
+    } else {
+      const link = document.createElement("a"); link.href = media.url; link.target = "_blank"; link.rel = "noopener noreferrer";
+      link.textContent = "Watch this project ↗"; mediaHost.append(link);
+    }
+    if (!showcaseDialog.open) showcaseDialog.showModal();
+  }
+
   data.forEach((project, index) => {
     const card = document.createElement("article");
     card.className = "project-card" + (project.project_type === "long" && index === 0 ? " project-large" : "");
@@ -137,6 +175,11 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     label.textContent = (project.project_type === "long" ? "LONG VIDEO" : "SHORT VIDEO") + " / " + String(index + 1).padStart(2, "0");
     label.style.cssText = "position:absolute;z-index:2;top:16px;left:16px;text-shadow:0 1px 6px #000";
     art.append(label);
+    const expandButton = document.createElement("button");
+    expandButton.type = "button"; expandButton.className = "project-expand-button";
+    expandButton.textContent = "EXPAND ↗"; expandButton.setAttribute("aria-label", "Open " + (project.title || "project") + " in cinematic showcase");
+    expandButton.addEventListener("click", () => openProjectShowcase(project, media));
+    art.append(expandButton);
     const info = document.createElement("div"); info.className = "project-info";
     const copy = document.createElement("div");
     const title = document.createElement("h3"); title.textContent = project.title;
