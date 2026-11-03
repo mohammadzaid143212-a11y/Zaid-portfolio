@@ -63,7 +63,7 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
       const vimeoId = url.pathname.split("/").filter(Boolean).pop();
       if (vimeoId && /^\d+$/.test(vimeoId)) return { kind: "iframe", url: "https://player.vimeo.com/video/" + vimeoId + (isShort ? "?autoplay=1&muted=1&loop=1&title=0&byline=0" : "") };
     }
-    if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(url.pathname + url.search)) return { kind: "video", url: url.href };
+    if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url.pathname + url.search)) return { kind: "video", url: url.href };
     return { kind: "link", url: url.href };
   }
 
