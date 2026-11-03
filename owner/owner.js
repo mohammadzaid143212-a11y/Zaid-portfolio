@@ -538,7 +538,7 @@
     positionHandle.classList.add("is-dragging"); setPositionFromPointer(event); event.preventDefault();
   });
   positionStage.addEventListener("pointermove", event => { if (dragPositioning) setPositionFromPointer(event); });
-  function endPositionDrag() { dragPositioning = false; positionHandle.classList.remove("is-dragging"); }
+  function endPositionDrag() { if (dragPositioning) recordPositionHistory(); dragPositioning = false; positionHandle.classList.remove("is-dragging"); }
   positionHandle.addEventListener("pointerup", endPositionDrag);
   positionHandle.addEventListener("pointercancel", endPositionDrag);
   [elementX,elementY].forEach(input => input.addEventListener("input", updatePositionPreview));
