@@ -11,10 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="owner.css?v=cinematic-luxury-1">
   <link rel="stylesheet" href="cinematic-studio.css?v=hybrid-immersive-1">
-  <link rel="stylesheet" href="advanced.css"><link rel="stylesheet" href="motion-studio.css"><link rel="stylesheet" href="three-d-studio.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="advanced.css"><link rel="stylesheet" href="motion-studio.css"><link rel="stylesheet" href="three-d-studio.css"><link rel="stylesheet" href="loading-intro-studio.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1/dist/tus.min.js"></script>
   <script defer src="owner.js"></script>
-  <script defer src="advanced.js"></script><script defer src="motion-studio.js"></script><script defer src="three-d-studio.js"></script><script defer src="next-tools.js?v=owner-panels-fix-1"></script><script defer src="inquiries.js?v=portfolio-inbox-1"></script><style>.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:none!important}.zaid-cursor-dot,.zaid-cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:9999999;border-radius:50%;will-change:transform}.zaid-cursor-dot{width:5px;height:5px;background:var(--zaid-cursor-color)}.zaid-cursor-ring{width:var(--zaid-cursor-size);height:var(--zaid-cursor-size);border:1px solid var(--zaid-cursor-color);transition:width .16s,height .16s}.zaid-cursor-ring.is-hover{width:calc(var(--zaid-cursor-size)*1.45);height:calc(var(--zaid-cursor-size)*1.45)}@media(hover:none),(pointer:coarse){.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:auto!important}.zaid-cursor-dot,.zaid-cursor-ring{display:none!important}}</style>\n</head>
+  <script defer src="advanced.js"></script><script defer src="motion-studio.js"></script><script defer src="three-d-studio.js"></script><script defer src="loading-intro-studio.js"></script><script defer src="next-tools.js?v=owner-panels-fix-1"></script><script defer src="inquiries.js?v=portfolio-inbox-1"></script><style>.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:none!important}.zaid-cursor-dot,.zaid-cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:9999999;border-radius:50%;will-change:transform}.zaid-cursor-dot{width:5px;height:5px;background:var(--zaid-cursor-color)}.zaid-cursor-ring{width:var(--zaid-cursor-size);height:var(--zaid-cursor-size);border:1px solid var(--zaid-cursor-color);transition:width .16s,height .16s}.zaid-cursor-ring.is-hover{width:calc(var(--zaid-cursor-size)*1.45);height:calc(var(--zaid-cursor-size)*1.45)}@media(hover:none),(pointer:coarse){.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:auto!important}.zaid-cursor-dot,.zaid-cursor-ring{display:none!important}}</style>\n</head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
   <header class="topbar">
@@ -61,6 +61,7 @@
         <a class="sidebar-link" href="#theme-manager" data-owner-section="theme-manager"><span class="sidebar-icon">◐</span><span>Theme Studio</span></a>
         <a class="sidebar-link" href="#text-studio" data-owner-section="text-studio"><span class="sidebar-icon">T</span><span>Text Studio</span></a>
         <a class="sidebar-link" href="#animation-studio" data-owner-section="animation-studio"><span class="sidebar-icon">✧</span><span>Animation Studio</span></a>        <a class="sidebar-link" href="#three-d-studio" data-owner-section="three-d-studio"><span class="sidebar-icon">◇</span><span>3D Presentation Studio</span></a>
+        <a class="sidebar-link" href="#loading-intro-studio" data-owner-section="loading-intro-studio"><span class="sidebar-icon">◌</span><span>Loading &amp; Intro Studio</span></a>
         <a class="sidebar-link" href="#long-video-manager" data-owner-section="long-video-manager"><span class="sidebar-icon">▣</span><span>Long Videos</span></a>
         <a class="sidebar-link" href="#short-video-manager" data-owner-section="short-video-manager"><span class="sidebar-icon">▶</span><span>Short Videos</span></a>
         <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span></a>
@@ -307,6 +308,38 @@
     </div>
     <div class="motion-bottom-note"><span>ⓘ</span> Your changes are stored in existing portfolio settings. Reduced-motion preferences are respected on the public website.</div><p class="notice" id="motion-studio-message" role="status" aria-live="polite"></p>
   </div>
+</section>
+
+<section class="manager-card studio-slide" id="loading-intro-studio">
+ <div class="manager-heading"><div><p class="eyebrow">OPENING EXPERIENCE / MOTION DESIGN</p><h2>Loading &amp; Intro Studio</h2><p class="manager-intro">Design the first seconds of your portfolio: progress loader, brand reveal or notebook-card opening. Preview, save and publish without code.</p></div></div>
+ <div class="intro-studio" id="intro-studio-app">
+  <div class="intro-studio-top"><span><i></i> OPENING SEQUENCE LAB</span><small id="intro-studio-status">Local preview</small></div>
+  <div class="intro-studio-grid">
+   <div class="intro-studio-controls">
+    <p class="intro-kicker">01 / OPENING STYLE</p>
+    <div class="intro-style-options">
+     <button type="button" class="is-active" data-intro-style="progress"><b>01</b><span><strong>Progress loader</strong><small>Percentage + cinematic reveal</small></span></button>
+     <button type="button" data-intro-style="brand"><b>02</b><span><strong>Brand identity</strong><small>Logo-led opening sequence</small></span></button>
+     <button type="button" data-intro-style="notebook"><b>03</b><span><strong>Notebook card</strong><small>Editorial paper reveal</small></span></button>
+    </div>
+    <p class="intro-kicker">02 / CONTENT &amp; TIMING</p>
+    <label for="intro-brand">Brand / display name</label><input id="intro-brand" maxlength="28" value="ZAID®">
+    <label for="intro-tagline">Supporting line</label><input id="intro-tagline" maxlength="70" value="VISUAL STORYTELLER · VIDEO EDITOR">
+    <div class="intro-field-pair"><div><label for="intro-duration">Duration (seconds)</label><input id="intro-duration" type="number" min="1" max="8" step="0.5" value="3.5"></div><div><label for="intro-frequency">Show intro</label><select id="intro-frequency"><option value="session">Once per tab session</option><option value="visit">Every visit</option></select></div></div>
+    <label for="intro-background">Background color</label><input id="intro-background" type="color" value="#090909">
+    <label for="intro-accent">Accent color</label><input id="intro-accent" type="color" value="#c6a875">
+    <label class="intro-check"><input id="intro-skip" type="checkbox" checked> Show skip button</label>
+    <label class="intro-check"><input id="intro-enabled" type="checkbox" checked> Enable on public website</label>
+    <div class="intro-actions"><button type="button" class="quiet-button" id="intro-preview">Play preview ↗</button><button type="button" class="primary" id="intro-publish">Save &amp; publish</button></div>
+    <button type="button" class="text-button" id="intro-remove">Remove published intro</button>
+    <p class="notice" id="intro-message" role="status" aria-live="polite"></p>
+   </div>
+   <div class="intro-preview-column"><div class="intro-preview-heading"><span>03 / LIVE PREVIEW</span><small>Approximate opening on desktop &amp; mobile</small></div>
+    <div class="intro-preview" id="intro-preview-stage"><div class="intro-preview-grain"></div><div class="intro-preview-content" id="intro-preview-content"><span class="intro-preview-mark">✦</span><strong id="intro-preview-brand">ZAID®</strong><span id="intro-preview-tagline">VISUAL STORYTELLER · VIDEO EDITOR</span><div class="intro-preview-progress"><i></i></div><small id="intro-preview-percent">00%</small></div><button type="button" id="intro-preview-skip" class="intro-preview-skip">SKIP INTRO ↗</button></div>
+    <p class="intro-preview-note">The public intro automatically completes and reveals the portfolio. Visitors can skip it, and reduced-motion preferences are respected.</p>
+   </div>
+  </div>
+ </div>
 </section>
 
 <section class="manager-card studio-slide" id="three-d-studio">
