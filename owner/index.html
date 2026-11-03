@@ -11,10 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="owner.css?v=cinematic-luxury-1">
   <link rel="stylesheet" href="cinematic-studio.css?v=hybrid-immersive-1">
-  <link rel="stylesheet" href="advanced.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="advanced.css"><link rel="stylesheet" href="motion-studio.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1/dist/tus.min.js"></script>
   <script defer src="owner.js"></script>
-  <script defer src="advanced.js"></script><script defer src="next-tools.js?v=owner-panels-fix-1"></script><script defer src="inquiries.js?v=portfolio-inbox-1"></script><style>.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:none!important}.zaid-cursor-dot,.zaid-cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:9999999;border-radius:50%;will-change:transform}.zaid-cursor-dot{width:5px;height:5px;background:var(--zaid-cursor-color)}.zaid-cursor-ring{width:var(--zaid-cursor-size);height:var(--zaid-cursor-size);border:1px solid var(--zaid-cursor-color);transition:width .16s,height .16s}.zaid-cursor-ring.is-hover{width:calc(var(--zaid-cursor-size)*1.45);height:calc(var(--zaid-cursor-size)*1.45)}@media(hover:none),(pointer:coarse){.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:auto!important}.zaid-cursor-dot,.zaid-cursor-ring{display:none!important}}</style>\n</head>
+  <script defer src="advanced.js"></script><script defer src="motion-studio.js"></script><script defer src="next-tools.js?v=owner-panels-fix-1"></script><script defer src="inquiries.js?v=portfolio-inbox-1"></script><style>.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:none!important}.zaid-cursor-dot,.zaid-cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:9999999;border-radius:50%;will-change:transform}.zaid-cursor-dot{width:5px;height:5px;background:var(--zaid-cursor-color)}.zaid-cursor-ring{width:var(--zaid-cursor-size);height:var(--zaid-cursor-size);border:1px solid var(--zaid-cursor-color);transition:width .16s,height .16s}.zaid-cursor-ring.is-hover{width:calc(var(--zaid-cursor-size)*1.45);height:calc(var(--zaid-cursor-size)*1.45)}@media(hover:none),(pointer:coarse){.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:auto!important}.zaid-cursor-dot,.zaid-cursor-ring{display:none!important}}</style>\n</head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
   <header class="topbar">
@@ -279,49 +279,37 @@
         <div id="adjustment-studio-content" class="adjustment-studio-content"><p class="field-help">Loading adjustment controls…</p></div>
       </section>
 
-      <section class="manager-card studio-slide" id="animation-studio">
-        <div class="manager-heading"><div><p class="eyebrow">MOTION DESIGN / 05</p><h2>Animation Studio</h2><p class="manager-intro">Choose a portfolio element, create a cinematic motion preset, preview it, then publish. Visitors who prefer reduced motion will not receive these animations.</p></div></div>
-        <form id="animation-studio-form" class="project-form">
-          <label for="animation-target">Apply animation to</label>
-          <select id="animation-target">
-            <option value="hero-title">Hero headline</option>
-            <option value="hero-description">Hero description</option>
-            <option value="hero-media">Hero video frame</option>
-            <option value="work">Selected Work section</option>
-            <option value="project-cards">All project cards</option>
-            <option value="project-one">First project card</option>
-            <option value="about">About section</option>
-            <option value="contact">Contact section</option>
-            <option value="header">Header / navigation</option>
-            <option value="footer">Footer</option>
-          </select>
-          <label for="animation-preset">Animation preset</label>
-          <select id="animation-preset">
-            <option value="fade">Cinematic fade</option>
-            <option value="rise">Smooth rise</option>
-            <option value="slide-left">Slide from left</option>
-            <option value="slide-right">Slide from right</option>
-            <option value="zoom">Slow cinematic zoom</option>
-            <option value="float">Gentle float</option>
-            <option value="blur">Focus reveal</option>
-            <option value="pulse">Soft pulse</option>
-          </select>
-          <div class="theme-control-grid">
-            <div><label for="animation-duration">Duration (seconds)</label><input id="animation-duration" type="number" min="0.3" max="20" step="0.1" value="1.2"></div>
-            <div><label for="animation-delay">Delay (seconds)</label><input id="animation-delay" type="number" min="0" max="10" step="0.1" value="0"></div>
-            <div><label for="animation-easing">Easing</label><select id="animation-easing"><option value="ease-out">Smooth ease-out</option><option value="ease-in-out">Cinematic ease-in-out</option><option value="ease">Standard ease</option><option value="linear">Linear</option><option value="cubic-bezier(.16,1,.3,1)">Premium smooth</option></select></div>
-            <div><label for="animation-trigger">Start animation</label><select id="animation-trigger"><option value="scroll">When visitor scrolls to it</option><option value="load">When page loads</option></select></div>
-            <div><label for="animation-repeat">Repeat</label><select id="animation-repeat"><option value="1">Once</option><option value="infinite">Loop continuously</option></select></div>
-          </div>
-          <div class="animation-preview-card" id="animation-preview-card"><span class="eyebrow">LIVE PREVIEW</span><strong id="animation-preview-title">Cinematic motion</strong><p id="animation-preview-copy">A smooth, polished reveal for your portfolio.</p><button type="button" id="replay-animation-preview" class="quiet-button">Replay preview ↻</button></div>
-          <div class="form-actions"><button type="button" class="quiet-button" id="preview-animation-button">Preview selected animation</button><button type="submit" class="primary" id="save-animation-button">Save &amp; publish <span aria-hidden="true">↗</span></button></div>
-          <button type="button" class="text-button" id="reset-animation-button">Reset animation for selected element</button>
-          <p class="notice" id="animation-studio-message" role="status" aria-live="polite"></p>
-          <p class="field-help">Scroll-triggered animations play when the selected area enters view. Continuous motion is optional; subtle one-time reveals are recommended for a cinematic portfolio.</p>
-        </form>
+      <section class="manager-card studio-slide motion-studio-shell" id="animation-studio">
+  <div class="manager-heading"><div><p class="eyebrow">MOTION DESIGN / CREATIVE WORKSPACE</p><h2>Animation Studio</h2><p class="manager-intro">Build cinematic motion visually. Choose an effect, select where it belongs, adjust its movement and preview it — no code or animation terminology required.</p></div></div>
+  <div class="motion-studio" id="motion-studio">
+    <div class="motion-topbar"><div><span class="motion-live-dot"></span><span>VISUAL MOTION EDITOR</span><small id="motion-project-state">Unsaved project</small></div><div class="motion-top-actions"><button type="button" class="quiet-button" id="motion-undo">↶ Undo</button><button type="button" class="quiet-button" id="motion-redo">↷ Redo</button><button type="button" class="quiet-button" id="motion-save-preset">Save preset</button></div></div>
+    <div class="motion-workspace-grid">
+      <aside class="motion-library"><div class="motion-pane-heading"><span>01 / EFFECT LIBRARY</span><small>Choose a style</small></div>
+        <div class="motion-category-list" role="group" aria-label="Effect categories"><button type="button" class="is-active" data-motion-category="all">✦ All effects</button><button type="button" data-motion-category="entrance">↗ Entrance</button><button type="button" data-motion-category="text">T Typography</button><button type="button" data-motion-category="cinematic">◉ Cinematic</button><button type="button" data-motion-category="loop">⟳ Loop</button><button type="button" data-motion-category="3d">◇ 3D / Depth</button></div>
+        <div class="motion-effect-grid" id="motion-effect-grid" aria-live="polite"></div>
+      </aside>
+      <section class="motion-stage-column"><div class="motion-pane-heading"><span>02 / LIVE CANVAS</span><small>Preview only · not yet published</small></div>
+        <div class="motion-stage" id="motion-stage"><div class="motion-stage-grid" aria-hidden="true"></div><span class="motion-stage-index">ZAID® / MOTION LAB</span><div class="motion-stage-object" id="motion-stage-object"><span class="motion-stage-overline">VISUAL STORYTELLING</span><strong id="motion-stage-title">Stories<br>in motion.</strong><span class="motion-stage-caption">SELECT AN EFFECT TO BEGIN</span></div><span class="motion-stage-corner">LIVE PREVIEW</span></div>
+        <div class="motion-stage-controls"><button type="button" class="primary" id="motion-play">▶ Play preview</button><button type="button" class="quiet-button" id="motion-reset-preview">Reset</button><label class="motion-toggle"><input type="checkbox" id="motion-loop-preview"> Loop preview</label></div>
+        <div class="motion-timeline"><div class="motion-pane-heading"><span>03 / MOTION TIMELINE</span><small id="motion-time-readout">0.0s — 3.0s</small></div><div class="motion-ruler"><span>0s</span><span>1s</span><span>2s</span><span>3s</span><span>4s</span><span>5s</span></div><div class="motion-track"><span class="motion-track-name">Main movement</span><div class="motion-track-line"><i class="motion-keyframe" style="left:4%"></i><i class="motion-keyframe" style="left:52%"></i><i class="motion-keyframe" style="left:94%"></i></div></div></div>
       </section>
+      <aside class="motion-inspector"><div class="motion-pane-heading"><span>04 / ADJUSTMENTS</span><small>Fine-tune</small></div>
+        <label for="motion-target">Where should it appear?</label><select id="motion-target"><option value="hero-title">Main headline</option><option value="hero-description">Hero description</option><option value="hero-media">Hero video</option><option value="work">Selected Work section</option><option value="project-cards">Every project card</option><option value="project-one">First project card</option><option value="about">About section</option><option value="contact">Contact section</option><option value="header">Navigation / header</option><option value="footer">Footer</option></select>
+        <div class="motion-control"><label for="motion-duration">Movement speed <output id="motion-duration-value">1.2 sec</output></label><input id="motion-duration" type="range" min="0.3" max="8" step="0.1" value="1.2"></div>
+        <div class="motion-control"><label for="motion-delay">Start delay <output id="motion-delay-value">0 sec</output></label><input id="motion-delay" type="range" min="0" max="5" step="0.1" value="0"></div>
+        <div class="motion-control"><label for="motion-intensity">Movement intensity <output id="motion-intensity-value">60%</output></label><input id="motion-intensity" type="range" min="10" max="100" step="5" value="60"></div>
+        <label for="motion-easing">Movement feel</label><select id="motion-easing"><option value="smooth">Smooth and natural</option><option value="cinematic">Cinematic slow</option><option value="snappy">Quick and sharp</option><option value="linear">Constant speed</option><option value="bounce">Soft bounce</option></select>
+        <label for="motion-trigger">When should it start?</label><select id="motion-trigger"><option value="scroll">When visitor reaches it</option><option value="load">When website opens</option><option value="hover">When visitor points at it</option></select>
+        <label for="motion-repeat">How often?</label><select id="motion-repeat"><option value="once">One time</option><option value="loop">Keep repeating</option></select>
+        <div class="motion-layer-box"><div class="motion-pane-heading"><span>05 / LAYERS</span><small>Selected element</small></div><button type="button" class="motion-layer is-selected"><span>◈</span><span><b id="motion-layer-name">Main headline</b><small>Text / Portfolio element</small></span><span>●</span></button></div>
+        <div class="motion-inspector-actions"><button type="button" class="quiet-button" id="motion-clear-target">Remove effect</button><button type="button" class="primary" id="motion-publish">Save &amp; publish ↗</button></div>
+      </aside>
+    </div>
+    <div class="motion-bottom-note"><span>ⓘ</span> Your changes are stored in existing portfolio settings. Reduced-motion preferences are respected on the public website.</div><p class="notice" id="motion-studio-message" role="status" aria-live="polite"></p>
+  </div>
+</section>
 
-      <section class="manager-card studio-slide" id="long-video-manager" data-video-panel="long">
+<section class="manager-card studio-slide" id="long-video-manager" data-video-panel="long">
         <div class="manager-heading"><div><p class="eyebrow">VIDEO LIBRARY / 01</p><h2>Long Video Manager</h2><p class="manager-intro">Manage documentaries and full-length edits. Add a thumbnail for each long video.</p></div></div>
         <div id="long-video-workspace"><div id="video-editor-workspace">
         <details class="module-details" id="project-controls" open><summary><span>Add or edit projects</span><small>Video uploads · details · publishing</small></summary>
