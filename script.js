@@ -72,7 +72,7 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
   const heroFrame = document.querySelector(".hero-frame");
   const revealLayer = heroFrame?.querySelector(".hero-reveal-layer");
   const revealImage = revealLayer?.querySelector(".hero-reveal-image");
-  const revealSource = data.find(project => typeof project.thumbnail_url === "string" && /^https?:\\/\\//i.test(project.thumbnail_url));
+  const revealSource = data.find(project => typeof project.thumbnail_url === "string" && /^https?:\/\//i.test(project.thumbnail_url));
   if (heroFrame && revealLayer && revealImage && revealSource && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     revealImage.src = revealSource.thumbnail_url;
     revealImage.alt = "";
