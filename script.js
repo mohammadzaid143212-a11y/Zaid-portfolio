@@ -67,6 +67,37 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     return { kind: "link", url: url.href };
   }
 
+  // Cursor reveal: expose the first published project's own thumbnail beneath the showreel.
+  // The effect is progressive enhancement; it stays hidden when no real project thumbnail exists.
+  const heroFrame = document.querySelector(".hero-frame");
+  const revealLayer = heroFrame?.querySelector(".hero-reveal-layer");
+  const revealImage = revealLayer?.querySelector(".hero-reveal-image");
+  const revealSource = data.find(project => typeof project.thumbnail_url === "string" && /^https?:\/\//i.test(project.thumbnail_url));
+  if (heroFrame && revealLayer && revealImage && revealSource && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    revealImage.src = revealSource.thumbnail_url;
+    revealImage.alt = "";
+    revealLayer.classList.add("is-ready");
+    let revealFrame = 0;
+    heroFrame.addEventListener("pointermove", event => {
+      if (event.pointerType === "mouse" || event.pointerType === "pen" || event.pointerType === "touch") {
+        const bounds = heroFrame.getBoundingClientRect();
+        const x = Math.max(0, Math.min(bounds.width, event.clientX - bounds.left));
+        const y = Math.max(0, Math.min(bounds.height, event.clientY - bounds.top));
+        if (revealFrame) cancelAnimationFrame(revealFrame);
+        revealFrame = requestAnimationFrame(() => {
+          revealLayer.style.setProperty("--reveal-x", x + "px");
+          revealLayer.style.setProperty("--reveal-y", y + "px");
+          revealLayer.classList.add("is-active");
+          revealFrame = 0;
+        });
+      }
+    }, { passive: true });
+    heroFrame.addEventListener("pointerleave", () => revealLayer.classList.remove("is-active"));
+    heroFrame.addEventListener("pointerdown", event => {
+      if (event.pointerType === "touch") revealLayer.classList.add("is-active");
+    }, { passive: true });
+  }
+
   data.forEach((project, index) => {
     const card = document.createElement("article");
     card.className = "project-card" + (project.project_type === "long" && index === 0 ? " project-large" : "");

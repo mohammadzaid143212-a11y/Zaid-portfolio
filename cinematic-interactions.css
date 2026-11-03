@@ -43,3 +43,13 @@ body{background:var(--zaid-ink)}
 @keyframes zaidLightSweep{0%,62%{transform:translateX(-75%) skewX(-12deg);opacity:0}72%{opacity:1}100%{transform:translateX(75%) skewX(-12deg);opacity:0}}
 @media(max-width:680px){.site-header{position:sticky}.about-section{padding-top:76px;padding-bottom:76px}.hero-frame:after{animation-duration:13s}.project-card:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){.hero h1,.hero .eyebrow,.hero-bottom{animation:none!important}.hero-frame:after{display:none}.reveal-ready .reveal{opacity:1;transform:none;filter:none;transition:none}.project-card,.project-art:before,.hero-video{transition:none!important}}
+
+
+/* Reference-inspired reveal: cursor uncovers the creator's real published work. */
+.hero-reveal-layer{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;clip-path:circle(0 at var(--reveal-x,50%) var(--reveal-y,50%));transition:opacity .25s ease,clip-path .22s ease;}
+.hero-reveal-layer.is-ready{opacity:1}
+.hero-reveal-layer.is-active{clip-path:circle(clamp(82px,11vw,150px) at var(--reveal-x,50%) var(--reveal-y,50%));}
+.hero-reveal-image{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.92) contrast(1.05);}
+.hero-reveal-layer:after{content:"";position:absolute;inset:0;border:1px solid #c6a87555;box-shadow:inset 0 0 80px #08080955;pointer-events:none}
+@media(max-width:680px){.hero-reveal-layer.is-active{clip-path:circle(88px at var(--reveal-x,50%) var(--reveal-y,50%))}}
+@media(prefers-reduced-motion:reduce){.hero-reveal-layer{display:none!important}}
