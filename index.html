@@ -14,6 +14,9 @@
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span id="scroll-progress-fill"></span></div>
+  <nav class="chapter-rail" aria-label="Page chapters"><a href="#home" data-chapter="home" aria-label="Home" class="is-current"><span>00</span><i></i></a><a href="#work" data-chapter="work" aria-label="Selected work"><span>01</span><i></i></a><a href="#about" data-chapter="about" aria-label="About"><span>02</span><i></i></a><a href="#contact" data-chapter="contact" aria-label="Contact"><span>03</span><i></i></a></nav>
+  <div class="chapter-caption" aria-live="polite"><span id="chapter-number">00</span><span id="chapter-name">INTRODUCTION</span></div>
   <header class="site-header">
     <a class="wordmark" href="#home" aria-label="Zaid home">ZAID<span>®</span></a>
     <nav class="nav-links" aria-label="Main navigation">
@@ -95,6 +98,7 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="analytics.js"></script>
+  <script src="scroll-storytelling.js"></script>
   <script src="performance.js"></script><script src="public-effects.js"></script>
   <script src="script.js"></script>
 </body>
