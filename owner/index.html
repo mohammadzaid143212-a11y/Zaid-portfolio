@@ -11,10 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="owner.css?v=cinematic-luxury-1">
   <link rel="stylesheet" href="cinematic-studio.css?v=hybrid-immersive-1">
-  <link rel="stylesheet" href="advanced.css"><link rel="stylesheet" href="motion-studio.css"><link rel="stylesheet" href="three-d-studio.css"><link rel="stylesheet" href="loading-intro-studio.css"><link rel="stylesheet" href="transition-studio.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="advanced.css"><link rel="stylesheet" href="motion-studio.css"><link rel="stylesheet" href="three-d-studio.css"><link rel="stylesheet" href="loading-intro-studio.css"><link rel="stylesheet" href="transition-studio.css"><link rel="stylesheet" href="doors-studio.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1/dist/tus.min.js"></script>
   <script defer src="owner.js"></script>
-  <script defer src="advanced.js"></script><script defer src="motion-studio.js"></script><script defer src="three-d-studio.js"></script><script defer src="loading-intro-studio.js"></script><script defer src="transition-studio.js"></script><script defer src="next-tools.js?v=owner-panels-fix-1"></script><script defer src="inquiries.js?v=portfolio-inbox-1"></script><style>.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:none!important}.zaid-cursor-dot,.zaid-cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:9999999;border-radius:50%;will-change:transform}.zaid-cursor-dot{width:5px;height:5px;background:var(--zaid-cursor-color)}.zaid-cursor-ring{width:var(--zaid-cursor-size);height:var(--zaid-cursor-size);border:1px solid var(--zaid-cursor-color);transition:width .16s,height .16s}.zaid-cursor-ring.is-hover{width:calc(var(--zaid-cursor-size)*1.45);height:calc(var(--zaid-cursor-size)*1.45)}@media(hover:none),(pointer:coarse){.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:auto!important}.zaid-cursor-dot,.zaid-cursor-ring{display:none!important}}</style>\n</head>
+  <script defer src="advanced.js"></script><script defer src="motion-studio.js"></script><script defer src="three-d-studio.js"></script><script defer src="loading-intro-studio.js"></script><script defer src="transition-studio.js"></script><script defer src="doors-studio.js"></script><script defer src="next-tools.js?v=owner-panels-fix-1"></script><script defer src="inquiries.js?v=portfolio-inbox-1"></script><style>.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:none!important}.zaid-cursor-dot,.zaid-cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:9999999;border-radius:50%;will-change:transform}.zaid-cursor-dot{width:5px;height:5px;background:var(--zaid-cursor-color)}.zaid-cursor-ring{width:var(--zaid-cursor-size);height:var(--zaid-cursor-size);border:1px solid var(--zaid-cursor-color);transition:width .16s,height .16s}.zaid-cursor-ring.is-hover{width:calc(var(--zaid-cursor-size)*1.45);height:calc(var(--zaid-cursor-size)*1.45)}@media(hover:none),(pointer:coarse){.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:auto!important}.zaid-cursor-dot,.zaid-cursor-ring{display:none!important}}</style>\n</head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
   <header class="topbar">
@@ -62,7 +62,7 @@
         <a class="sidebar-link" href="#text-studio" data-owner-section="text-studio"><span class="sidebar-icon">T</span><span>Text Studio</span></a>
         <a class="sidebar-link" href="#animation-studio" data-owner-section="animation-studio"><span class="sidebar-icon">✧</span><span>Animation Studio</span></a>        <a class="sidebar-link" href="#three-d-studio" data-owner-section="three-d-studio"><span class="sidebar-icon">◇</span><span>3D Presentation Studio</span></a>
         <a class="sidebar-link" href="#loading-intro-studio" data-owner-section="loading-intro-studio"><span class="sidebar-icon">◌</span><span>Loading &amp; Intro Studio</span></a>
-        <a class="sidebar-link" href="#transition-studio" data-owner-section="transition-studio"><span class="sidebar-icon">⇢</span><span>Transition Studio</span></a>
+        <a class="sidebar-link" href="#door-studio" data-owner-section="door-studio"><span class="sidebar-icon">◇</span><span>Web &amp; App Doors</span></a>\n        <a class="sidebar-link" href="#transition-studio" data-owner-section="transition-studio"><span class="sidebar-icon">⇢</span><span>Transition Studio</span></a>
         <a class="sidebar-link" href="#long-video-manager" data-owner-section="long-video-manager"><span class="sidebar-icon">▣</span><span>Long Videos</span></a>
         <a class="sidebar-link" href="#short-video-manager" data-owner-section="short-video-manager"><span class="sidebar-icon">▶</span><span>Short Videos</span></a>
         <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span></a>
@@ -311,7 +311,29 @@
   </div>
 </section>
 
-<section class="manager-card studio-slide" id="transition-studio">
+<section class="manager-card studio-slide" id="door-studio">
+ <div class="manager-heading"><div><p class="eyebrow">INTERACTIVE EXPERIENCE / ENTRY DESIGN</p><h2>Web &amp; App Doors Studio</h2><p class="manager-intro">Shape the two cinematic entry points visitors see on the public portfolio.</p></div></div>
+ <div class="doors-studio" id="doors-studio-app">
+  <div class="doors-studio-head"><span>DOOR EXPERIENCE CONTROL</span><small id="doors-status">Preview mode</small></div>
+  <div class="doors-studio-grid">
+   <div class="doors-fields">
+    <label class="doors-toggle"><input id="doors-enabled" type="checkbox" checked> Enable interactive doors</label>
+    <p class="doors-kicker">01 / WEB DOOR</p>
+    <label for="doors-web-title">Title</label><input id="doors-web-title" maxlength="42" value="The Film Archive">
+    <label for="doors-web-copy">Supporting line</label><input id="doors-web-copy" maxlength="90" value="A world of stories, frames and motion.">
+    <label for="doors-web-destination">Destination</label><select id="doors-web-destination"><option value="#work">Selected work</option><option value="#about">About</option><option value="#contact">Contact</option></select>
+    <p class="doors-kicker">02 / APP DOOR</p>
+    <label for="doors-app-title">Title</label><input id="doors-app-title" maxlength="42" value="Behind the Edit">
+    <label for="doors-app-copy">Supporting line</label><input id="doors-app-copy" maxlength="90" value="Explore the craft behind every cut.">
+    <label for="doors-app-destination">Destination</label><select id="doors-app-destination"><option value="#about">About</option><option value="#work">Selected work</option><option value="#contact">Contact</option></select>
+    <div class="doors-actions"><button type="button" class="quiet-button" id="doors-preview">Replay door animation ↗</button><button type="button" class="primary" id="doors-save">Save &amp; publish</button></div>
+    <p class="notice" id="doors-message" role="status" aria-live="polite"></p>
+   </div>
+   <div class="doors-preview"><span>LIVE INTERACTION PREVIEW</span><div class="doors-preview-pair"><button type="button" class="doors-preview-door" data-preview-door="web"><small>01 / WEB</small><b id="doors-preview-web">The Film Archive</b><i>OPEN ↗</i></button><button type="button" class="doors-preview-door" data-preview-door="app"><small>02 / APP</small><b id="doors-preview-app">Behind the Edit</b><i>OPEN ↗</i></button></div><p>Hover or tap a door to test its depth and opening motion.</p></div>
+  </div>
+ </div>
+</section>
+\n<section class="manager-card studio-slide" id="transition-studio">
  <div class="manager-heading"><div><p class="eyebrow">MOTION SYSTEM / TRANSITION DESIGN</p><h2>Smooth Transition Studio</h2><p class="manager-intro">Control how visitors move through your portfolio: page entrance, section reveals, and navigation fades.</p></div></div>
  <div class="transition-studio" id="transition-studio-app">
   <div class="transition-studio-top"><span><i></i> TRANSITION CONTROL ROOM</span><small id="transition-status">Preview mode</small></div>
