@@ -159,6 +159,8 @@
   function toggleThumbnail() {
     const isLong = projectType.value === "long";
     thumbnailField.classList.toggle("hidden", !isLong);
+    const formatHint = $("#project-format-hint");
+    if (formatHint) formatHint.textContent = isLong ? "Public card format: 16:9 landscape · Thumbnail available" : "Public card format: 9:16 vertical · Short video preview is autoplay-ready · No thumbnail field";
     $("#project-thumbnail").required = false;
   }
   projectType.addEventListener("change", toggleThumbnail);
@@ -276,7 +278,8 @@
     const visibleProjects = projects.filter(project => project.project_type === (videoManager?.dataset.videoPanel || "long"));
     if (!visibleProjects.length) { projectList.innerHTML = '<p class="empty-state">No '+(videoManager?.dataset.videoPanel === "short" ? "short" : "long")+' videos yet. Add the first one using this panel.</p>'; return; }
     visibleProjects.forEach(project => {
-      const card = document.createElement("article"); card.className = "library-item";
+      const card = document.createElement("article"); card.className = "library-item library-item-" + (project.project_type === "short" ? "short" : "long");
+      card.dataset.aspectRatio = project.project_type === "short" ? "9:16" : "16:9";
       const info = document.createElement("div"); info.className = "library-item-info";
       const title = document.createElement("h4"); title.textContent = project.title;
       const meta = document.createElement("p"); meta.textContent = (project.project_type === "long" ? "LONG VIDEO" : "SHORT VIDEO") + " · " + (project.is_published ? "PUBLISHED" : "DRAFT");
