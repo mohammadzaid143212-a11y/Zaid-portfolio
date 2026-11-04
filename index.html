@@ -72,21 +72,18 @@
         <div><span class="section-kicker">01 / THE PORTFOLIO</span><h2>Selected work<span class="accent">.</span></h2></div>
         <p>A few frames from stories brought to life.<br>More projects coming soon.</p>
       </div>
-      <div class="gallery-toolbar" aria-label="Filter selected work"><span class="gallery-count" aria-live="polite">SELECTED FRAMES / <b id="gallery-visible-count">ALL</b></span><div class="gallery-filters"><button type="button" class="gallery-filter is-active" data-gallery-filter="all" aria-pressed="true">ALL WORK</button><button type="button" class="gallery-filter" data-gallery-filter="long" aria-pressed="false">LONG FORM</button><button type="button" class="gallery-filter" data-gallery-filter="short" aria-pressed="false">SHORT FORM</button></div></div>
-      <div class="gallery-navigation" aria-label="Project gallery navigation"><button type="button" id="gallery-prev" aria-label="Scroll projects left">←</button><span>DRAG / SWIPE TO EXPLORE</span><button type="button" id="gallery-next" aria-label="Scroll projects right">→</button></div>
-      <div class="project-grid cinematic-horizontal-gallery">
-        <article class="project-card project-large">
-          <div class="project-art art-one"><span class="art-label">01 / DOCUMENTARY</span><span class="art-title">Beyond<br>the frame.</span><span class="art-bottom">STORY · ATMOSPHERE · IMPACT</span></div>
-          <div class="project-info"><div><h3>Documentary Film</h3><p>Storytelling / Cinematic edit</p></div><span class="project-arrow">↗</span></div>
-        </article>
-        <article class="project-card">
-          <div class="project-art art-two"><span class="art-label">02 / BRAND FILM</span><span class="art-title">Made of<br>momentum.</span><span class="art-bottom">PACE · RHYTHM · ENERGY</span></div>
-          <div class="project-info"><div><h3>Brand Film</h3><p>Commercial / Motion</p></div><span class="project-arrow">↗</span></div>
-        </article>
-        <article class="project-card">
-          <div class="project-art art-three"><span class="art-label">03 / SHORT FORM</span><span class="art-title">Small screen.<br>Big feeling.</span><span class="art-bottom">SHORTS · REELS · SOCIAL</span></div>
-          <div class="project-info"><div><h3>Short-form Edits</h3><p>Social / Retention edit</p></div><span class="project-arrow">↗</span></div>
-        </article>
+      <div class="video-gallery-group" data-video-gallery="long">
+        <div class="video-gallery-heading"><div><span class="section-kicker">LONG FORM / 16:9</span><h3>Films &amp; documentaries</h3></div><div class="gallery-navigation"><button type="button" id="long-gallery-prev" aria-label="Previous long videos">←</button><span>DRAG / SWIPE TO EXPLORE</span><button type="button" id="long-gallery-next" aria-label="Next long videos">→</button></div></div>
+        <div id="long-video-gallery" class="project-grid cinematic-horizontal-gallery long-video-gallery" aria-label="Long-form video projects">
+          <article class="project-card project-large"><div class="project-art art-one"><span class="art-label">01 / DOCUMENTARY</span><span class="art-title">Beyond<br>the frame.</span><span class="art-bottom">STORY · ATMOSPHERE · IMPACT</span></div><div class="project-info"><div><h3>Documentary Film</h3><p>Storytelling / Cinematic edit</p></div><span class="project-arrow">↗</span></div></article>
+          <article class="project-card"><div class="project-art art-two"><span class="art-label">02 / BRAND FILM</span><span class="art-title">Made of<br>momentum.</span><span class="art-bottom">PACE · RHYTHM · ENERGY</span></div><div class="project-info"><div><h3>Brand Film</h3><p>Commercial / Motion</p></div><span class="project-arrow">↗</span></div></article>
+        </div>
+      </div>
+      <div class="video-gallery-group short-gallery-group" data-video-gallery="short">
+        <div class="video-gallery-heading"><div><span class="section-kicker">SHORT FORM / 9:16</span><h3>Shorts &amp; reels</h3></div><div class="gallery-navigation"><button type="button" id="short-gallery-prev" aria-label="Previous short videos">←</button><span>DRAG / SWIPE TO EXPLORE</span><button type="button" id="short-gallery-next" aria-label="Next short videos">→</button></div></div>
+        <div id="short-video-gallery" class="project-grid cinematic-horizontal-gallery short-video-gallery" aria-label="Short-form video projects">
+          <article class="project-card"><div class="project-art art-three"><span class="art-label">01 / SHORT FORM</span><span class="art-title">Small screen.<br>Big feeling.</span><span class="art-bottom">SHORTS · REELS · SOCIAL</span></div><div class="project-info"><div><h3>Short-form Edits</h3><p>Social / Retention edit</p></div><span class="project-arrow">↗</span></div></article>
+        </div>
       </div>
       <p class="work-note">PROJECT PLACEHOLDERS — THESE VISUALS WILL BE REPLACED WITH YOUR REAL WORK.</p>
     </section>

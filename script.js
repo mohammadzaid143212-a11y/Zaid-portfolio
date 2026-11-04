@@ -43,9 +43,12 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     .eq("is_published", true).order("sort_order", { ascending: true }).order("created_at", { ascending: false });
   if (error || !data || !data.length) return;
 
-  const grid = document.querySelector(".project-grid");
-  if (!grid) return;
-  grid.replaceChildren();
+  const longGrid = document.getElementById("long-video-gallery");
+  const shortGrid = document.getElementById("short-video-gallery");
+  const grid = longGrid;
+  if (!longGrid || !shortGrid) return;
+  longGrid.replaceChildren();
+  shortGrid.replaceChildren();
 
   function videoInfo(rawUrl, isShort) {
     let url;
@@ -138,8 +141,9 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
 
   data.forEach((project, index) => {
     const card = document.createElement("article");
-    card.className = "project-card" + (project.project_type === "long" && index === 0 ? " project-large" : "");
+    card.className = "project-card" + (project.project_type === "long" && index === 0 ? " project-large" : "") + (project.project_type === "short" ? " project-vertical" : " project-landscape");
     card.dataset.projectType = project.project_type === "short" ? "short" : "long";
+    card.dataset.aspectRatio = project.project_type === "short" ? "9:16" : "16:9";
     const art = document.createElement("div");
     art.className = "project-art live-project-art";
     art.style.background = "#111114";
@@ -193,7 +197,13 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     copy.append(detailLink);
     info.append(copy);
     const arrow = document.createElement("span"); arrow.className = "project-arrow"; arrow.textContent = "↗"; info.append(arrow);
-    card.append(art, info); grid.append(card);
+    card.append(art, info);
+    (project.project_type === "short" ? shortGrid : longGrid).append(card);
+  });
+  document.querySelectorAll("[data-video-gallery]").forEach(section => {
+    const type = section.dataset.videoGallery;
+    const target = type === "short" ? shortGrid : longGrid;
+    section.hidden = !target.children.length;
   });
   const note = document.querySelector(".work-note");
   if (note) note.textContent = "SELECTED PROJECTS — UPDATED FROM ZAID'S OWNER STUDIO.";

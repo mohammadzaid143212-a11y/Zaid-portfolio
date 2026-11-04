@@ -748,3 +748,6 @@ body{font-family:"DM Sans",sans-serif;background:radial-gradient(ellipse at 78% 
  .brand{font-size:28px}
 }
 @media(prefers-reduced-motion:reduce){.owner-sidebar,.manager-card,.primary{transition:none!important}}
+
+/* Make the video format explicit in the private project library. */
+.video-format-hint{padding:10px 12px;border-left:2px solid var(--accent);background:#ffffff06;margin:-8px 0 16px}.library-item-long .library-item-info:before,.library-item-short .library-item-info:before{display:inline-block;font-size:9px;letter-spacing:1.2px;color:var(--accent);margin-bottom:7px}.library-item-long .library-item-info:before{content:"LANDSCAPE · 16:9"}.library-item-short .library-item-info:before{content:"VERTICAL · 9:16"}
