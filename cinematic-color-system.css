@@ -1,0 +1,49 @@
+/* Unified cinematic palette: charcoal, warm ivory and restrained champagne. */
+:root {
+  color-scheme: dark;
+  --bg: #10100f;
+  --panel: #191816;
+  --text: #eee9df;
+  --muted: #aaa297;
+  --accent: #c6a77a;
+  --line: rgba(238, 233, 223, .14);
+  --max: 1200px;
+}
+html, body { background: var(--bg); color: var(--text); }
+body { background-image: radial-gradient(ellipse at 50% -18%, rgba(198,167,122,.09), transparent 52%); }
+.grain { opacity: .025; }
+.wordmark span, .eyebrow-line, .text-link span, .contact-link span,
+.accent, .project-card:hover .project-arrow { color: var(--accent); }
+.eyebrow-line { background: var(--accent); }
+.nav-links a:hover, .site-footer a:hover { color: var(--accent); }
+.hero-button-primary {
+  background: var(--accent); color: #171410; border-color: var(--accent);
+}
+.hero-button-primary:hover { background: #d5bc98; border-color: #d5bc98; }
+.hero-button-secondary { border-color: rgba(238,233,223,.38); color: var(--text); }
+.hero-button-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.hero-frame { background-color: #171512; border-color: rgba(198,167,122,.2); }
+.hero-frame:before {
+  background: linear-gradient(90deg, rgba(12,11,10,.78), rgba(12,11,10,.18) 58%, rgba(12,11,10,.48)),
+              linear-gradient(0deg, rgba(8,8,7,.84), transparent 62%);
+}
+.frame-overlay { border-color: rgba(238,233,223,.14); }
+.play-mark { border-color: rgba(238,233,223,.62); color: var(--text); }
+.work-section { border-color: var(--line); }
+.section-kicker, .eyebrow { color: #b9ad9b; }
+.project-art { border-color: rgba(198,167,122,.14); }
+.art-one { background: radial-gradient(ellipse at 65% 35%, #887763 0, #51483d 22%, #292520 52%, #11100f 82%); }
+.art-two { background: radial-gradient(ellipse at 60% 50%, #94744e 0, #5b4732 24%, #2b241d 52%, #11100f 82%); }
+.art-three { background: radial-gradient(ellipse at 50% 45%, #69716b 0, #39433d 30%, #202622 58%, #10110f 82%); }
+.project-arrow { border-color: rgba(238,233,223,.25); }
+.about-section { background: #171613; border-color: var(--line); }
+.about-stat strong { color: var(--text); }
+.about-stat strong span { color: var(--accent); }
+.text-link { border-color: rgba(198,167,122,.48); }
+.contact-link { border-color: rgba(198,167,122,.5); }
+.site-footer { border-color: var(--line); color: #a49b8e; }
+.menu-toggle span { background: var(--text); }
+::selection { background: var(--accent); color: #171410; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; }
+}
