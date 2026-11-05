@@ -210,8 +210,6 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     const target = type === "short" ? shortGrid : longGrid;
     section.hidden = !target.children.length;
   });
-  const note = document.querySelector(".work-note");
-  if (note) note.textContent = "SELECTED PROJECTS — UPDATED FROM ZAID'S OWNER STUDIO.";
 })();
 
 
@@ -269,7 +267,7 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     "project-one-title": ".project-large .project-info h3", "project-one-description": ".project-large .project-info p",
     "project-two-title": ".project-grid article:nth-child(2) .project-info h3", "project-two-description": ".project-grid article:nth-child(2) .project-info p",
     "project-three-title": ".project-grid article:nth-child(3) .project-info h3", "project-three-description": ".project-grid article:nth-child(3) .project-info p",
-    "about-description": ".about-inner > div > p", "work-note": ".work-note"
+    "about-description": ".about-inner > div > p"
   };
   Object.entries(textOverrides).forEach(([key, setting]) => {
     const selector = textSelectors[key];
@@ -421,19 +419,4 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
       target.append(node);
     });
   });
-})();
-
-
-// Public portfolio assistant. Configuration is controlled from Owner Studio.
-(() => {
-  const root=document.getElementById("zaid-ai");if(!root)return;
-  const launch=document.getElementById("zaid-ai-launch"),panel=document.getElementById("zaid-ai-panel"),close=document.getElementById("zaid-ai-close"),form=document.getElementById("zaid-ai-form"),input=document.getElementById("zaid-ai-input"),send=document.getElementById("zaid-ai-send"),messages=document.getElementById("zaid-ai-messages"),suggestions=root.querySelector(".zaid-ai-suggestions"),title=panel.querySelector(".zaid-ai-header strong");
-  let busy=false;
-  function toggle(open){panel.hidden=!open;launch.setAttribute("aria-expanded",String(open));if(open)input.focus()}
-  function addBubble(text,who){const bubble=document.createElement("div");bubble.className="zaid-ai-bubble "+who;bubble.textContent=text;messages.append(bubble);messages.scrollTop=messages.scrollHeight;return bubble}
-  async function loadConfig(){try{const r=await fetch("/api/ai-chat",{headers:{"Accept":"application/json"}});if(!r.ok)throw Error("unavailable");const cfg=await r.json();if(cfg.enabled===false){root.hidden=true;return}if(cfg.name)title.textContent=cfg.name;if(cfg.welcome){messages.replaceChildren();addBubble(cfg.welcome,"assistant")}if(Array.isArray(cfg.suggestions)){suggestions.replaceChildren();cfg.suggestions.slice(0,6).forEach(prompt=>{const b=document.createElement("button");b.type="button";b.dataset.aiPrompt=prompt;b.textContent=prompt;suggestions.append(b)});suggestions.hidden=!cfg.suggestions.length}}catch{addBubble("I’m temporarily unavailable. Please use the contact page to reach Zaid.","assistant");form.hidden=true}}
-  launch.addEventListener("click",()=>toggle(panel.hidden));close.addEventListener("click",()=>toggle(false));
-  suggestions.addEventListener("click",event=>{const b=event.target.closest("[data-ai-prompt]");if(!b||busy)return;input.value=b.dataset.aiPrompt;form.requestSubmit()});
-  form.addEventListener("submit",async event=>{event.preventDefault();const message=input.value.trim();if(!message||busy)return;addBubble(message,"visitor");input.value="";suggestions.hidden=true;busy=true;send.disabled=true;const waiting=addBubble("Thinking…","assistant");try{const response=await fetch("/api/ai-chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message})}),data=await response.json();waiting.textContent=data.answer||data.error||"The assistant is temporarily unavailable."}catch{waiting.textContent="I can’t connect right now. Please use the contact page."}finally{busy=false;send.disabled=false;input.focus();messages.scrollTop=messages.scrollHeight}});
-  loadConfig();
 })();
