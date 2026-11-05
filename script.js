@@ -43,7 +43,10 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
   const { data, error } = await client.from("portfolio_projects")
     .select("id,title,project_type,description,video_url,thumbnail_url,sort_order")
     .eq("is_published", true).order("sort_order", { ascending: true }).order("created_at", { ascending: false });
-  if (error || !data || !data.length) return;
+  if (error) return;
+  const publishedCount = document.getElementById("published-project-count");
+  if (publishedCount) publishedCount.textContent = String((data || []).length).padStart(2, "0");
+  if (!data || !data.length) return;
 
   const longGrid = document.getElementById("long-video-gallery");
   const shortGrid = document.getElementById("short-video-gallery");

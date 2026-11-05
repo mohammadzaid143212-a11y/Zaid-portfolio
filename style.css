@@ -164,3 +164,12 @@ h1{font-size:clamp(76px,12vw,166px);line-height:.78;margin:42px 0 32px}
  .contact-section h2{font-size:clamp(56px,13vw,82px)}
 }
 @media(prefers-reduced-motion:reduce){.hero-video,.play-mark{animation:none!important}}
+
+
+/* About & experience — honest early-career profile */
+.about-inner{grid-template-columns:minmax(150px,.72fr) minmax(0,1.8fr);align-items:start;gap:clamp(28px,6vw,84px)}
+.about-content{min-width:0}.about-content>p{max-width:650px;font-size:clamp(14px,1.25vw,16px);line-height:1.95;color:#c0b5a7;margin:0 0 30px}
+.about-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:clamp(42px,6vw,72px);padding-top:25px;border-top:1px solid #c6a87535}
+.about-stat{display:flex;flex-direction:column;gap:9px;min-width:0}.about-stat strong{font:500 clamp(32px,4.2vw,54px)/1 "Cormorant Garamond",serif;color:#e8d8bf;letter-spacing:-.035em;white-space:nowrap}.about-stat strong span{font:600 9px/1 "DM Sans",sans-serif;letter-spacing:.14em;color:#a89579;margin-left:3px}.about-stat small{font:500 9px/1.5 "DM Sans",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#938779}
+@media(max-width:680px){.about-inner{grid-template-columns:1fr;gap:25px}.about-stats{gap:10px;margin-top:38px;padding-top:20px}.about-stat strong{font-size:clamp(28px,8vw,40px)}.about-stat small{font-size:8px;letter-spacing:.07em}}
+@media(prefers-reduced-motion:no-preference){.about-stat{animation:aboutStatReveal .75s both;animation-timeline:view();animation-range:entry 0% entry 65%}.about-stat:nth-child(2){animation-delay:.1s}.about-stat:nth-child(3){animation-delay:.2s}@keyframes aboutStatReveal{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}}
