@@ -46,7 +46,26 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
   if (error) return;
   const publishedCount = document.getElementById("published-project-count");
   if (publishedCount) publishedCount.textContent = String((data || []).length).padStart(2, "0");
-  if (!data || !data.length) return;
+  if (!data || !data.length) {
+    const longGrid = document.getElementById("long-video-gallery");
+    const shortGrid = document.getElementById("short-video-gallery");
+    [
+      [longGrid, "Long-form films", "Published films will appear here."],
+      [shortGrid, "Short-form edits", "Published reels and shorts will appear here."]
+    ].forEach(([grid, title, note]) => {
+      if (!grid) return;
+      grid.replaceChildren();
+      const empty = document.createElement("div");
+      empty.className = "empty-gallery-state";
+      const heading = document.createElement("strong");
+      heading.textContent = title;
+      const caption = document.createElement("span");
+      caption.textContent = note;
+      empty.append(heading, caption);
+      grid.append(empty);
+    });
+    return;
+  }
 
   const longGrid = document.getElementById("long-video-gallery");
   const shortGrid = document.getElementById("short-video-gallery");
