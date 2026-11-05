@@ -25,7 +25,7 @@ function start(){
  const heroBottom=document.querySelector(".hero-bottom");
  const heroMeta=document.querySelector(".hero-meta");
  if(reduce){root.classList.add("zaid-choreo-static");return;}
- launchHeroVisualSequence();
+ // The dedicated reference sequence is launched by reference-sequence.js after this class becomes live.
  if(hero)hero.classList.add("zaid-choreo-enter");
  [heroEyebrow,...words,heroBottom,heroFrame,heroMeta].filter(Boolean).forEach((el,i)=>{
    el.style.setProperty("--choreo-index",String(i));
@@ -77,6 +77,5 @@ function start(){
  });
 }
 document.addEventListener("zaid:intro:complete",start,{once:true});
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(()=>{if(!document.getElementById("cci-dedicated-overlay"))start();},500),{once:true});
-else setTimeout(()=>{if(!document.getElementById("cci-dedicated-overlay"))start();},500);
+window.setTimeout(()=>{if(!started&&!document.getElementById("cci-dedicated-overlay"))start();},12000);
 })();
