@@ -1,0 +1,133 @@
+/* Public portfolio responsive and motion polish.
+   Additive overrides only: keeps Owner Studio and its controls untouched. */
+:root {
+  --portfolio-gutter: clamp(20px, 5.5vw, 76px);
+  --portfolio-section-space: clamp(88px, 11vw, 148px);
+}
+html { scroll-padding-top: 96px; }
+body { min-width: 320px; }
+img, video, iframe { max-width: 100%; }
+button, a { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--accent, #c6a77a); outline-offset: 4px; }
+.section-wrap { width: min(var(--max, 1200px), calc(100% - 2 * var(--portfolio-gutter))); }
+.hero { padding-top: clamp(64px, 8vw, 104px); }
+.hero h1 { max-width: 100%; overflow-wrap: normal; }
+.hero-bottom { gap: 28px; }
+.hero-bottom p { max-width: 390px; }
+.hero-actions { flex-shrink: 0; }
+.hero-frame { min-height: 280px; }
+.work-section { padding-top: var(--portfolio-section-space); padding-bottom: var(--portfolio-section-space); }
+.video-gallery-group + .video-gallery-group { margin-top: clamp(42px, 6vw, 72px); }
+.video-gallery-heading { min-width: 0; }
+.video-gallery-heading > div:first-child { min-width: 0; }
+.gallery-navigation { gap: 12px; }
+.gallery-navigation span { text-align: center; }
+.long-video-gallery .project-art { aspect-ratio: 16 / 9; }
+.short-video-gallery { scroll-padding-inline: max(12px, calc((100vw - 1200px) / 2)); }
+.short-video-gallery .project-card { flex-basis: clamp(250px, 30vw, 360px) !important; }
+.about-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 3vw, 36px); margin-top: 48px; }
+.about-stat { min-width: 0; }
+.about-stat strong { display: block; font-size: clamp(26px, 3.5vw, 42px); line-height: 1; }
+.about-stat small { display: block; margin-top: 10px; color: #756a5d; font-size: 11px; line-height: 1.5; }
+.contact-section { padding-top: var(--portfolio-section-space); padding-bottom: var(--portfolio-section-space); }
+.hero-button, .contact-link, .text-link, .menu-toggle, .gallery-navigation button,
+.reference-play-button, .project-expand-button { touch-action: manipulation; }
+.hero-button:focus-visible, .menu-toggle:focus-visible, .gallery-navigation button:focus-visible,
+.reference-play-button:focus-visible { outline-offset: 5px; }
+
+@media (max-width: 900px) {
+  .hero { padding-top: 72px; }
+  .hero h1 { font-size: clamp(58px, 10.5vw, 92px); }
+  .hero-bottom { align-items: flex-start; }
+  .hero-bottom p { max-width: 330px; }
+  .hero-actions { gap: 9px; }
+  .hero-button { padding-inline: 16px; gap: 14px; }
+  .about-inner { grid-template-columns: 1fr 1.7fr; gap: 32px; }
+  .short-video-gallery .project-card { flex-basis: clamp(245px, 42vw, 330px) !important; }
+}
+@media (max-width: 680px) {
+  :root { --portfolio-gutter: 22px; --portfolio-section-space: 82px; }
+  html { scroll-padding-top: 78px; }
+  .site-header { height: 68px; padding-inline: var(--portfolio-gutter); }
+  .wordmark { font-size: 20px; }
+  .menu-toggle { width: 44px; height: 44px; border-radius: 12px; }
+  .nav-links { right: var(--portfolio-gutter); width: min(320px, calc(100vw - 2 * var(--portfolio-gutter))); }
+  .hero { padding-top: 58px; }
+  .eyebrow, .section-kicker { font-size: 9px; letter-spacing: 1.55px; }
+  .hero h1 { font-size: clamp(48px, 13.2vw, 78px); line-height: .98; letter-spacing: -.075em; margin: 28px 0 22px; }
+  .hero-bottom { display: grid; grid-template-columns: 1fr; gap: 22px; margin-bottom: 30px; }
+  .hero-bottom p { max-width: 36ch; font-size: 13px; line-height: 1.7; }
+  .hero-actions { display: grid; grid-template-columns: 1fr 1fr; width: 100%; gap: 9px; }
+  .hero-button { min-width: 0; min-height: 48px; padding-inline: 10px; gap: 8px; font-size: 8px; letter-spacing: 1px; }
+  .hero-frame { height: clamp(230px, 64vw, 360px); min-height: 230px; }
+  .frame-overlay { inset: 10px; }
+  .frame-copy { top: 19px; left: 19px; right: 19px; font-size: 7px; letter-spacing: 1.2px; }
+  .frame-caption { left: 19px; right: 19px; bottom: 17px; max-width: 28ch; font-size: 16px; line-height: 1.2; }
+  .play-mark { width: 48px; height: 48px; font-size: 11px; }
+  .hero-meta { display: flex; justify-content: space-between; gap: 8px; font-size: 7px; letter-spacing: .65px; }
+  .hero-meta span { min-width: 0; }
+  .hero-meta span:nth-child(2) { display: none; }
+  .work-section { padding-top: var(--portfolio-section-space); padding-bottom: var(--portfolio-section-space); }
+  .section-heading { gap: 14px; margin-bottom: 30px; }
+  .section-heading h2 { font-size: clamp(38px, 10vw, 54px); }
+  .section-heading > p { font-size: 11px; line-height: 1.65; }
+  .video-gallery-heading { gap: 14px; margin-bottom: 14px; }
+  .video-gallery-heading h3 { font-size: clamp(21px, 6vw, 28px); }
+  .gallery-navigation { display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; width: 100%; gap: 8px; }
+  .gallery-navigation button { width: 40px; height: 40px; }
+  .gallery-navigation span { font-size: 7px; letter-spacing: 1px; }
+  .long-video-gallery { gap: 16px; padding-bottom: 12px !important; }
+  .long-video-gallery .project-art { aspect-ratio: 16 / 9; }
+  .long-video-gallery .project-info { padding: 11px 12px; }
+  .long-video-gallery .project-info h3 { font-size: 14px; }
+  .long-video-gallery .project-info p { font-size: 10px; }
+  .short-gallery-group { margin-top: 44px; }
+  .short-video-gallery { gap: 13px; margin-right: calc(-1 * var(--portfolio-gutter)); padding: 6px var(--portfolio-gutter) 20px 2px !important; scroll-padding-inline: 2px; }
+  .short-video-gallery .project-card { flex-basis: min(76vw, 310px) !important; border-radius: 22px; }
+  .short-video-gallery .reference-play-button { width: 58px; height: 58px; font-size: 23px; }
+  .short-video-gallery .project-info { padding: 54px 16px 18px; }
+  .short-video-gallery .project-info h3 { font-size: 17px; }
+  .short-video-gallery .project-info p { font-size: 12px; }
+  .about-section { padding: 70px 0; }
+  .about-inner { grid-template-columns: 1fr; gap: 24px; }
+  .about-inner h2 { font-size: clamp(36px, 9.5vw, 52px); line-height: 1.02; }
+  .about-inner p { font-size: 13px; line-height: 1.8; }
+  .about-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 36px; }
+  .about-stat strong { font-size: clamp(22px, 6vw, 30px); }
+  .about-stat strong span { display: block; margin-top: 5px; font-size: 8px; letter-spacing: 1px; }
+  .about-stat small { margin-top: 8px; font-size: 9px; line-height: 1.4; }
+  .contact-section { padding-top: var(--portfolio-section-space); padding-bottom: 76px; }
+  .contact-section:before { margin-bottom: 38px; }
+  .contact-section h2 { font-size: clamp(39px, 10.5vw, 62px); line-height: 1; margin: 22px 0 32px; }
+  .contact-link { max-width: 100%; gap: 24px; font-size: clamp(19px, 5.8vw, 27px); }
+  .contact-note { max-width: 34ch; font-size: 11px; line-height: 1.6; }
+  .site-footer { min-height: 74px; padding: 20px var(--portfolio-gutter); gap: 12px; font-size: 8px; letter-spacing: .8px; }
+}
+@media (max-width: 380px) {
+  :root { --portfolio-gutter: 18px; }
+  .hero h1 { font-size: 12.5vw; }
+  .hero-button { font-size: 7px; padding-inline: 7px; }
+  .frame-copy { left: 15px; right: 15px; }
+  .short-video-gallery .project-card { flex-basis: 78vw !important; }
+  .about-stats { gap: 8px; }
+  .about-stat strong { font-size: 21px; }
+  .about-stat small { font-size: 8px; }
+}
+/* Motion stays expressive but avoids unnecessary GPU work on touch devices. */
+@media (hover: none) and (pointer: coarse) {
+  .hero-frame:hover .hero-video { transform: scale(1.04); }
+  .project-card:hover { transform: none; }
+  .project-card:hover .project-art:before { transform: none; }
+  .hero-button:hover { transform: none; }
+}
+@media (max-width: 680px) {
+  .hero-video { animation-duration: 42s; }
+  .hero-frame:after { animation-duration: 18s; }
+  .reveal-ready .reveal { transform: translateY(18px); filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .hero-video { animation: none !important; transform: none !important; }
+  .hero-frame:after { display: none !important; }
+  .reveal-ready .reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
