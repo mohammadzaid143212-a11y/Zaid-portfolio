@@ -20,7 +20,7 @@ if (year) year.textContent = new Date().getFullYear();
 // Subtle scroll reveals; content remains visible if reduced motion is preferred.
 if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
   document.body.classList.add("reveal-ready");
-  const revealTargets = document.querySelectorAll(".section-kicker, .section-heading h2, .project-card, .about-inner > div, .contact-section > h2, .contact-link");
+  const revealTargets = document.querySelectorAll(".section-kicker, .section-heading h2, .project-card, .about-inner > div, .contact-section > h2, .contact-cta");
   revealTargets.forEach(el => el.classList.add("reveal"));
   const revealObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
