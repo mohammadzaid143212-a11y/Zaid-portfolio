@@ -63,6 +63,11 @@ function start(){
  });
 }
 document.addEventListener("zaid:intro:complete",start,{once:true});
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(()=>{if(!document.getElementById("cci-dedicated-overlay"))start();},500),{once:true});
-else setTimeout(()=>{if(!document.getElementById("cci-dedicated-overlay"))start();},500);
+// Wait for the intro runtime to finish (including its async settings read) before
+// revealing the page. The old 500ms fallback raced the intro and consumed the
+// one-time start event while the overlay was still loading.
+// Keep a long failsafe only for a genuinely missing/broken intro runtime.
+window.setTimeout(()=>{
+ if(!started&&!document.getElementById("cci-dedicated-overlay"))start();
+},12000);
 })();
