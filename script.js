@@ -100,6 +100,15 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
   const revealLayer = heroFrame?.querySelector(".hero-reveal-layer");
   const revealImage = revealLayer?.querySelector(".hero-reveal-image");
   const revealSource = data.find(project => typeof project.thumbnail_url === "string" && /^https?:\/\//i.test(project.thumbnail_url));
+  const heroPoster = heroFrame?.querySelector(".hero-poster");
+  if (heroPoster && revealSource) {
+    try {
+      const posterUrl = new URL(revealSource.thumbnail_url);
+      if (["https:", "http:"].includes(posterUrl.protocol)) {
+        heroPoster.style.backgroundImage = 'url("' + posterUrl.href + '")';
+      }
+    } catch {}
+  }
   if (heroFrame && revealLayer && revealImage && revealSource && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     revealImage.src = revealSource.thumbnail_url;
     revealImage.alt = "";
