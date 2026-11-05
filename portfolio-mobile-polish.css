@@ -131,3 +131,50 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .hero-frame:after { display: none !important; }
   .reveal-ready .reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
 }
+
+
+/* Mobile readability pass: clearer supporting text and a stronger showreel frame. */
+@media (max-width: 680px) {
+  .hero .eyebrow,
+  .hero-meta,
+  .section-kicker,
+  .frame-copy,
+  .gallery-navigation span {
+    color: #c9bdad;
+  }
+  .hero-bottom p,
+  .section-heading > p,
+  .project-info p,
+  .about-inner p,
+  .about-stat small,
+  .contact-note {
+    color: #c4baad;
+  }
+  .hero-frame {
+    min-height: 250px;
+    border-color: rgba(198, 167, 122, .34);
+    background:
+      radial-gradient(ellipse at 52% 48%, rgba(198,167,122,.19), transparent 48%),
+      linear-gradient(135deg, #28231d, #11100f 72%);
+  }
+  .hero-frame:before {
+    background:
+      linear-gradient(90deg, rgba(12,11,10,.48), rgba(12,11,10,.08) 58%, rgba(12,11,10,.30)),
+      linear-gradient(0deg, rgba(8,8,7,.62), transparent 68%);
+  }
+  .frame-copy { font-size: 8px; letter-spacing: 1.35px; }
+  .frame-caption { font-size: 17px; }
+  .section-heading > p { font-size: 12px; }
+  .video-gallery-heading h3 { line-height: 1.15; }
+  .long-video-gallery .project-info h3 { font-size: 15px; }
+  .long-video-gallery .project-info p { font-size: 11px; }
+  .about-stat small { font-size: 10px; }
+  .contact-note { font-size: 12px; }
+}
+@media (max-width: 380px) {
+  .hero .eyebrow,
+  .section-kicker,
+  .gallery-navigation span { font-size: 9px; }
+  .hero-bottom p,
+  .about-inner p { font-size: 13px; }
+}
