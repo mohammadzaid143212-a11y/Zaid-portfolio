@@ -2,7 +2,7 @@
 const reduce=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 let launched=false;
 function run(){
- if(launched||reduce)return;
+ if(launched)return;
  const heroFrame=document.querySelector(".hero-frame");if(!heroFrame)return;
  launched=true;
  const layer=document.createElement("div");
@@ -16,17 +16,16 @@ function run(){
 function activateFrameAmbience(heroFrame){
  // Keep all post-intro motion confined to the framed visual stage.
  const depth=document.createElement("div");depth.className="rs-living-depth";depth.setAttribute("aria-hidden","true");
- depth.innerHTML='<span class="rs-depth-ring rs-depth-ring-a"></span><span class="rs-depth-ring rs-depth-ring-b"></span><span class="rs-depth-cross"></span>';
+ depth.innerHTML='<span class="rs-depth-ring rs-depth-ring-a"></span><span class="rs-depth-ring rs-depth-ring-b"></span><span class="rs-depth-cross"></span><span class="rs-live-frame rs-live-frame-a"><i></i><b>01 / STORY</b></span><span class="rs-live-frame rs-live-frame-b"><i></i><b>02 / MOTION</b></span><span class="rs-live-beam"></span>';
  heroFrame.append(depth);
  heroFrame.classList.add("rs-frame-experience-live");
 }
 function watch(){
- const root=document.documentElement;
- if(root.classList.contains("zaid-choreo-live")){run();return;}
- const observer=new MutationObserver(()=>{if(root.classList.contains("zaid-choreo-live")){observer.disconnect();run();}});
- observer.observe(root,{attributes:true,attributeFilter:["class"]});
- // The post-intro runtime may add its live class after the intro completion event.
- window.setTimeout(()=>{if(root.classList.contains("zaid-choreo-live"))run();},13000);
+ // Listen to the exact intro-complete event; do not depend on a CSS class race.
+ document.addEventListener("zaid:intro:complete",run,{once:true});
+ // If the intro is disabled/already completed before this file initializes, start safely.
+ if(document.documentElement.classList.contains("zaid-choreo-live"))run();
+ window.setTimeout(()=>{if(!launched&&!document.getElementById("cci-dedicated-overlay"))run();},14000);
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",watch,{once:true});else watch();
 })();
