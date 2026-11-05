@@ -1,6 +1,6 @@
 /* Unified post-intro reference sequence: 3D editorial reveal, film frames and kinetic type. */
-.hero{position:relative;isolation:isolate}
-.reference-sequence-layer{position:absolute;inset:-2px 0 0;z-index:30;overflow:hidden;pointer-events:none;perspective:1400px;isolation:isolate;background:#090908;opacity:1}
+.hero-frame{position:relative;isolation:isolate}
+.reference-sequence-layer{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none;perspective:1400px;isolation:isolate;background:transparent;opacity:1;border-radius:inherit}
 .reference-sequence-layer.is-leaving{opacity:0;transition:opacity 1.15s cubic-bezier(.2,.7,.2,1)}
 .rs-atmosphere{position:absolute;inset:-15%;background:radial-gradient(ellipse at 50% 52%,#b99a6a35,transparent 36%),radial-gradient(ellipse at 18% 70%,#e8dfcc12,transparent 35%),#090908;animation:rs-atmosphere 6.8s ease both}
 .rs-grid{position:absolute;inset:-30%;opacity:.16;background-image:linear-gradient(#c6a87522 1px,transparent 1px),linear-gradient(90deg,#c6a87522 1px,transparent 1px);background-size:70px 70px;transform:perspective(700px) rotateX(64deg) scale(1.6) translateY(20%);transform-origin:center bottom;animation:rs-grid-in 6.6s cubic-bezier(.2,.7,.2,1) both}
@@ -50,23 +50,14 @@
 @media(prefers-reduced-motion:reduce){.reference-sequence-layer{display:none!important}}
 
 
-/* Persistent motion after the short opening sequence: scroll depth, project reveals and living hero frame. */
-.rs-experience-live .hero-frame{transform:perspective(1100px) rotateX(var(--rs-scroll-rotate,0deg)) translateY(var(--rs-scroll-depth,0));transition:transform .18s linear;transform-style:preserve-3d}
-.rs-living-depth{position:absolute;inset:8%;z-index:2;pointer-events:none;overflow:hidden;border:1px solid #c6a87520;transform:translateZ(24px);transform-style:preserve-3d}
-.rs-depth-ring{position:absolute;left:50%;top:50%;width:58%;aspect-ratio:1;border:1px solid #c6a87570;border-radius:50%;transform:translate(-50%,-50%) rotateX(68deg);box-shadow:0 0 28px #c6a87516;animation:rs-living-orbit 16s linear infinite}
-.rs-depth-ring-b{width:78%;border-color:#f1e7d033;transform:translate(-50%,-50%) rotateY(62deg) rotateX(18deg);animation-duration:22s;animation-direction:reverse}
-.rs-depth-cross{position:absolute;inset:12%;background:linear-gradient(115deg,transparent 48%,#c6a87518 49%,transparent 50%),linear-gradient(25deg,transparent 48%,#c6a87512 49%,transparent 50%);animation:rs-cross-breathe 7s ease-in-out infinite}
-.rs-depth-caption{position:absolute;bottom:12px;left:14px;color:#c6a875;font:600 7px "DM Sans",sans-serif;letter-spacing:.24em;opacity:.72}
-.rs-experience-live .project-card{transform:perspective(1000px) translateY(var(--rs-scroll-y,0)) rotateX(var(--rs-card-tilt,0deg));transform-style:preserve-3d;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
-.rs-experience-live .project-card:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(115deg,transparent 25%,#fff2 48%,transparent 65%);transform:translateX(-130%);opacity:0}
-.rs-experience-live .project-card.rs-in-view:after{opacity:1;animation:rs-card-glide 1.5s .15s ease-out both}
-.rs-experience-live .project-card.rs-in-view{animation:rs-card-arrive .9s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--rs-card-index,0)*100ms)}
-.rs-experience-live .rs-living-heading{transition:letter-spacing .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
-.rs-experience-live .rs-living-heading.rs-in-view{letter-spacing:-.025em;transform:translateY(-4px)}
-.rs-experience-live .hero-frame:hover .rs-depth-ring{animation-duration:5s}
+
+/* The post-intro experience lives ONLY inside the circled hero frame. */
+.hero-frame .rs-living-depth{position:absolute;inset:8%;z-index:1;pointer-events:none;overflow:hidden;border:1px solid #c6a87520;transform:translateZ(24px);transform-style:preserve-3d}
+.hero-frame .rs-depth-ring{position:absolute;left:50%;top:50%;width:58%;aspect-ratio:1;border:1px solid #c6a87570;border-radius:50%;transform:translate(-50%,-50%) rotateX(68deg);box-shadow:0 0 28px #c6a87516;animation:rs-living-orbit 16s linear infinite}
+.hero-frame .rs-depth-ring-b{width:78%;border-color:#f1e7d033;transform:translate(-50%,-50%) rotateY(62deg) rotateX(18deg);animation-duration:22s;animation-direction:reverse}
+.hero-frame .rs-depth-cross{position:absolute;inset:12%;background:linear-gradient(115deg,transparent 48%,#c6a87518 49%,transparent 50%),linear-gradient(25deg,transparent 48%,#c6a87512 49%,transparent 50%);animation:rs-cross-breathe 7s ease-in-out infinite}
+.hero-frame .rs-depth-ring,.hero-frame .rs-depth-cross{mix-blend-mode:screen}
 @keyframes rs-living-orbit{to{transform:translate(-50%,-50%) rotateX(68deg) rotateZ(360deg)}}
 @keyframes rs-cross-breathe{0%,100%{opacity:.3;transform:scale(.96)}50%{opacity:1;transform:scale(1.04)}}
-@keyframes rs-card-glide{0%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
-@keyframes rs-card-arrive{0%{opacity:.45;filter:blur(4px)}100%{opacity:1;filter:blur(0)}}
-@media(max-width:680px){.rs-living-depth{inset:7%}.rs-depth-ring{width:70%}.rs-depth-caption{font-size:6px}.rs-experience-live .hero-frame{transform:none}}
-@media(prefers-reduced-motion:reduce){.rs-experience-live .hero-frame,.rs-experience-live .project-card{transform:none!important}.rs-depth-ring,.rs-depth-cross{animation:none!important}}
+@media(max-width:680px){.hero-frame .rs-living-depth{inset:7%}.hero-frame .rs-depth-ring{width:70%}}
+@media(prefers-reduced-motion:reduce){.reference-sequence-layer,.hero-frame .rs-depth-ring,.hero-frame .rs-depth-cross{animation:none!important;display:none!important}}
