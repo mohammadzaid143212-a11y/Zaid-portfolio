@@ -4,8 +4,7 @@ const root=document.getElementById("portfolio-intro-root");
 if(!root)return;
 const db=window.supabase?.createClient("https://rtaedoseedjwljixmrgy.supabase.co","sb_publishable__Oc_xT1AELiVIQgCgXytTQ_qxLd_ZFo");
 const playIntro=()=>{
- if(reduce||sessionStorage.getItem("zaidCombinedIntroSeen")==="1")return;
- sessionStorage.setItem("zaidCombinedIntroSeen","1");
+ if(reduce)return;
  const hero=document.querySelector(".hero");
  const media=hero?.querySelector(".hero-frame video,.hero-frame img");
  root.hidden=false;root.setAttribute("aria-hidden","false");root.className="combined-cinematic-intro";
@@ -19,7 +18,7 @@ const playIntro=()=>{
  content.append(eyebrow,title,line);root.append(backdrop,doors,content);
  document.documentElement.classList.add("cci-lock");
  const finish=()=>{root.classList.add("cci-exit");document.documentElement.classList.remove("cci-lock");setTimeout(()=>{root.hidden=true;root.replaceChildren();},1300);};
- setTimeout(finish,3600);
+ setTimeout(finish,4800);
 };
 const applyStory=()=>{
  if(reduce)return;
