@@ -102,8 +102,32 @@ h1 .muted { color:#77736d; }
 .about-stat small { color:#968d80; }
 .contact-section { padding-top:clamp(110px,14vw,180px); padding-bottom:clamp(110px,14vw,180px); }
 .contact-section h2 { font-family:"Cormorant Garamond",serif; font-size:clamp(66px,10vw,130px); font-weight:500; letter-spacing:-.05em; line-height:.86; }
-.contact-link { border:0; border-bottom:1px solid rgba(199,167,122,.6); padding:0 0 12px; font-size:11px; letter-spacing:.16em; }
-.contact-note { color:#a49b8e; font-size:11px; }
+.contact-cta {
+  width: min(330px, 100%);
+  min-height: 66px;
+  margin: 42px auto 0;
+  padding: 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  border: 1px solid var(--text);
+  border-radius: 999px;
+  background: var(--text);
+  color: #11100e;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-decoration: none;
+  transition: background .25s ease, color .25s ease, transform .25s ease;
+}
+.contact-cta span { font-size: 17px; line-height: 1; }
+.contact-cta:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-2px); }
+.contact-section { text-align: center; }
+.contact-section > h2 { text-align: left; }
+@media (max-width:600px) {
+  .contact-cta { width: min(290px, 88%); min-height: 60px; margin-top: 34px; }
+}
 .site-footer { min-height:86px; padding-inline:var(--portfolio-gutter); border-color:var(--line); color:#898174; }
 .empty-gallery-state {
   min-height:190px; display:flex; flex-direction:column; justify-content:center;
