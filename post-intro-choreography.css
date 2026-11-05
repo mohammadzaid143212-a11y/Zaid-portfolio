@@ -1,0 +1,27 @@
+/* Unified post-intro choreography: one visual language across hero, chapters and work. */
+.zaid-choreo-ready .zaid-choreo-item{opacity:0;transform:translate3d(0,34px,0);filter:blur(8px)}
+.zaid-choreo-live .zaid-choreo-item{animation:zaidChoreoRise 1.05s cubic-bezier(.16,1,.3,1) calc(var(--choreo-index,0)*90ms) both}
+.zaid-choreo-live .hero-frame{transform:perspective(1200px) rotateX(var(--camera-y,0deg)) rotateY(var(--camera-x,0deg));transition:transform .28s ease-out,box-shadow .8s}
+.zaid-choreo-live .hero-frame .hero-poster{transform:translate3d(var(--camera-px,0),var(--camera-py,0),0) scale(1.035);transition:transform .35s ease-out}
+.zaid-choreo-ready .zaid-scroll-object{opacity:0;transform:translate3d(0,36px,0) scale(.985);filter:blur(6px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1),filter .9s}
+.zaid-choreo-ready .zaid-scroll-object.zaid-object-visible{opacity:1;transform:none;filter:none;transition-delay:var(--choreo-stagger,0ms)}
+.zaid-choreo-ready .work-section.zaid-chapter-visible .section-heading h2,
+.zaid-choreo-ready .about-section.zaid-chapter-visible h2,
+.zaid-choreo-ready .contact-section.zaid-chapter-visible h2{animation:zaidChapterTitle 1s cubic-bezier(.16,1,.3,1) both}
+.zaid-choreo-live .project-card{transform:perspective(900px) rotateX(var(--card-tilt-x,0deg)) rotateY(var(--card-tilt-y,0deg)) translateY(var(--story-depth,0px));transition:transform .35s cubic-bezier(.16,1,.3,1),filter .5s}
+.zaid-choreo-live .contact-cta,.zaid-choreo-live .hero-button-primary{transform:translate3d(var(--mag-x,0),var(--mag-y,0),0);transition:transform .22s ease-out,background .3s,border-color .3s}
+.zaid-choreo-live .about-section{background-image:linear-gradient(115deg,transparent 25%,#c6a87512 48%,transparent 72%);background-size:220% 100%;animation:zaidPaperSweep 13s 1.2s ease-in-out infinite}
+.zaid-choreo-live .hero-frame:after{animation-duration:7.5s}
+.zaid-choreo-static .zaid-choreo-item,.zaid-choreo-static .zaid-scroll-object{opacity:1!important;transform:none!important;filter:none!important;transition:none!important;animation:none!important}
+@keyframes zaidChoreoRise{0%{opacity:0;transform:translate3d(0,34px,0) scale(.985);filter:blur(8px)}100%{opacity:1;transform:none;filter:blur(0)}}
+@keyframes zaidChapterTitle{0%{opacity:.35;transform:translateY(22px);filter:blur(6px)}100%{opacity:1;transform:none;filter:none}}
+@keyframes zaidPaperSweep{0%,72%{background-position:100% 0}88%,100%{background-position:0 0}}
+@media(max-width:680px){
+ .zaid-choreo-live .hero-frame{transform:none!important}
+ .zaid-choreo-live .hero-frame .hero-poster{transform:scale(1.02)}
+ .zaid-choreo-live .project-card{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+ .zaid-choreo-ready *,.zaid-choreo-ready *:before,.zaid-choreo-ready *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+ .zaid-choreo-ready .zaid-choreo-item,.zaid-choreo-ready .zaid-scroll-object{opacity:1!important;transform:none!important;filter:none!important}
+}
