@@ -8,8 +8,8 @@
 #cci-dedicated-overlay .cci-content i{display:block;width:54px;height:1px;margin:32px auto;background:#c6a875}
 #cci-dedicated-overlay .cci-doors{position:absolute;inset:0;z-index:2;display:grid;grid-template-columns:1fr 1fr;perspective:1400px;pointer-events:none}
 #cci-dedicated-overlay .cci-doors span{display:block;background:linear-gradient(135deg,#171613,#080807 70%);border:1px solid #c6a87522;box-shadow:inset 0 0 90px #0008;backface-visibility:hidden}
-#cci-dedicated-overlay .cci-doors span:first-child{transform-origin:left center;animation:cci-door-left 4.4s 0s cubic-bezier(.76,0,.24,1) forwards}
-#cci-dedicated-overlay .cci-doors span:last-child{transform-origin:right center;animation:cci-door-right 4.4s 0s cubic-bezier(.76,0,.24,1) forwards}
+#cci-dedicated-overlay .cci-doors span:first-child{transform-origin:left center;animation:cci-door-left var(--cci-duration,3.5s) 0s cubic-bezier(.76,0,.24,1) forwards}
+#cci-dedicated-overlay .cci-doors span:last-child{transform-origin:right center;animation:cci-door-right var(--cci-duration,3.5s) 0s cubic-bezier(.76,0,.24,1) forwards}
 #cci-dedicated-overlay.cci-exit .cci-content{animation:cci-content-out .55s ease forwards}
 #cci-dedicated-overlay.cci-exit .cci-backdrop{animation:cci-backdrop-out .9s ease forwards}
 .cci-lock{overflow:hidden!important}
