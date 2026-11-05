@@ -20,3 +20,18 @@
 @keyframes cci-backdrop-out{to{opacity:0;transform:scale(1.08)}}
 @media(max-width:600px){#cci-dedicated-overlay .cci-content h1{font-size:clamp(42px,12vw,66px)}#cci-dedicated-overlay .cci-backdrop video,#cci-dedicated-overlay .cci-backdrop img{opacity:.26}}
 @media(prefers-reduced-motion:reduce){#cci-dedicated-overlay{display:none!important}.cci-lock{overflow:auto!important}}
+
+#cci-dedicated-overlay{background:var(--cci-bg,#080807)!important;color:#f0ece4!important}
+#cci-dedicated-overlay .cci-backdrop{background:radial-gradient(ellipse at 65% 45%,color-mix(in srgb,var(--cci-accent,#c6a875) 42%,transparent),transparent 38%),linear-gradient(130deg,#111 0%,var(--cci-bg,#080807) 70%)}
+#cci-dedicated-overlay .cci-content small{color:var(--cci-accent,#c6a875)}
+#cci-dedicated-overlay .cci-content h1{color:#f0ece4}
+#cci-dedicated-overlay .cci-content i{background:var(--cci-accent,#c6a875)}
+#cci-dedicated-overlay .cci-tagline{margin:0 auto;color:#c9c2b7;font:500 10px/1.6 "DM Sans",sans-serif;letter-spacing:.16em;text-transform:uppercase}
+#cci-dedicated-overlay .cci-progress{position:absolute;left:12vw;right:12vw;bottom:12vh;height:2px;background:#ffffff2b;z-index:4;overflow:hidden}
+#cci-dedicated-overlay .cci-progress span{display:block;width:100%;height:100%;background:var(--cci-accent,#c6a875);transform:scaleX(0);transform-origin:left center}
+#cci-dedicated-overlay .cci-skip{position:absolute;right:5vw;bottom:5vh;z-index:5;border:1px solid #ffffff55;background:#08080788;color:#f0ece4;padding:11px 16px;font:600 9px/1 "DM Sans",sans-serif;letter-spacing:.16em;cursor:pointer}
+#cci-dedicated-overlay[data-style="notebook"] .cci-content{width:min(680px,82vw);padding:clamp(28px,6vw,72px);background:#e9e2d5;color:#171613;box-shadow:0 30px 100px #0008;transform:rotate(-2deg);animation:cci-content-in 1.2s cubic-bezier(.16,1,.3,1) both}
+#cci-dedicated-overlay[data-style="notebook"] .cci-content h1{color:#171613}
+#cci-dedicated-overlay[data-style="notebook"] .cci-content small,#cci-dedicated-overlay[data-style="notebook"] .cci-tagline{color:#635b4f}
+#cci-dedicated-overlay[data-style="brand"] .cci-progress{display:none}
+@media(max-width:600px){#cci-dedicated-overlay .cci-progress{bottom:12vh}#cci-dedicated-overlay .cci-skip{bottom:4vh}}
