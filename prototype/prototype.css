@@ -34,3 +34,18 @@
 .door:hover .door-scene small,.door:focus-visible .door-scene small{opacity:1}
 .door:hover .door-scene,.door:focus-visible .door-scene{filter:none}
 @media(max-width:760px){#doorWorld{top:260px;height:760px}.doors{gap:16px 8px}.door-scene{height:clamp(245px,68vw,340px)}}
+
+
+/* Visual-only prototype: all editorial copy is intentionally hidden.
+   Keep scene canvases, portals, film frames and layout intact for later editing. */
+.topbar,.opening-meta,.opening-title,.coordinates,.scene-counter,
+.manifesto>*,
+.worlds>.chapter-meta,.world-heading,
+.door-no,.door-scene b,.door-scene small,
+.reveal-content,.reveal-index,
+.films>.chapter-meta,.film-heading,.film-art>span,.film-art>b,.film-art>small,.film-caption,
+.finale>.eyebrow,.finale>h2,.finale>.contact,.finale-foot {
+  visibility:hidden!important;
+}
+.opening .vignette{background:radial-gradient(ellipse at 50% 50%,transparent 35%,#08090b77 85%,#08090b 100%)!important}
+.opening canvas{pointer-events:none}
