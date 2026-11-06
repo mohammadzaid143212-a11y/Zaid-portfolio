@@ -187,3 +187,111 @@ html{scroll-padding-top:90px}
  .zaid-door .door-enter{font-size:6px!important;letter-spacing:.07em!important}
  .zaid-door-foot{font-size:6px;letter-spacing:.08em}
 }
+
+
+/* Second-pass correction: make the category portals read as actual architectural doors,
+   not flat colored tiles. This layer only affects the public doors and mobile hierarchy. */
+.zaid-door-experience{position:relative}
+.zaid-door-heading{margin-bottom:clamp(36px,5vw,64px)!important}
+.zaid-door-grid{gap:clamp(14px,2vw,26px)!important;align-items:stretch}
+.zaid-door{perspective:1500px;transform-style:preserve-3d}
+.zaid-door .door-index{display:flex;align-items:center;gap:10px;margin-bottom:12px!important;color:#716b60!important}
+.zaid-door .door-index:before{content:"";width:17px;height:1px;background:#aa936f}
+.zaid-door .door-frame{
+  position:relative;isolation:isolate;overflow:visible!important;
+  min-height:clamp(340px,39vw,500px)!important;padding:13px!important;
+  border:1px solid #b9ad98!important;border-radius:0!important;
+  background:
+    linear-gradient(90deg,#d8d1c4 0,#f6f2e9 8%,#d8d1c4 12%,#eee9df 88%,#c9c0b1 94%,#e7e0d4 100%)!important;
+  box-shadow:0 18px 34px #28251e14, inset 0 0 0 1px #fff9!important;
+}
+.zaid-door .door-frame:before{
+  content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background:radial-gradient(ellipse at 52% 52%,#fff9 0,transparent 54%);
+  opacity:0;transition:opacity .7s ease;
+}
+.zaid-door .door-panel{
+  position:relative;isolation:isolate;overflow:hidden;
+  min-height:clamp(312px,36vw,472px)!important;
+  padding:clamp(18px,2.2vw,30px)!important;
+  border:1px solid #ffffff65!important;border-radius:0!important;
+  transform-origin:left center;transform:rotateY(0deg) translateZ(0);
+  transition:transform .95s cubic-bezier(.18,.72,.18,1),filter .8s,box-shadow .8s!important;
+  box-shadow:inset 0 0 0 5px #0000000c,inset 0 0 0 7px #ffffff25,12px 16px 28px #17171420!important;
+}
+.zaid-door .door-panel:before{
+  content:"";position:absolute;inset:13px;z-index:-1;pointer-events:none;
+  border:1px solid #ffffff75;
+  box-shadow:inset 0 0 0 5px #0000000a,inset 0 0 0 6px #ffffff28;
+}
+.zaid-door .door-panel:after{
+  content:"";position:absolute;inset:-2px;z-index:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 30%,#ffffff45 48%,transparent 64%);
+  transform:translateX(-130%);transition:transform 1s ease;
+}
+.zaid-door-documentary .door-panel{background:linear-gradient(145deg,#54796d 0%,#355d51 52%,#1e4139 100%)!important}
+.zaid-door-brand .door-panel{background:linear-gradient(145deg,#c17b56 0%,#a65f43 52%,#773c30 100%)!important}
+.zaid-door-short .door-panel{background:linear-gradient(145deg,#7388ad 0%,#526b91 52%,#33496d 100%)!important}
+.zaid-door-experiments .door-panel{background:linear-gradient(145deg,#b7a372 0%,#97804e 52%,#695632 100%)!important}
+.zaid-door .door-symbol{position:relative;z-index:2;display:block;font-size:24px!important;color:#fff!important}
+.zaid-door .door-panel strong,.zaid-door .door-panel small,.zaid-door .door-enter{position:relative;z-index:2}
+.zaid-door .door-panel strong{font-size:clamp(24px,2.65vw,37px)!important;line-height:.98!important;text-shadow:0 2px 16px #0002}
+.zaid-door .door-handle{
+  position:absolute;z-index:3;right:clamp(17px,2vw,28px);top:52%;
+  width:8px;height:8px;border-radius:50%;
+  background:radial-gradient(circle at 30% 28%,#fff6d8,#c5a96d 42%,#74582e 76%,#e7d4a1);
+  box-shadow:0 0 0 2px #ffffff30,1px 2px 5px #0005;
+}
+.zaid-door .door-handle:after{
+  content:"";position:absolute;width:3px;height:25px;left:2px;top:6px;
+  border-radius:3px;background:linear-gradient(90deg,#80653b,#f2dfad 48%,#8b6c3e);
+}
+.zaid-door:hover .door-frame:before,.zaid-door:focus-visible .door-frame:before,.zaid-door.is-opening .door-frame:before{opacity:1}
+.zaid-door:hover .door-panel,.zaid-door:focus-visible .door-panel{
+  transform:rotateY(-17deg) translateZ(8px)!important;
+  filter:brightness(1.07)!important;
+  box-shadow:inset 0 0 0 5px #0000000c,inset 0 0 0 7px #ffffff25,24px 20px 38px #17171432!important;
+}
+.zaid-door:hover .door-panel:after,.zaid-door:focus-visible .door-panel:after{transform:translateX(130%)}
+.zaid-door.is-opening .door-panel{transform:rotateY(-72deg) translateZ(12px)!important;filter:brightness(1.12)!important}
+.zaid-door.is-opening .door-panel:after{transform:translateX(130%)}
+.zaid-door .door-enter{margin-top:auto}
+.zaid-door-foot{margin-top:24px}
+.zaid-door-foot span:last-child{color:#9a8665}
+
+/* Correct the overly tight mobile title and reduce the dead space between chapters. */
+@media(max-width:760px){
+ .hero{padding-top:clamp(88px,23vw,112px)!important}
+ .cinematic-title{font-size:clamp(48px,12.5vw,76px)!important;line-height:.86!important;letter-spacing:-.085em!important}
+ .hero-title-line{white-space:normal}
+ .hero-title-second{padding-left:clamp(18px,8vw,42px)}
+ .hero-side-note{right:0;bottom:12px;transform:scale(.86);transform-origin:right bottom}
+ .editorial-hero-bottom{align-items:flex-start!important;flex-direction:column!important;gap:18px!important;margin:20px 0 28px!important}
+ .hero-bottom p{max-width:34ch!important;font-size:12px!important}
+ .hero-actions{width:100%;flex-wrap:wrap}
+ .hero-button{min-height:42px!important;padding:0 13px!important;font-size:7px!important}
+ .editorial-hero-frame{height:clamp(330px,92vw,440px)!important;min-height:330px!important}
+ .zaid-door-experience{padding-top:64px!important;padding-bottom:64px!important}
+ .zaid-door-grid{gap:12px!important}
+ .zaid-door .door-index{font-size:6px!important;letter-spacing:.07em!important;gap:6px}
+ .zaid-door .door-frame{min-height:280px!important;padding:8px!important}
+ .zaid-door .door-panel{min-height:262px!important;padding:17px 14px!important}
+ .zaid-door .door-panel:before{inset:9px}
+ .zaid-door .door-panel strong{font-size:clamp(22px,6.2vw,30px)!important}
+ .zaid-door .door-panel small{font-size:6px!important;letter-spacing:.04em!important}
+ .zaid-door .door-handle{right:14px;width:7px;height:7px}
+ .zaid-door .door-handle:after{height:19px}
+ .zaid-door-foot{font-size:6px;letter-spacing:.07em}
+ .work-section{padding-top:70px!important;padding-bottom:76px!important}
+ .editorial-section-heading{grid-template-columns:1fr!important;gap:18px!important;margin-bottom:38px!important}
+ .section-heading h2{font-size:clamp(58px,15vw,82px)!important}
+ .section-heading>p{max-width:38ch!important}
+ .editorial-gallery-group{margin-top:42px!important}
+ .video-gallery-heading{align-items:flex-start!important}
+ .video-gallery-heading h3{font-size:29px!important}
+ .work-footnote{margin-top:36px!important;gap:12px;font-size:6px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .zaid-door .door-panel,.zaid-door .door-panel:after{transition:none!important}
+ .zaid-door.is-opening .door-panel{transform:none!important}
+}
