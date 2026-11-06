@@ -49,3 +49,23 @@
 }
 .opening .vignette{background:radial-gradient(ellipse at 50% 50%,transparent 35%,#08090b77 85%,#08090b 100%)!important}
 .opening canvas{pointer-events:none}
+
+
+/* Bright visual direction: airy, sunlit, natural colours only. */
+:root{--paper:#f3efe5;--ink:#34433d;--red:#a9a17c}
+html,body{background:#f3efe5!important;color:#34433d}
+.opening{background:#e8e1d2!important;color:#34433d}
+.opening .vignette{background:radial-gradient(ellipse at 50% 48%,#fff0 8%,#e9e0cf55 75%,#e9e0cfaa 100%)!important}
+.worlds{background:#dce8dc!important}
+.manifesto,.films{background:#f3efe5!important;color:#34433d!important}
+.finale{background:#e4eadf!important;color:#34433d!important}
+.progress{background:#789b85!important}
+.door-doc .door-scene{background:linear-gradient(145deg,#8fb8a3,#537d6d)!important}
+.door-brand .door-scene{background:linear-gradient(145deg,#d5b58a,#a47b55)!important}
+.door-short .door-scene{background:linear-gradient(145deg,#a8bfd4,#688ca7)!important}
+.door-lab .door-scene{background:linear-gradient(145deg,#c9c2a0,#8d9875)!important}
+.film-art:before{background:radial-gradient(ellipse at 65% 35%,#d6c39c,transparent 40%),linear-gradient(120deg,#b9c9b6,#e9e0cf 75%)!important}
+.art-two:before{background:radial-gradient(ellipse at 30% 45%,#d6b58d,transparent 40%),linear-gradient(120deg,#d8c4a9,#f0e9dd)!important}
+.art-three:before{background:radial-gradient(ellipse at 70% 35%,#a9bfd0,transparent 40%),linear-gradient(120deg,#b7c9d2,#e6e9df)!important}
+.film-art{background:#dce4d8!important;color:#34433d}
+.contact{background:#587c6a!important;color:#fff!important}
