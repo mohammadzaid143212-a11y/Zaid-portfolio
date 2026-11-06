@@ -23,3 +23,14 @@
 .door.is-opening .door-scene{transform:rotateY(-88deg) translateZ(24px);box-shadow:35px 30px 50px #0005}
 .reveal-world{scroll-margin-top:20px}
 @media(max-width:760px){.opening-title{top:48%;}.opening .vignette{background:linear-gradient(90deg,#08090bdc,#08090b66 70%),linear-gradient(0deg,#08090b99,transparent 55%)}}
+
+.worlds{position:relative;isolation:isolate;overflow:hidden}
+#doorWorld{position:absolute;left:0;top:290px;width:100%;height:570px;z-index:0;pointer-events:none}
+.worlds>.chapter-meta,.world-heading,.doors{position:relative;z-index:1}
+.door-scene{background:transparent!important;border:0!important;box-shadow:none!important;transform:none!important;padding:0;overflow:visible}
+.door-scene:before,.door-scene:after,.door-scene .door-light,.door-scene .door-object,.door-scene .handle{display:none}
+.door-scene b{opacity:0}
+.door-scene small{color:#fff;text-shadow:0 1px 8px #000;opacity:0;transition:opacity .3s}
+.door:hover .door-scene small,.door:focus-visible .door-scene small{opacity:1}
+.door:hover .door-scene,.door:focus-visible .door-scene{filter:none}
+@media(max-width:760px){#doorWorld{top:260px;height:760px}.doors{gap:16px 8px}.door-scene{height:clamp(245px,68vw,340px)}}
