@@ -295,3 +295,67 @@ html{scroll-padding-top:90px}
  .zaid-door .door-panel,.zaid-door .door-panel:after{transition:none!important}
  .zaid-door.is-opening .door-panel{transform:none!important}
 }
+
+/* Dark-red film language chapter: the second reference informs the storytelling tone. */
+.film-language{
+  position:relative;isolation:isolate;overflow:hidden;
+  margin-top:clamp(50px,8vw,110px);
+  padding:clamp(76px,10vw,142px) var(--gutter);
+  background:#0c0c0d;color:#f1eee8;
+}
+.film-language:before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 78% 20%,#8e171b26,transparent 38%),radial-gradient(ellipse at 5% 90%,#4a10151c,transparent 42%);
+}
+.film-language-inner{width:min(var(--max),100%);margin:auto}
+.film-language-top,.film-language-bottom{display:flex;justify-content:space-between;gap:16px;color:#a8a29a;font:700 8px "DM Sans",sans-serif;letter-spacing:.17em}
+.film-language-top{padding-bottom:16px;border-bottom:1px solid #ffffff27}
+.film-language-head{position:relative;display:grid;grid-template-columns:1fr minmax(220px,330px);align-items:end;gap:30px;padding:clamp(48px,7vw,92px) 0 clamp(38px,5vw,64px)}
+.film-language-kicker{grid-column:1/-1;margin:0;color:#d64b4e;font-size:8px;letter-spacing:.2em;font-weight:700}
+.film-language-head h2{grid-column:1;margin:0;color:#f1eee8;font:700 clamp(76px,13vw,174px)/.76 "Space Grotesk",sans-serif;letter-spacing:-.095em}
+.film-language-head h2 em{color:#c52d34;font:500 1.03em "Cormorant Garamond",serif;letter-spacing:-.07em}
+.film-language-intro{max-width:290px;margin:0 0 7px;color:#b8b2a9;font-size:12px;line-height:1.85}
+.film-language-sequence{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,28px)}
+.film-language-step{position:relative;min-width:0}
+.film-step-number{display:block;margin-bottom:12px;color:#d64b4e;font:700 9px "DM Sans",sans-serif;letter-spacing:.18em}
+.film-step-art{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1.38/1;overflow:hidden;border:1px solid #ffffff26;background:#181819;isolation:isolate}
+.film-step-art:before,.film-step-art:after{content:"";position:absolute;inset:0;pointer-events:none}
+.film-step-art:before{z-index:-1;background:linear-gradient(135deg,#2b2b2b,#111 58%,#321316)}
+.film-step-art:after{background:linear-gradient(115deg,transparent 25%,#ffffff12 48%,transparent 68%);transform:translateX(-120%);transition:transform 1s ease}
+.film-language-step:hover .film-step-art:after{transform:translateX(120%)}
+.film-step-raw:before{background:radial-gradient(ellipse at 60% 36%,#81705b 0,#39332c 25%,#171717 68%)}
+.film-step-edit:before{background:linear-gradient(135deg,#27272a,#121214 48%,#541b20)}
+.film-step-final:before{background:radial-gradient(ellipse at 50% 45%,#a22c32 0,#4b171b 28%,#111 72%)}
+.film-frame-corner{position:absolute;inset:13px;border:1px solid #ffffff3a}
+.film-frame-corner:before,.film-frame-corner:after{content:"";position:absolute;width:18px;height:18px;border-color:#d94b50}
+.film-frame-corner:before{left:-1px;top:-1px;border-left:2px solid;border-top:2px solid}
+.film-frame-corner:after{right:-1px;bottom:-1px;border-right:2px solid;border-bottom:2px solid}
+.film-step-mark{position:absolute;left:25px;top:24px;color:#f1eee8;font:700 7px "DM Sans",sans-serif;letter-spacing:.16em}
+.film-step-mark i{display:inline-block;width:5px;height:5px;margin-left:5px;border-radius:50%;background:#d53c42;box-shadow:0 0 10px #d53c42}
+.film-step-word{color:#fff;font:700 clamp(24px,3.2vw,42px)/.86 "Space Grotesk",sans-serif;letter-spacing:-.07em;text-align:center;text-shadow:0 5px 25px #0008}
+.film-step-time{position:absolute;right:24px;bottom:23px;color:#d4c9c4;font:700 6px "DM Sans",sans-serif;letter-spacing:.16em}
+.film-step-copy{padding:18px 0 0;border-top:1px solid #ffffff2b;margin-top:14px}
+.film-step-copy>span{color:#d64b4e;font-size:7px;letter-spacing:.18em;font-weight:700}
+.film-step-copy h3{margin:13px 0 8px;color:#f1eee8;font:500 clamp(25px,3vw,38px)/.96 "Cormorant Garamond",serif;letter-spacing:-.025em}
+.film-step-copy p{max-width:31ch;margin:0;color:#a9a39b;font-size:10px;line-height:1.8}
+.film-language-bottom{margin-top:clamp(42px,6vw,76px);padding-top:15px;border-top:1px solid #ffffff27;color:#8f8981}
+@media(max-width:760px){
+ .film-language{margin-top:40px;padding:68px var(--gutter)}
+ .film-language-top,.film-language-bottom{font-size:6px;letter-spacing:.1em}
+ .film-language-head{grid-template-columns:1fr;gap:18px;padding:52px 0 34px}
+ .film-language-head h2{font-size:clamp(76px,20vw,118px)}
+ .film-language-intro{max-width:32ch;font-size:11px}
+ .film-language-sequence{grid-template-columns:1fr;gap:34px}
+ .film-language-step{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:13px;align-items:center}
+ .film-step-number{grid-column:1/-1;margin:0}
+ .film-step-art{aspect-ratio:1/1.1}
+ .film-frame-corner{inset:8px}
+ .film-step-mark{left:15px;top:15px;font-size:6px}
+ .film-step-word{font-size:clamp(20px,6vw,31px)}
+ .film-step-time{right:14px;bottom:14px;font-size:5px}
+ .film-step-copy{margin:0;padding:0 0 0 13px;border-top:0;border-left:1px solid #ffffff2b}
+ .film-step-copy h3{font-size:clamp(25px,7vw,34px)}
+ .film-step-copy p{font-size:9px}
+ .film-language-bottom{margin-top:40px}
+}
+@media(max-width:380px){.film-language-step{grid-template-columns:1fr}.film-step-art{aspect-ratio:1.35/1}.film-step-copy{padding:14px 0 0;border-left:0;border-top:1px solid #ffffff2b}}
