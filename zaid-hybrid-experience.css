@@ -1,0 +1,150 @@
+/* Zaid — hybrid immersive art direction.
+   Public-site-only layer. Preserves the existing intro, reveal and gallery hooks. */
+:root{
+  --hybrid-night:#111311;
+  --hybrid-night-2:#1a1d1a;
+  --hybrid-paper:#f2efe8;
+  --hybrid-accent:#c9aa78;
+  --hybrid-ease:cubic-bezier(.2,.75,.2,1);
+}
+body{background:var(--hybrid-paper)!important}
+html{scroll-padding-top:90px}
+::selection{background:var(--hybrid-accent);color:#111}
+.site-header{transition:background .45s var(--hybrid-ease),border-color .45s var(--hybrid-ease)}
+.site-header.is-scrolled{background:rgba(17,19,17,.92)!important;border-color:#ffffff20!important}
+.site-header.is-scrolled .editorial-wordmark,
+.site-header.is-scrolled .nav-links,
+.site-header.is-scrolled .nav-links a,
+.site-header.is-scrolled .nav-availability{color:#f2efe8!important}
+.site-header.is-scrolled .menu-toggle{border-color:#ffffff50!important}
+.site-header.is-scrolled .menu-toggle span{background:#f2efe8!important}
+
+/* The hero becomes a dark, cinematic portal inside the light editorial opening. */
+.editorial-hero-frame{
+  background:#111!important;
+  border:1px solid #111!important;
+  box-shadow:0 35px 90px #19191420,0 4px 18px #19191412;
+  transform:translateZ(0);
+}
+.editorial-hero-frame .hero-poster{
+  background:
+    radial-gradient(ellipse at 72% 42%,#c6a77a38 0,transparent 22%),
+    radial-gradient(ellipse at 58% 55%,#69766c42 0,transparent 36%),
+    linear-gradient(115deg,#101310 8%,#252a25 48%,#111311 100%)!important;
+}
+.editorial-hero-frame:after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:linear-gradient(110deg,transparent 28%,#d8c6a31a 48%,transparent 66%);
+  transform:translateX(-115%);animation:hybrid-sheen 9s 1.2s var(--hybrid-ease) infinite;
+}
+.editorial-hero-frame .frame-overlay{z-index:2!important}
+.editorial-hero-frame .hero-reveal-layer,
+.editorial-hero-frame .portrait-reveal-layer{z-index:3!important}
+.editorial-hero-frame .frame-copy,
+.editorial-hero-frame .play-mark,
+.editorial-hero-frame .frame-caption,
+.editorial-hero-frame .frame-index{z-index:4!important}
+.editorial-hero-frame .play-mark{transition:transform .5s var(--hybrid-ease),background .5s,border-color .5s}
+.editorial-hero-frame:hover .play-mark{transform:scale(1.12) rotate(45deg);background:#c9aa7825!important;border-color:var(--hybrid-accent)!important}
+.editorial-hero-frame .frame-caption{max-width:min(620px,72%);text-wrap:balance}
+
+/* Give the work chapter a gallery-like frame rather than generic cards. */
+.editorial-gallery-group{position:relative}
+.editorial-gallery-group .project-art{
+  box-shadow:0 16px 38px #17171412;
+  transition:transform .7s var(--hybrid-ease),box-shadow .7s var(--hybrid-ease);
+}
+.editorial-gallery-group .project-card:hover .project-art{
+  transform:translateY(-7px);
+  box-shadow:0 28px 55px #17171420;
+}
+.project-art .art-visual-orbit{transition:transform 1.1s var(--hybrid-ease),opacity .7s}
+.project-card:hover .art-visual-orbit{transform:rotateX(65deg) rotateZ(24deg) scale(1.12);opacity:.8}
+.project-info{border-bottom:1px solid var(--line)}
+.project-arrow{transition:transform .35s var(--hybrid-ease),background .35s,color .35s}
+.project-card:hover .project-arrow{transform:rotate(45deg);background:var(--ink)!important;color:var(--paper)!important}
+
+/* Expertise remains the dark chapter; add depth without stealing readability. */
+.expertise-section{
+  background:
+    radial-gradient(ellipse at 88% 18%,#bda07113,transparent 34%),
+    radial-gradient(ellipse at 8% 82%,#71807418,transparent 32%),
+    var(--hybrid-night)!important;
+}
+.expertise-section:after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.13;
+  background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);
+  background-size:84px 84px;
+  mask-image:linear-gradient(90deg,transparent,black 45%,transparent);
+}
+.expertise-inner{z-index:2}
+.expertise-item{transition:padding .45s var(--hybrid-ease),background .45s var(--hybrid-ease)}
+.expertise-item:hover{padding-inline:18px;background:linear-gradient(90deg,#ffffff0c,transparent)}
+.expertise-symbol{transition:transform .45s var(--hybrid-ease),color .45s}
+.expertise-item:hover .expertise-symbol{transform:translate(4px,-4px);color:var(--hybrid-accent)!important}
+
+/* About is the quiet human counterpoint to the technical chapters. */
+.editorial-about{position:relative;overflow:hidden}
+.editorial-about:before{
+  content:"";position:absolute;right:-18vw;top:8%;width:42vw;aspect-ratio:1;border:1px solid #17171412;border-radius:50%;
+  box-shadow:0 0 0 48px #17171406,0 0 0 96px #17171404;pointer-events:none
+}
+.about-inner{position:relative;z-index:1}
+.about-portrait{overflow:hidden;isolation:isolate}
+.about-portrait:before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:radial-gradient(ellipse at 55% 28%,#d8c5a0 0,transparent 28%),linear-gradient(145deg,#73796e,#252a25 70%);
+  transition:transform 1s var(--hybrid-ease)
+}
+.about-portrait:hover:before{transform:scale(1.06)}
+.portrait-abstract-mark{font-family:"Space Grotesk",sans-serif!important;text-shadow:0 12px 45px #0003}
+
+/* A full-bleed dark closing sequence makes the contact action feel intentional. */
+.editorial-contact{
+  width:100%!important;max-width:none!important;margin:0!important;padding:clamp(85px,12vw,165px) var(--gutter)!important;
+  background:
+    radial-gradient(ellipse at 82% 28%,#c5a47722,transparent 30%),
+    linear-gradient(120deg,#111411,#20251f 65%,#111311)!important;
+  color:#f2efe8!important;position:relative;overflow:hidden
+}
+.editorial-contact:before{
+  content:"";position:absolute;right:-9vw;top:-28vw;width:60vw;aspect-ratio:1;border:1px solid #d6c29a26;border-radius:50%;
+  box-shadow:0 0 0 55px #d6c29a0b,0 0 0 110px #d6c29a08,0 0 0 165px #d6c29a05;pointer-events:none
+}
+.editorial-contact>*{position:relative;z-index:1}
+.editorial-contact .section-kicker,.editorial-contact .contact-topline>span:last-child{color:#c5bda9!important}
+.editorial-contact h2{color:#f2efe8!important}
+.editorial-contact h2 em{color:var(--hybrid-accent)!important}
+.editorial-contact .contact-bottom p{color:#c7c5bc!important}
+.editorial-contact .contact-cta{border-color:#f2efe870!important;color:#f2efe8!important;transition:background .35s,color .35s,border-color .35s}
+.editorial-contact .contact-cta:hover{background:var(--hybrid-accent)!important;border-color:var(--hybrid-accent)!important;color:#111!important}
+.editorial-footer{background:#0b0d0b!important;color:#d7d2c7!important;border-top:1px solid #ffffff1c!important}
+.editorial-footer a{color:inherit!important}
+
+/* Scroll reveal is progressive enhancement only; content remains visible without JS. */
+.js-motion-ready .section-kicker,
+.js-motion-ready .section-heading h2,
+.js-motion-ready .video-gallery-group,
+.js-motion-ready .expertise-heading,
+.js-motion-ready .expertise-item,
+.js-motion-ready .about-content,
+.js-motion-ready .contact-section h2{
+  animation:hybrid-rise .8s both var(--hybrid-ease);
+}
+@keyframes hybrid-rise{from{opacity:.0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes hybrid-sheen{0%,18%{transform:translateX(-115%)}48%,100%{transform:translateX(115%)}}
+@media(hover:hover) and (pointer:fine){
+  .hero-button,.contact-cta,.nav-links a,.text-link{transition:transform .35s var(--hybrid-ease),color .35s,background .35s}
+  .hero-button:hover,.contact-cta:hover{transform:translateY(-3px)}
+}
+@media(max-width:760px){
+  .editorial-hero-frame{height:clamp(340px,112vw,560px)!important}
+  .editorial-hero-frame .frame-caption{max-width:78%;font-size:clamp(25px,7vw,38px)!important}
+  .editorial-contact{padding-inline:22px!important}
+  .editorial-contact:before{width:100vw;right:-48vw;top:-15vw}
+  .expertise-item:hover{padding-inline:0}
+  .editorial-gallery-group .project-card:hover .project-art{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
