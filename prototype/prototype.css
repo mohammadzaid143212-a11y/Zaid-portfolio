@@ -69,3 +69,58 @@ html,body{background:#f3efe5!important;color:#34433d}
 .art-three:before{background:radial-gradient(ellipse at 70% 35%,#a9bfd0,transparent 40%),linear-gradient(120deg,#b7c9d2,#e6e9df)!important}
 .film-art{background:#dce4d8!important;color:#34433d}
 .contact{background:#587c6a!important;color:#fff!important}
+
+
+/* FINAL DIRECTION — premium film studio, light palette, visual-first, not experimental */
+:root{--paper:#f4f1e8;--ink:#43564b;--red:#8ea78f}
+html,body{background:#f4f1e8!important;color:#43564b!important}
+.topbar,.opening-meta,.opening-title,.coordinates,.scene-counter,.manifesto>*,.worlds>.chapter-meta,.world-heading,.door-no,.door-scene b,.door-scene small,.reveal-content,.reveal-index,.films>.chapter-meta,.film-heading,.film-art>span,.film-art>b,.film-art>small,.film-caption,.finale>.eyebrow,.finale>h2,.finale>.contact,.finale-foot{display:none!important}
+.grain{opacity:.035}
+.progress{background:#9bb6a0}
+.opening{background:#e7e9df!important;min-height:100svh}
+.opening canvas{opacity:.95}
+.opening .vignette{background:linear-gradient(90deg,#e7e9df20,#e7e9df00 55%,#e7e9df25)!important}
+.manifesto{min-height:34vh;background:linear-gradient(135deg,#e7e9df,#f4f1e8 55%,#d8e3d7)!important}
+.worlds{padding-top:5vw;padding-bottom:8vw;background:#e5ebdf!important}
+#doorWorld{display:none!important}
+.doors{gap:clamp(12px,2vw,28px);grid-template-columns:repeat(4,minmax(0,1fr))}
+.door{display:block;min-width:0}
+.door-scene{height:clamp(320px,42vw,590px);position:relative;overflow:hidden;border:1px solid #ffffffa8!important;border-radius:3px;background:#cbd8ca!important;box-shadow:0 22px 55px #536b5620!important;transform:none!important;transition:transform .6s ease,box-shadow .6s ease!important}
+.door-scene:before,.door-scene:after{display:block!important;content:"";position:absolute;inset:0;border:0!important;box-shadow:none!important;opacity:1}
+.door-doc .door-scene{background:linear-gradient(160deg,#9eb9a7 0%,#607d6d 45%,#314b40 100%)!important}
+.door-doc .door-scene:before{background:radial-gradient(ellipse at 54% 30%,#f4e7c5 0 4%,transparent 28%),linear-gradient(180deg,transparent 35%,#253d32 100%)}
+.door-doc .door-scene:after{inset:42% -12% -8%;background:linear-gradient(145deg,transparent 15%,#233c31 16% 27%,transparent 28%),linear-gradient(35deg,#3d5b49 0 38%,transparent 39%)}
+.door-brand .door-scene{background:linear-gradient(145deg,#e0c9a5,#b38b64 55%,#735d49)!important}
+.door-brand .door-scene:before{background:radial-gradient(ellipse at 50% 38%,#fff1d5 0 8%,transparent 34%),linear-gradient(90deg,#5b4435aa,transparent 40% 60%,#5b4435aa)}
+.door-brand .door-scene:after{inset:22% 18%;border:1px solid #f8eddb66!important;background:linear-gradient(110deg,transparent 35%,#f8e7c733 50%,transparent 65%)}
+.door-short .door-scene{background:linear-gradient(160deg,#b7cbd4,#7898a5 52%,#435f70)!important}
+.door-short .door-scene:before{background:radial-gradient(ellipse at 70% 24%,#fff0d7 0 5%,transparent 28%),linear-gradient(130deg,transparent 38%,#d6e2dd88 39% 42%,transparent 43%)}
+.door-short .door-scene:after{inset:12% 24%;border:1px solid #ffffff55!important;background:linear-gradient(180deg,transparent,#29465655)}
+.door-lab .door-scene{background:linear-gradient(145deg,#d4d2b6,#9ba58a 55%,#687b68)!important}
+.door-lab .door-scene:before{background:radial-gradient(circle at 50% 45%,#f5e9c9 0 7%,transparent 30%),linear-gradient(35deg,#405b4d88,transparent 50%)}
+.door-lab .door-scene:after{inset:15% 12%;border:1px solid #f7f1df66!important;background:linear-gradient(115deg,transparent 45%,#f8f0d055 50%,transparent 55%)}
+.door:hover .door-scene,.door:focus-visible .door-scene{transform:translateY(-8px)!important;box-shadow:0 32px 65px #536b5630!important}
+.door.is-opening .door-scene{transform:scale(1.025)!important}
+.reveal-world{display:none!important}
+.films{background:#f4f1e8!important;color:#43564b!important;padding-top:6vw;padding-bottom:9vw}
+.film-grid{grid-template-columns:1.25fr 1fr;gap:clamp(12px,2vw,28px)}
+.film-card:first-child{grid-column:auto}
+.film-art,.film-card:first-child .film-art{height:clamp(300px,38vw,560px);border-radius:3px;background:#dce5d9!important;box-shadow:0 22px 55px #536b561a}
+.film-art:before{inset:0;transform:scale(1);transition:transform 1.2s ease}
+.film-card:hover .film-art:before{transform:scale(1.045)}
+.art-one:before{background:radial-gradient(ellipse at 68% 28%,#f5e6c6 0 5%,transparent 28%),linear-gradient(145deg,transparent 35%,#617e6b 36% 58%,#314b40 59%),linear-gradient(180deg,#b9c9b4,#7c9b87)!important}
+.art-two:before{background:radial-gradient(ellipse at 48% 30%,#fff0d7 0 8%,transparent 34%),linear-gradient(90deg,#c4a27b,#e5d3b3 48%,#8b7057)!important}
+.art-three:before{background:radial-gradient(ellipse at 70% 20%,#f8e8c8 0 6%,transparent 26%),linear-gradient(140deg,#c1d0d2,#7799a6 55%,#435f70)!important}
+.finale{background:linear-gradient(135deg,#e1e9dc,#f4f1e8 55%,#d7e2d5)!important;min-height:38vh}
+.finale-orbit{border-color:#78977b22;box-shadow:0 0 0 55px #78977b08,0 0 0 110px #78977b06}
+@media(max-width:760px){
+ .opening{min-height:76svh}
+ .worlds{padding:12vw 5vw}
+ .doors{grid-template-columns:1fr 1fr;gap:14px}
+ .door-scene{height:clamp(245px,68vw,390px)}
+ .films{padding:12vw 5vw}
+ .film-grid{grid-template-columns:1fr;gap:18px}
+ .film-card:first-child{grid-column:auto}
+ .film-art,.film-card:first-child .film-art{height:clamp(280px,78vw,430px)}
+ .finale{min-height:28vh}
+}
