@@ -148,3 +148,42 @@ html{scroll-padding-top:90px}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+
+/* Signature category doors — adapted from the supplied reference recording. */
+.zaid-door-experience{padding-top:clamp(84px,11vw,150px)!important;padding-bottom:clamp(82px,10vw,136px)!important}
+.zaid-door-heading{align-items:end!important;margin-bottom:clamp(30px,5vw,58px)!important}
+.zaid-door-heading h2{font:600 clamp(48px,7.5vw,100px)/.88 "Space Grotesk",sans-serif;letter-spacing:-.085em;color:var(--ink);margin:20px 0 0}
+.zaid-door-heading h2 em{font:500 1.03em "Cormorant Garamond",serif;color:#9a8b72;letter-spacing:-.055em}
+.zaid-door-heading>p{max-width:245px!important;font-size:12px!important;line-height:1.8!important;color:#777168!important;margin-bottom:5px!important}
+.zaid-door-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:clamp(10px,1.5vw,20px)!important}
+.zaid-door{display:block!important;text-decoration:none!important;min-width:0}
+.zaid-door .door-index{font-size:7px!important;letter-spacing:.13em!important;color:#777166!important;white-space:nowrap}
+.zaid-door .door-frame{min-height:clamp(280px,34vw,440px)!important;padding:9px!important;border:1px solid #17171418!important;border-radius:2px!important;background:#e7e1d6!important;box-shadow:0 14px 35px #1717140c!important;overflow:hidden}
+.zaid-door .door-panel{min-height:clamp(260px,32vw,420px)!important;padding:clamp(16px,2vw,28px)!important;border:1px solid #ffffff75!important;border-radius:1px!important;justify-content:space-between!important;box-shadow:inset 0 0 30px #00000010!important}
+.zaid-door-documentary .door-panel{background:linear-gradient(145deg,#567a70,#25483f 78%)!important}
+.zaid-door-brand .door-panel{background:linear-gradient(145deg,#c47b55,#8c4937 78%)!important}
+.zaid-door-short .door-panel{background:linear-gradient(145deg,#6f83a8,#394e75 78%)!important}
+.zaid-door-experiments .door-panel{background:linear-gradient(145deg,#b5a16f,#76603b 78%)!important}
+.zaid-door .door-symbol{font-size:25px!important;color:#fff!important;opacity:.9}
+.zaid-door .door-panel strong{font:500 clamp(22px,2.5vw,34px)/.98 "Cormorant Garamond",serif!important;letter-spacing:-.035em!important;color:#fff!important;max-width:11ch!important}
+.zaid-door .door-panel small{font-size:7px!important;letter-spacing:.13em!important;color:#ffffffbd!important}
+.zaid-door .door-enter{border-color:#ffffff55!important;color:#fff!important;font-size:7px!important;letter-spacing:.12em!important}
+.zaid-door .door-enter b{font-size:15px!important}
+.zaid-door .door-panel:after{background:linear-gradient(105deg,transparent 30%,#ffffff55 48%,transparent 64%)!important}
+.zaid-door:hover .door-panel,.zaid-door:focus-visible .door-panel{filter:brightness(1.1)!important;box-shadow:inset 0 0 35px #ffffff20,14px 20px 35px #17171428!important}
+.zaid-door-foot{display:flex;justify-content:space-between;gap:12px;margin-top:20px;padding-top:13px;border-top:1px solid var(--line);font-size:7px;letter-spacing:.16em;color:#777166}
+@media(max-width:900px){.zaid-door-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.zaid-door .door-frame{min-height:300px!important}.zaid-door .door-panel{min-height:280px!important}}
+@media(max-width:520px){
+ .zaid-door-experience{padding-top:68px!important;padding-bottom:68px!important}
+ .zaid-door-heading{display:block!important}
+ .zaid-door-heading>p{margin-top:14px!important}
+ .zaid-door-grid{gap:12px!important}
+ .zaid-door .door-index{font-size:6px!important;letter-spacing:.08em!important}
+ .zaid-door .door-frame{min-height:250px!important;padding:6px!important}
+ .zaid-door .door-panel{min-height:238px!important;padding:14px!important}
+ .zaid-door .door-panel strong{font-size:clamp(20px,6vw,28px)!important}
+ .zaid-door .door-panel small{font-size:6px!important;letter-spacing:.06em!important}
+ .zaid-door .door-enter{font-size:6px!important;letter-spacing:.07em!important}
+ .zaid-door-foot{font-size:6px;letter-spacing:.08em}
+}
