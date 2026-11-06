@@ -1,0 +1,87 @@
+/* Public portfolio light editorial theme. Owner Studio is intentionally untouched. */
+:root{
+  color-scheme:light;
+  --bg:#f7f5f0;
+  --panel:#ffffff;
+  --text:#24231f;
+  --muted:#77736b;
+  --accent:#b79b70;
+  --line:rgba(36,35,31,.14);
+  --max:1320px;
+  --portfolio-gutter:clamp(22px,6vw,92px);
+}
+html,body{background:#f7f5f0!important;color:#24231f!important}
+body{background-image:none!important}
+.grain{opacity:.012}
+.site-header{background:rgba(247,245,240,.88)!important;border-bottom:1px solid rgba(36,35,31,.12)!important;backdrop-filter:blur(18px)}
+.nav-links{color:#57534c}
+.nav-links a span{color:#a99b83}
+.nav-links a:hover,.site-footer a:hover{color:#9b7d50}
+.menu-toggle{border-color:rgba(36,35,31,.22)!important}
+.menu-toggle span{background:#24231f!important}
+.section-wrap{width:min(1320px,calc(100% - 2 * var(--portfolio-gutter)))}
+.hero{background:transparent}
+.eyebrow,.section-kicker{color:#8c7859!important}
+.eyebrow-line{background:#b79b70!important}
+h1,h2,h3{color:#24231f}
+h1 .muted,.muted{color:#918a7e!important}
+.hero-bottom p{color:#69645c!important}
+.hero-button{border-radius:999px!important}
+.hero-button-primary{background:#24231f!important;color:#fff!important;border-color:#24231f!important}
+.hero-button-primary:hover{background:#9b7d50!important;border-color:#9b7d50!important}
+.hero-button-secondary{color:#24231f!important;border-color:rgba(36,35,31,.28)!important}
+.hero-button-secondary:hover{border-color:#9b7d50!important;color:#9b7d50!important}
+.hero-frame{background:linear-gradient(135deg,#e9e3d8,#d8d0c2 52%,#c9c0b0)!important;border:1px solid rgba(36,35,31,.13)!important;border-radius:5px!important}
+.hero-frame:before{background:linear-gradient(90deg,rgba(247,245,240,.2),rgba(247,245,240,.02) 65%),linear-gradient(0deg,rgba(36,35,31,.28),transparent 58%)!important}
+.hero-poster{opacity:.92}
+.frame-overlay{border-color:rgba(255,255,255,.48)!important}
+.frame-copy{color:#fff!important;text-shadow:0 1px 12px #0005}
+.play-mark{color:#fff!important;border-color:#ffffffb8!important;background:#24231f22}
+.frame-caption{color:#fff!important;text-shadow:0 2px 14px #0008}
+.hero-meta{color:#827b70!important}
+.work-section{border-color:var(--line)!important}
+.section-heading>p,.project-info p{color:#777168!important}
+.video-gallery-heading h3,.project-info h3{color:#24231f!important}
+.gallery-navigation span{color:#8b8479!important}
+.gallery-navigation button{color:#24231f!important;border-color:rgba(36,35,31,.2)!important;background:#ffffff80!important}
+.project-card{background:transparent!important}
+.project-art{border:1px solid rgba(36,35,31,.1)!important;border-radius:5px!important}
+.art-one{background:radial-gradient(ellipse at 70% 35%,#d6c6a9 0,#b7a68b 27%,#827967 60%,#514d45 100%)!important}
+.art-two{background:radial-gradient(ellipse at 65% 42%,#d8c2a0 0,#b69a75 28%,#82705b 62%,#51483e 100%)!important}
+.art-three{background:radial-gradient(ellipse at 50% 42%,#c9d0c8 0,#a1aaa0 30%,#6f7c75 65%,#46514b 100%)!important}
+.art-label,.art-title,.art-bottom{color:#fff!important;text-shadow:0 2px 14px #0005}
+.project-info{color:#24231f}
+.project-arrow{color:#24231f!important;border-color:rgba(36,35,31,.2)!important}
+.short-video-gallery .project-card{background:#eeeae2!important}
+.short-video-gallery .project-art{background:#e6e0d5!important}
+.about-section{background:#eeebe4!important;border-color:var(--line)!important}
+.about-inner h2,.about-inner p{color:#24231f!important}
+.about-inner p{color:#625d54!important}
+.about-stat strong{color:#24231f!important}
+.about-stat strong span{color:#9b7d50!important}
+.about-stat small{color:#777168!important}
+.text-link{color:#24231f!important;border-color:rgba(36,35,31,.28)!important}
+.contact-section{text-align:center}
+.contact-section h2{color:#24231f!important;text-align:center!important}
+.contact-cta{background:#24231f!important;color:#fff!important;border-color:#24231f!important}
+.contact-cta:hover{background:#9b7d50!important;border-color:#9b7d50!important}
+.site-footer{background:#f7f5f0!important;border-color:var(--line)!important;color:#777168!important}
+.site-footer a{color:#57534c}
+.empty-gallery-state{background:#efede7!important;border-color:rgba(36,35,31,.12)!important;color:#6e685f!important}
+/* The post-intro cinematic transition may be dark briefly; the persistent portfolio frame stays light. */
+.hero-frame .rs-living-depth{mix-blend-mode:multiply}
+.hero-frame .rs-depth-ring{border-color:#a88b5c88!important;box-shadow:0 0 24px #b79b7020!important}
+.hero-frame .rs-depth-ring-b{border-color:#ffffffaa!important}
+.hero-frame .rs-depth-cross{opacity:.5}
+.hero-frame .rs-live-frame{background:linear-gradient(135deg,#fff9,#e9e1d3dd 72%)!important;border-color:#a88b5c99!important;box-shadow:0 12px 36px #4b403022,inset 0 0 24px #fff8!important}
+.hero-frame .rs-live-frame i{border-color:#a88b5c55!important}
+.hero-frame .rs-live-frame b{color:#65563f!important}
+.hero-frame .rs-live-beam{background:linear-gradient(110deg,transparent 46%,#fff9 50%,#c6a87555 51%,transparent 55%)!important}
+::selection{background:#d9c7a7;color:#24231f}
+@media(max-width:680px){
+ .site-header{background:rgba(247,245,240,.94)!important}
+ .hero{padding-top:76px}
+ .hero-bottom{gap:22px}
+ .hero-frame{min-height:280px}
+ .about-section{padding-block:76px!important}
+}
