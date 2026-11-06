@@ -2,36 +2,30 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#e9eee5"><title>ZAID — Visual Storyteller</title>
-<link rel="preconnect" href="https://images.unsplash.com"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#09090b"><title>ZAID® — Enter the Frame</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="prototype.css">
 </head>
 <body>
-<div class="progress" id="progress"></div>
+<div class="grain" aria-hidden="true"></div><div class="progress" id="progress"></div>
+<header class="topbar"><a class="wordmark" href="#opening">Z<span>A</span>ID®</a><span class="top-label">INDEPENDENT FILMMAKER / VISUAL STORYTELLER</span><button class="sound" id="sound" aria-pressed="false">SOUND OFF <i></i></button></header>
 <main>
-<section class="hero" aria-label="Cinematic opening">
-<img class="hero-image" src="https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=2400&q=90" alt="" fetchpriority="high">
-<div class="hero-wash"></div><div class="hero-frame"></div>
-<div class="hero-mark"></div><div class="hero-index"></div><a class="scroll-cue" href="#worlds" aria-label="Explore"></a>
+<section class="opening" id="opening">
+<canvas id="world" aria-label="Animated cinematic perspective tunnel"></canvas><div class="vignette"></div>
+<div class="opening-meta"><span>EXPERIENCE 001</span><span>MOVE THROUGH THE FRAME</span></div>
+<div class="opening-title"><p class="eyebrow">A PERSONAL WORLD OF VISUAL STORYTELLING</p><h1>DON'T JUST<br><em>WATCH.</em><br>ENTER.</h1><p class="intro-copy">Every image has a pulse. Every cut has a reason.<br>This is where the story begins.</p><button class="enter" id="enter">ENTER THE FRAME <b>↗</b></button></div>
+<div class="coordinates"><span>19°52' N — 75°20' E</span><span>SCROLL TO EXPLORE ↓</span></div>
+<div class="scene-counter"><span id="sceneNo">01</span><small> / 05</small></div>
 </section>
-<section class="worlds" id="worlds" aria-label="Visual worlds">
-<div class="world-grid">
-<button class="world world-a" data-target="film-1" aria-label="Documentary visual"><img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1400&q=88" alt="" loading="lazy"><span class="world-shape"></span></button>
-<button class="world world-b" data-target="film-2" aria-label="Brand film visual"><img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1400&q=88" alt="" loading="lazy"><span class="world-shape"></span></button>
-<button class="world world-c" data-target="film-3" aria-label="Short form visual"><img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1400&q=88" alt="" loading="lazy"><span class="world-shape"></span></button>
-<button class="world world-d" data-target="film-4" aria-label="Visual experiments"><img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1400&q=88" alt="" loading="lazy"><span class="world-shape"></span></button>
-</div>
-</section>
-<section class="film-reel" aria-label="Selected visual frames">
-<div class="reel-track">
-<figure class="film-frame frame-wide" id="film-1"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=90" alt="" loading="lazy"></figure>
-<figure class="film-frame frame-tall" id="film-2"><img src="https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=90" alt="" loading="lazy"></figure>
-<figure class="film-frame frame-wide" id="film-3"><img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=2000&q=90" alt="" loading="lazy"></figure>
-<figure class="film-frame frame-wide" id="film-4"><img src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=2000&q=90" alt="" loading="lazy"></figure>
-</div>
-</section>
-<section class="closing" aria-label="Closing frame"><img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2400&q=90" alt="" loading="lazy"><div class="closing-light"></div><div class="closing-ring"></div></section>
-</main>
-<script src="prototype.js"></script>
-</body></html>
+<section class="manifesto chapter" id="manifesto"><div class="chapter-meta"><span>01 / THE POINT OF VIEW</span><span>STORY BEFORE EVERYTHING</span></div><p class="manifesto-kicker">I AM NOT HERE TO FILL A TIMELINE.</p><h2>I AM HERE TO<br>MAKE YOU <em>FEEL.</em></h2><div class="manifesto-bottom"><p>Documentary instinct. Cinematic craft.<br>A search for the detail that makes a story human.</p><span>ZAID® — VISUAL PRACTICE</span></div></section>
+<section class="worlds chapter" id="worlds"><div class="chapter-meta"><span>02 / CHOOSE A WORLD</span><span>FOUR WAYS INTO THE STORY</span></div><div class="world-heading"><p class="eyebrow">STEP THROUGH THE FRAME</p><h2>Every story<br>has a <em>door.</em></h2></div><canvas id="doorWorld" aria-hidden="true"></canvas><div class="doors">
+<button class="door door-doc" data-world="DOCUMENTARY" data-sub="REAL PEOPLE. UNFILTERED MOMENTS." data-copy="The human detail. The quiet truth. Stories that stay with you." data-num="01"><span class="door-no">01 — DOCUMENTARY</span><span class="door-scene"><i class="door-light"></i><i class="door-object"></i><b>THE<br>HUMAN<br>STORY</b><i class="handle"></i><small>OPEN WORLD ↗</small></span></button>
+<button class="door door-brand" data-world="BRAND FILMS" data-sub="IDENTITY. CHARACTER. IMPACT." data-copy="A brand is more than what it says. It is what people remember." data-num="02"><span class="door-no">02 — BRAND FILMS</span><span class="door-scene"><i class="door-light"></i><i class="door-object"></i><b>BUILT TO<br>BE<br>REMEMBERED</b><i class="handle"></i><small>OPEN WORLD ↗</small></span></button>
+<button class="door door-short" data-world="SHORT FORM" data-sub="SMALL FRAMES. BIG FEELING." data-copy="Precision storytelling for the smallest screen and the shortest moment." data-num="03"><span class="door-no">03 — SHORT FORM</span><span class="door-scene"><i class="door-light"></i><i class="door-object"></i><b>ONE<br>MINUTE.<br>INFINITE FEELING.</b><i class="handle"></i><small>OPEN WORLD ↗</small></span></button>
+<button class="door door-lab" data-world="VISUAL EXPERIMENTS" data-sub="MOTION. ATMOSPHERE. FORM." data-copy="A space for unusual ideas, visual tests and things not yet named." data-num="04"><span class="door-no">04 — VISUAL EXPERIMENTS</span><span class="door-scene"><i class="door-light"></i><i class="door-object"></i><b>BEYOND<br>THE<br>EXPECTED</b><i class="handle"></i><small>OPEN WORLD ↗</small></span></button>
+</div></section>
+<section class="reveal-world" id="revealWorld" aria-live="polite"><div class="reveal-backdrop"></div><div class="reveal-content"><span class="eyebrow" id="worldSub">A NEW PERSPECTIVE</span><h2 id="worldTitle">DOCUMENTARY</h2><p id="worldCopy"></p><button class="close-world" id="closeWorld">RETURN TO THE WORLDS ↗</button></div><span class="reveal-index" id="worldIndex">WORLD 01</span></section>
+<section class="films chapter" id="films"><div class="chapter-meta"><span>03 / SELECTED FILMS</span><span>THE WORK SPEAKS</span></div><div class="film-heading"><p class="eyebrow">A FEW FRAMES FROM THE JOURNEY</p><h2>Made to<br><em>stay.</em></h2><p class="film-note">Real projects will be connected from Owner Studio after the prototype direction is approved.</p></div><div class="film-grid"><article class="film-card"><div class="film-art art-one"><span>FILM 001 / DOCUMENTARY</span><b>THE<br>UNSEEN<br>DETAIL</b><small>16:9 — FEATURE</small></div><div class="film-caption"><b>01 / THE HUMAN STORY</b><span>DOCUMENTARY FILM ↗</span></div></article><article class="film-card"><div class="film-art art-two"><span>FILM 002 / BRAND STORY</span><b>BUILT<br>ON A<br>VISION</b><small>16:9 — BRAND FILM</small></div><div class="film-caption"><b>02 / BRAND FILM</b><span>VISUAL CAMPAIGN ↗</span></div></article><article class="film-card"><div class="film-art art-three"><span>FILM 003 / SHORT FORM</span><b>SECONDS<br>THAT<br>MATTER</b><small>9:16 — SHORT</small></div><div class="film-caption"><b>03 / SHORT FORM</b><span>VERTICAL STORY ↗</span></div></article></div></section>
+<section class="finale chapter" id="finale"><div class="finale-orbit"></div><p class="eyebrow">THE NEXT FRAME IS YOURS</p><h2>LET'S MAKE<br>SOMETHING<br><em>MATTER.</em></h2><a href="mailto:hello@zaid.film" class="contact">START A CONVERSATION ↗</a><div class="finale-foot"><span>ZAID® — VISUAL STORYTELLING</span><span>END OF EXPERIENCE / BEGINNING OF A STORY</span></div></section>
+</main><script src="prototype.js"></script></body></html>
