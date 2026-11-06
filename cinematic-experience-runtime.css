@@ -1,0 +1,31 @@
+
+/* Full motion direction: staggered reveals, dimensional door response, film-scene wipe. */
+html.motion-ready .motion-reveal{opacity:0;transform:translate3d(0,34px,0);filter:blur(5px);transition:opacity .85s cubic-bezier(.2,.75,.2,1),transform .95s cubic-bezier(.2,.75,.2,1),filter .85s ease;transition-delay:calc(var(--motion-order,0)*75ms)}
+html.motion-ready .motion-reveal.is-visible{opacity:1;transform:translate3d(0,0,0);filter:blur(0)}
+html.motion-ready .hero-heading-wrap.motion-reveal{transform:translate3d(0,48px,0)}
+html.motion-ready .editorial-hero-frame.motion-reveal{transform:translate3d(0,42px,0) scale(.975)}
+html.motion-ready .editorial-hero-frame.motion-reveal.is-visible{transform:translate3d(0,0,0) scale(1)}
+html.motion-ready .zaid-door.motion-reveal{transform:translate3d(0,44px,0) rotateX(3deg);transition-delay:calc(var(--door-index,0)*110ms + 100ms)}
+html.motion-ready .zaid-door.motion-reveal.is-visible{transform:translate3d(0,0,0) rotateX(0)}
+.zaid-door .door-panel{transform:perspective(1100px) rotateX(var(--door-tilt-x,0deg)) rotateY(var(--door-tilt-y,0deg));transition:transform .25s ease,filter .7s,box-shadow .7s!important}
+.zaid-door:hover .door-panel{transform:perspective(1100px) rotateX(var(--door-tilt-x,0deg)) rotateY(calc(var(--door-tilt-y,0deg) - 17deg)) translateZ(8px)!important}
+.zaid-door.is-opening .door-panel{transform:perspective(1100px) rotateY(-82deg) translateZ(18px)!important;filter:brightness(1.25)!important}
+.zaid-door.is-opening .door-frame{box-shadow:0 0 0 1px #bda47b,0 28px 70px #17171435!important}
+.film-language-step .film-step-art{transform:translateY(0) scale(1);transition:transform .7s cubic-bezier(.2,.75,.2,1),box-shadow .7s}
+.film-language-step:hover .film-step-art{transform:translateY(-7px) scale(1.015);box-shadow:0 25px 50px #0005}
+.film-language-step .film-step-word{transition:letter-spacing .6s,transform .6s}
+.film-language-step:hover .film-step-word{letter-spacing:-.095em;transform:scale(1.04)}
+.cinematic-transition{position:fixed;inset:0;z-index:9999;pointer-events:none;background:#0c0c0d;transform:scaleY(0);transform-origin:bottom}
+.cinematic-transition.wipe-in{transform:scaleY(1);transform-origin:bottom;transition:transform .48s cubic-bezier(.77,0,.18,1)}
+.cinematic-transition.wipe-out{transform:scaleY(0);transform-origin:top;transition:transform .48s cubic-bezier(.77,0,.18,1)}
+.cinematic-transition:after{content:"ZAID® / VISUAL STORIES";position:absolute;left:var(--gutter,6vw);bottom:8vh;color:#f3eee5;font:700 9px "DM Sans",sans-serif;letter-spacing:.22em;opacity:.7}
+html{scroll-behavior:smooth}
+@media(max-width:760px){
+ html.motion-ready .motion-reveal{transform:translate3d(0,24px,0);filter:blur(3px)}
+ html.motion-ready .motion-reveal.is-visible{transform:none;filter:none}
+ .cinematic-transition:after{font-size:7px;bottom:5vh}
+}
+@media(prefers-reduced-motion:reduce){
+ html.motion-ready .motion-reveal{opacity:1!important;transform:none!important;filter:none!important;transition:none!important}
+ .cinematic-transition{display:none!important}
+}
