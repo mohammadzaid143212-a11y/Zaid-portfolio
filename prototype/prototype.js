@@ -65,7 +65,8 @@ canvas.addEventListener("pointerleave",()=>{mouseX=mouseY=0},{passive:true});
 document.addEventListener("visibilitychange",()=>{if(document.hidden)cancelAnimationFrame(raf);else if(scene3d&&!reduce)raf=requestAnimationFrame(()=>{const ev=new Event("resize");dispatchEvent(ev)})});
 build3D();
 document.querySelector("#enter").addEventListener("click",()=>document.querySelector("#manifesto").scrollIntoView({behavior:reduce?"auto":"smooth"}));
-doors.forEach(d=>d.addEventListener("click",()=>{
+doors.forEach((d,i)=>d.addEventListener("click",()=>{
+ animatePortal(i);
  doors.forEach(x=>x.classList.remove("is-opening"));d.classList.add("is-opening");
  title.textContent=d.dataset.world;sub.textContent=d.dataset.sub;copy.textContent=d.dataset.copy;idx.textContent="WORLD "+d.dataset.num;
  reveal.classList.add("active");
@@ -76,3 +77,41 @@ document.querySelector("#closeWorld").addEventListener("click",()=>{reveal.class
 addEventListener("scroll",()=>{const max=document.documentElement.scrollHeight-innerHeight;progress.style.width=(max?scrollY/max*100:0)+"%"},{passive:true});
 const sound=document.querySelector("#sound");sound.addEventListener("click",()=>{const on=sound.getAttribute("aria-pressed")!=="true";sound.setAttribute("aria-pressed",String(on));sound.firstChild.textContent=on?"SOUND ON ":"SOUND OFF ";sound.querySelector("i").style.background=on?"#d04a4e":"#a9a39b"});
 })();
+let portalMeshes=[];
+async function mountPortalStage(){
+ const el=document.querySelector("#doorWorld"); if(!el)return;
+ try{
+  const T=await import("https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js");
+  const scene=new T.Scene();scene.background=new T.Color("#d9d3c7");
+  const camera=new T.PerspectiveCamera(38,1,.1,80);camera.position.set(0,1.1,12);camera.lookAt(0,0,0);
+  const renderer=new T.WebGLRenderer({canvas:el,alpha:true,antialias:true,powerPreference:"low-power"});
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;
+  scene.add(new T.HemisphereLight(0xfff3df,0x28201b,2));
+  const key=new T.DirectionalLight(0xffe1bd,3);key.position.set(-4,7,8);scene.add(key);
+  const colors=[0x315a50,0x9a543d,0x40577c,0x8a754a],glows=[0x8fc9ae,0xf0a27b,0x9db9ef,0xd7bd83];
+  for(let i=0;i<4;i++){
+   const portal=new T.Group();portal.position.x=(i-1.5)*2.65;scene.add(portal);
+   const frame=new T.Mesh(new T.BoxGeometry(2.18,3.55,.22),new T.MeshStandardMaterial({color:0xe9e3d7,metalness:.3,roughness:.4}));portal.add(frame);
+   const doorMat=new T.MeshStandardMaterial({color:colors[i],metalness:.2,roughness:.38});
+   const pivot=new T.Group();pivot.position.set(-.89,0,.27);portal.add(pivot);
+   const slab=new T.Mesh(new T.BoxGeometry(1.72,3.12,.12),doorMat);slab.position.set(.86,0,.04);pivot.add(slab);
+   const inset=new T.Mesh(new T.BoxGeometry(1.46,2.82,.035),new T.MeshStandardMaterial({color:glows[i],emissive:glows[i],emissiveIntensity:.12}));inset.position.set(.86,0,.12);pivot.add(inset);
+   const knob=new T.Mesh(new T.SphereGeometry(.055,12,12),new T.MeshStandardMaterial({color:0xd8c39b,metalness:.85,roughness:.2}));knob.position.set(1.52,-.05,.18);pivot.add(knob);
+   const spill=new T.PointLight(glows[i],10,5);spill.position.set(0,.2,.8);portal.add(spill);
+   portalMeshes.push({pivot,opening:false});
+  }
+  const floor=new T.Mesh(new T.PlaneGeometry(80,80),new T.MeshStandardMaterial({color:0xbeb7aa,roughness:.9}));floor.rotation.x=-Math.PI/2;floor.position.set(0,-1.84,-2);scene.add(floor);
+  const resize=()=>{const w=el.clientWidth,h=el.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
+  resize();new ResizeObserver(resize).observe(el);
+  const clock=new T.Clock();
+  function draw(){const t=clock.getElapsedTime();portalMeshes.forEach((p,i)=>{if(!p.opening)p.pivot.rotation.y=Math.sin(t*.35+i*.7)*.012});renderer.render(scene,camera);if(!reduce&&!document.hidden)requestAnimationFrame(draw)}
+  draw();
+ }catch(e){console.warn("Portal WebGL unavailable",e)}
+}
+function animatePortal(index){
+ const p=portalMeshes[index];if(!p)return;p.opening=true;
+ const start=p.pivot.rotation.y,begin=performance.now();
+ function step(now){const t=Math.min(1,(now-begin)/850),ease=1-Math.pow(1-t,3);p.pivot.rotation.y=start-ease*1.32;if(t<1)requestAnimationFrame(step);else p.opening=false}
+ requestAnimationFrame(step);
+}
+mountPortalStage();
