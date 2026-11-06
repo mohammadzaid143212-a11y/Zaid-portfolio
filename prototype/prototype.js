@@ -32,7 +32,7 @@ async function build3D(){
   for(let i=0;i<15;i++){
    const z=-i*2.1,scale=1+i*.13;
    const frame=new THREE.Group();frame.position.z=z;frame.scale.setScalar(scale);
-   const bars=[[.0,1.8,.12,3.8],[0,-1.8,.12,3.8],[-2,0,4,.12],[2,0,4,.12]];
+   const bars=[[-2,0,.12,3.8],[2,0,.12,3.8],[0,1.8,4,.12],[0,-1.8,4,.12]];
    bars.forEach(([x,y,sx,sy],j)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,.12),j===0&&i%3===0?edge:metal);m.position.set(x,y,0);frame.add(m)});
    const inner=new THREE.Mesh(new THREE.BoxGeometry(3.72,3.55,.025),new THREE.MeshBasicMaterial({color:i%3===0?0x3d151b:0x171619,transparent:true,opacity:.16,side:THREE.DoubleSide}));inner.position.z=-.08;frame.add(inner);
    const topLine=new THREE.Mesh(new THREE.BoxGeometry(3.7,.018,.025),gold);topLine.position.set(0,1.55,.08);frame.add(topLine);
