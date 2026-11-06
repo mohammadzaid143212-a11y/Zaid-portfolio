@@ -104,7 +104,7 @@ async function mountPortalStage(){
   const resize=()=>{const w=el.clientWidth,h=el.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)};
   resize();new ResizeObserver(resize).observe(el);
   const clock=new T.Clock();
-  function draw(){const t=clock.getElapsedTime();portalMeshes.forEach((p,i)=>{if(!p.opening)p.pivot.rotation.y=Math.sin(t*.35+i*.7)*.012});renderer.render(scene,camera);if(!reduce&&!document.hidden)requestAnimationFrame(draw)}
+  function draw(){const t=clock.getElapsedTime();portalMeshes.forEach((p,i)=>{if(!p.opening)p.pivot.rotation.y=Math.sin(t*.35+i*.7)*.012});renderer.render(scene,camera);if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches&&!document.hidden)requestAnimationFrame(draw)}
   draw();
  }catch(e){console.warn("Portal WebGL unavailable",e)}
 }
