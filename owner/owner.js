@@ -732,6 +732,7 @@
       }, true);
       doc.documentElement.dataset.ownerLayerSelectionReady = "true";
     }
+    doc.querySelectorAll(".owner-added-element[data-owner-edit-dimmed]").forEach(el => { el.style.opacity = el.dataset.ownerOriginalOpacity || ""; delete el.dataset.ownerOriginalOpacity; delete el.dataset.ownerEditDimmed; });
     if (previewMarker && previewMarker.isConnected) previewMarker.remove();
     previewMarker = null; previewTarget = null;
     const targetValue = $("#element-target").value;
@@ -748,6 +749,10 @@
     else if (kind === "image" && url) { const img = doc.createElement("img"); img.src = url; img.alt = ""; img.style.cssText = "display:block;width:100%;max-height:30vh;object-fit:contain"; previewMarker.append(img); }
     else previewMarker.textContent = kind === "video" ? "▶ Video / motion graphic" : "Image / graphic";
     const alignmentGuides = doc.createElement("div"); alignmentGuides.className="owner-editor-alignment-guides"; alignmentGuides.style.cssText="position:absolute;inset:0;z-index:99998;pointer-events:none;display:none;"; alignmentGuides.innerHTML="<span style=\"position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed #c9f36a\"></span><span style=\"position:absolute;top:50%;left:0;right:0;border-top:1px dashed #c9f36a\"></span>"; if(getComputedStyle(previewTarget).position==="static")previewTarget.style.position="relative"; previewTarget.append(alignmentGuides,previewMarker);
+    if (editingElementId) {
+      const original = Array.from(doc.querySelectorAll(".owner-added-element[data-element-id]")).find(el => el.dataset.elementId === editingElementId);
+      if (original) { original.dataset.ownerOriginalOpacity = original.style.opacity; original.dataset.ownerEditDimmed = "true"; original.style.opacity = "0.18"; }
+    }
     const resizeGrip = doc.createElement("button");
     resizeGrip.type = "button"; resizeGrip.setAttribute("aria-label","Resize element"); resizeGrip.title = "Drag to resize";
     resizeGrip.style.cssText = "position:absolute;right:-7px;bottom:-7px;width:18px;height:18px;border:2px solid #08090d;border-radius:3px;background:#c9f36a;cursor:nwse-resize;touch-action:none;padding:0;";
@@ -759,7 +764,7 @@
     previewMarker.addEventListener("pointerdown", ev => { if (ev.target === resizeGrip) return; previewDrag = true; previewMarker.setPointerCapture(ev.pointerId); ev.preventDefault(); });
     previewMarker.addEventListener("pointermove", ev => { if (!previewDrag || !previewTarget || !previewMarker) return; const rect = previewTarget.getBoundingClientRect(); let x=(ev.clientX-rect.left)/rect.width*100; let y=(ev.clientY-rect.top)/rect.height*100; const snappedX=Math.abs(x-50)<=2.5, snappedY=Math.abs(y-50)<=2.5; if(snappedX)x=50; if(snappedY)y=50; x=clampPercent(x); y=clampPercent(y); if(previewMode === "mobile"){ $("#element-mobile-enabled").checked=true; $("#element-mobile-fields").classList.remove("hidden"); $("#element-mobile-x").value=Math.round(x); $("#element-mobile-y").value=Math.round(y); } else { elementX.value=Math.round(x); elementY.value=Math.round(y); } previewMarker.style.left=x+"%"; previewMarker.style.top=y+"%"; alignmentGuides.style.display=(snappedX||snappedY)?"block":"none"; updatePositionPreview(); });
     const stop = () => { if(previewDrag){previewDrag=false;alignmentGuides.style.display="none";recordPositionHistory();} }; previewMarker.addEventListener("pointerup",stop); previewMarker.addEventListener("pointercancel",stop);
-    $("#element-upload-status").textContent = "Preview ready. Drag the dashed marker on the website to set its position.";
+    $("#element-upload-status").textContent = editingElementId ? "Editing saved layer: drag the marker or its corner handle, then tap Update element to publish." : "Preview ready. Drag the dashed marker on the website to set its position.";
   }
   websitePreview.addEventListener("load", () => window.setTimeout(refreshWebsitePreview, 600));
   $("#refresh-element-preview").addEventListener("click", refreshWebsitePreview);
@@ -795,6 +800,8 @@
         $("#element-color").value = item.color || "#c9f36a"; $("#element-rotation").value = item.rotation ?? 0; $("#element-opacity").value = item.opacity ?? 100; $("#element-radius").value = item.radius ?? 0; $("#element-border-width").value = item.borderWidth ?? 0; $("#element-shadow").value = item.shadow || "none"; $("#add-element-button").textContent = "Update element";
         themeNotice("Editing element in Adjustment Panel · Advanced Mode. Make changes and tap Update element.");
         document.querySelector('[data-owner-section="adjustment-studio"]')?.click();
+        // Show drag and resize handles for the selected saved layer; publishing still requires Update element.
+        if (websitePreview.contentDocument?.readyState === "complete") refreshWebsitePreview();
          $("#adjustment-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
       const moveUp = document.createElement("button"); moveUp.type = "button"; moveUp.className = "quiet-button layer-order-button"; moveUp.textContent = "↑"; moveUp.title = "Move layer forward"; moveUp.setAttribute("aria-label", "Move layer forward");
