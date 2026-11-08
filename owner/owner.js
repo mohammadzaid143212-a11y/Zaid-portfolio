@@ -713,6 +713,25 @@
     let doc;
     try { doc = websitePreview.contentDocument; } catch { return; }
     if (!doc || !doc.body) return;
+    // Let the owner select an already-published custom layer directly in the same-origin preview.
+    if (doc.documentElement.dataset.ownerLayerSelectionReady !== "true") {
+      const selectionStyle = doc.createElement("style");
+      selectionStyle.textContent = ".owner-added-element[data-element-id]{cursor:pointer;outline:1px dashed transparent;outline-offset:4px;transition:outline-color .15s ease}.owner-added-element[data-element-id]:hover{outline-color:#c9f36a}";
+      doc.head.append(selectionStyle);
+      doc.addEventListener("click", event => {
+        const layer = event.target.closest(".owner-added-element[data-element-id]");
+        if (!layer) return;
+        const id = layer.dataset.elementId;
+        const card = document.querySelector('#custom-element-list [data-element-id="' + CSS.escape(id) + '"]');
+        const editButton = card && Array.from(card.querySelectorAll("button")).find(button => button.textContent.trim() === "Edit");
+        if (!editButton) return;
+        event.preventDefault();
+        event.stopPropagation();
+        editButton.click();
+        $("#element-upload-status").textContent = "Selected layer from the website preview. Edit its settings in the Adjustment Panel.";
+      }, true);
+      doc.documentElement.dataset.ownerLayerSelectionReady = "true";
+    }
     if (previewMarker && previewMarker.isConnected) previewMarker.remove();
     previewMarker = null; previewTarget = null;
     const targetValue = $("#element-target").value;
