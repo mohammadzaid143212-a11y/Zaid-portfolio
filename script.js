@@ -424,7 +424,20 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     });
   }
 
-  const customElements = Array.isArray(data.settings.__elements) ? data.settings.__elements : [];
+  // Apply saved direct edits to built-in headings and paragraphs.
+  const visualOverrides = data.settings.__visualOverrides || {};
+  Object.entries(visualOverrides).slice(0,80).forEach(([selector, setting]) => {
+    if (!setting || typeof selector !== "string" || selector.length > 240) return;
+    let target; try { target = document.querySelector(selector); } catch { return; }
+    if (!target || target.closest(".owner-added-element,.owner-custom-section")) return;
+    if (typeof setting.text === "string") target.textContent = setting.text.slice(0,500);
+    if (Number.isFinite(Number(setting.fontSize))) target.style.fontSize = Math.max(10,Math.min(120,Number(setting.fontSize))) + "px";
+    if (Number.isFinite(Number(setting.radius))) target.style.borderRadius = Math.max(0,Math.min(100,Number(setting.radius))) + "px";
+    if (/^#[0-9a-f]{6}$/i.test(setting.color || "")) target.style.color = setting.color;
+    if (/^#[0-9a-f]{6}$/i.test(setting.background || "")) target.style.backgroundColor = setting.background;
+  });
+
+const customElements = Array.isArray(data.settings.__elements) ? data.settings.__elements : [];
   const animationNames = { "fade-in":"themeFadeIn", float:"themeFloat", pulse:"themePulse", "slow-zoom":"themeSlowZoom", "slide-up":"themeSlideUp", "slide-left":"themeSlideLeft" };
   customElements.slice(0,30).forEach(item => {
     let targets;
