@@ -1019,7 +1019,21 @@
       bulkShow.addEventListener("click", async () => { const current = getCustomElements().map(item => selectedCustomLayerIds.has(item.id) ? { ...item, hidden: false } : item); bulkShow.disabled = true; if (await saveCustomElements(current)) themeNotice("Selected layers made visible. Save & publish to apply."); else bulkShow.disabled = false; });
       const bulkLock = document.createElement("button"); bulkLock.type = "button"; bulkLock.className = "quiet-button"; bulkLock.textContent = "Lock selected"; bulkLock.disabled = selectedCustomLayerIds.size === 0;
       bulkLock.addEventListener("click", async () => { const current = getCustomElements().map(item => selectedCustomLayerIds.has(item.id) ? { ...item, locked: true } : item); bulkLock.disabled = true; if (await saveCustomElements(current)) themeNotice("Selected layers locked."); else bulkLock.disabled = false; });
-      bulk.append(selectAll,count,bulkVisibility,bulkShow,bulkLock); list.append(bulk);
+      const bulkUnlock = document.createElement("button"); bulkUnlock.type = "button"; bulkUnlock.className = "quiet-button"; bulkUnlock.textContent = "Unlock selected"; bulkUnlock.disabled = selectedCustomLayerIds.size === 0;
+      bulkUnlock.addEventListener("click", async () => { const current = getCustomElements().map(item => selectedCustomLayerIds.has(item.id) ? { ...item, locked: false } : item); bulkUnlock.disabled = true; if (await saveCustomElements(current)) themeNotice("Selected layers unlocked."); else bulkUnlock.disabled = false; });
+      const bulkDelete = document.createElement("button"); bulkDelete.type = "button"; bulkDelete.className = "quiet-button"; bulkDelete.textContent = "Delete selected"; bulkDelete.disabled = selectedCustomLayerIds.size === 0 || items.some(item => selectedCustomLayerIds.has(item.id) && item.locked);
+      bulkDelete.title = items.some(item => selectedCustomLayerIds.has(item.id) && item.locked) ? "Unlock selected layers before deleting" : "Remove all selected layers";
+      bulkDelete.addEventListener("click", async () => {
+        const chosen = getCustomElements().filter(item => selectedCustomLayerIds.has(item.id));
+        if (!chosen.length) return;
+        if (chosen.some(item => item.locked)) return themeNotice("Unlock selected layers before deleting them.", true);
+        if (!window.confirm("Delete " + chosen.length + " selected layer(s)? This cannot be undone.")) return;
+        const current = getCustomElements().filter(item => !selectedCustomLayerIds.has(item.id));
+        bulkDelete.disabled = true;
+        if (await saveCustomElements(current)) { selectedCustomLayerIds.clear(); themeNotice(chosen.length + " selected layer(s) deleted."); }
+        else bulkDelete.disabled = false;
+      });
+      bulk.append(selectAll,count,bulkVisibility,bulkShow,bulkLock,bulkUnlock,bulkDelete); list.append(bulk);
     }
     if (!items.length) { const p = document.createElement("p"); p.className = "empty-state"; p.textContent = "No custom elements added yet."; list.append(p); return; }
     items.forEach((item, index) => {
