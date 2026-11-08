@@ -1021,6 +1021,29 @@
       bulkLock.addEventListener("click", async () => { const current = getCustomElements().map(item => selectedCustomLayerIds.has(item.id) ? { ...item, locked: true } : item); bulkLock.disabled = true; if (await saveCustomElements(current)) themeNotice("Selected layers locked."); else bulkLock.disabled = false; });
       const bulkUnlock = document.createElement("button"); bulkUnlock.type = "button"; bulkUnlock.className = "quiet-button"; bulkUnlock.textContent = "Unlock selected"; bulkUnlock.disabled = selectedCustomLayerIds.size === 0;
       bulkUnlock.addEventListener("click", async () => { const current = getCustomElements().map(item => selectedCustomLayerIds.has(item.id) ? { ...item, locked: false } : item); bulkUnlock.disabled = true; if (await saveCustomElements(current)) themeNotice("Selected layers unlocked."); else bulkUnlock.disabled = false; });
+      const nudgeGroup = async (dx,dy,label) => {
+        if (!selectedCustomLayerIds.size) return;
+        if (items.some(item => selectedCustomLayerIds.has(item.id) && item.locked)) return themeNotice("Unlock selected layers before moving them.", true);
+        const shift = (value,delta) => clampPercent((Number(value) || 50) + delta);
+        const current = getCustomElements().map(item => {
+          if (!selectedCustomLayerIds.has(item.id)) return item;
+          const moved = { ...item, x:shift(item.x,dx), y:shift(item.y,dy) };
+          if (item.mobile) moved.mobile = { ...item.mobile, x:shift(item.mobile.x,dx), y:shift(item.mobile.y,dy) };
+          return moved;
+        });
+        if (await saveCustomElements(current)) themeNotice("Selected layers moved " + label + ". Desktop and mobile positions updated.");
+      };
+      const groupMove = document.createElement("div"); groupMove.className = "custom-layer-group-move";
+      const groupMoveLabel = document.createElement("span"); groupMoveLabel.className = "field-help"; groupMoveLabel.textContent = "Move selected";
+      const moveLeft = document.createElement("button"); moveLeft.type = "button"; moveLeft.className = "quiet-button"; moveLeft.textContent = "←"; moveLeft.title = "Move selected layers left 1%"; moveLeft.disabled = selectedCustomLayerIds.size === 0;
+      moveLeft.addEventListener("click", () => nudgeGroup(-1,0,"left"));
+      const moveRight = document.createElement("button"); moveRight.type = "button"; moveRight.className = "quiet-button"; moveRight.textContent = "→"; moveRight.title = "Move selected layers right 1%"; moveRight.disabled = selectedCustomLayerIds.size === 0;
+      moveRight.addEventListener("click", () => nudgeGroup(1,0,"right"));
+      const moveUpGroup = document.createElement("button"); moveUpGroup.type = "button"; moveUpGroup.className = "quiet-button"; moveUpGroup.textContent = "↑"; moveUpGroup.title = "Move selected layers up 1%"; moveUpGroup.disabled = selectedCustomLayerIds.size === 0;
+      moveUpGroup.addEventListener("click", () => nudgeGroup(0,-1,"up"));
+      const moveDownGroup = document.createElement("button"); moveDownGroup.type = "button"; moveDownGroup.className = "quiet-button"; moveDownGroup.textContent = "↓"; moveDownGroup.title = "Move selected layers down 1%"; moveDownGroup.disabled = selectedCustomLayerIds.size === 0;
+      moveDownGroup.addEventListener("click", () => nudgeGroup(0,1,"down"));
+      groupMove.append(groupMoveLabel,moveLeft,moveRight,moveUpGroup,moveDownGroup);
       const bulkDelete = document.createElement("button"); bulkDelete.type = "button"; bulkDelete.className = "quiet-button"; bulkDelete.textContent = "Delete selected"; bulkDelete.disabled = selectedCustomLayerIds.size === 0 || items.some(item => selectedCustomLayerIds.has(item.id) && item.locked);
       bulkDelete.title = items.some(item => selectedCustomLayerIds.has(item.id) && item.locked) ? "Unlock selected layers before deleting" : "Remove all selected layers";
       bulkDelete.addEventListener("click", async () => {
@@ -1033,7 +1056,7 @@
         if (await saveCustomElements(current)) { selectedCustomLayerIds.clear(); themeNotice(chosen.length + " selected layer(s) deleted."); }
         else bulkDelete.disabled = false;
       });
-      bulk.append(selectAll,count,bulkVisibility,bulkShow,bulkLock,bulkUnlock,bulkDelete); list.append(bulk);
+      bulk.append(selectAll,count,bulkVisibility,bulkShow,bulkLock,bulkUnlock,bulkDelete); list.append(bulk,groupMove);
     }
     if (!items.length) { const p = document.createElement("p"); p.className = "empty-state"; p.textContent = "No custom elements added yet."; list.append(p); return; }
     items.forEach((item, index) => {
