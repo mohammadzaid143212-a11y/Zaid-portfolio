@@ -236,6 +236,25 @@
               <div class="preview-history-controls"><button id="element-undo" class="quiet-button" type="button" disabled>↶ Undo</button><button id="element-redo" class="quiet-button" type="button" disabled>↷ Redo</button><span id="element-history-status" class="field-help">Move or resize to create history.</span></div>
               <p class="field-help">Select a section above, then drag the dashed marker on your actual portfolio preview. Changes remain a preview until you tap Add element / Update element and Save &amp; publish.</p>
               <div class="website-preview-frame-wrap"><iframe id="element-website-preview" title="Live public portfolio placement preview" src="/?ownerEditorPreview=1" loading="lazy"></iframe></div>
+              <section class="built-in-editor" aria-labelledby="built-in-editor-title">
+                <p class="eyebrow">BUILT-IN ELEMENT EDITOR</p>
+                <h3 id="built-in-editor-title">Edit existing website text</h3>
+                <p class="field-help">Tap a heading or paragraph in the live website preview to select it. Edit the text and basic styling here. Changes stay in preview until you save them.</p>
+                <p id="built-in-selection-status" class="upload-status" role="status" aria-live="polite">No built-in text selected yet.</p>
+                <label for="built-in-text">Selected text</label>
+                <textarea id="built-in-text" rows="3" maxlength="500" placeholder="Select a heading or paragraph in the preview first." disabled></textarea>
+                <div class="theme-control-grid">
+                  <div><label for="built-in-font-size">Font size (px)</label><input id="built-in-font-size" type="number" min="10" max="120" value="24" disabled></div>
+                  <div><label for="built-in-radius">Corner radius (px)</label><input id="built-in-radius" type="number" min="0" max="100" value="0" disabled></div>
+                  <div><label for="built-in-text-color">Text color</label><input id="built-in-text-color" type="color" value="#f2f0eb" disabled></div>
+                  <div><label for="built-in-bg-color">Background color</label><input id="built-in-bg-color" type="color" value="#ffffff" disabled></div>
+                </div>
+                <div class="form-actions">
+                  <button id="save-built-in-element" class="primary" type="button" disabled>Save selected element</button>
+                  <button id="reset-built-in-element" class="quiet-button" type="button" disabled>Reset override</button>
+                </div>
+                <p class="field-help">This first built-in editing pass supports headings and paragraphs. It does not change links, images, layout structure or the original site source.</p>
+              </section>
               <div class="canvas-alignment-tools" role="group" aria-label="Align selected element"><span class="field-help">Quick align</span><button type="button" class="quiet-button" data-element-align="left">Left</button><button type="button" class="quiet-button" data-element-align="center-x">Center X</button><button type="button" class="quiet-button" data-element-align="right">Right</button><button type="button" class="quiet-button" data-element-align="top">Top</button><button type="button" class="quiet-button" data-element-align="center-y">Middle</button><button type="button" class="quiet-button" data-element-align="bottom">Bottom</button></div>
               <div class="theme-control-grid">
                 <div><label for="element-x">Horizontal position (%)</label><input id="element-x" type="number" min="0" max="100" value="50"></div>
