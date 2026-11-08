@@ -745,6 +745,7 @@
     const builtInOpacity = $("#built-in-opacity"), builtInBorderWidth = $("#built-in-border-width");
     const builtInBorderColor = $("#built-in-border-color");
     const builtInLineHeight = $("#built-in-line-height"), builtInTextDecoration = $("#built-in-text-decoration");
+    const builtInLinkUrl=$("#built-in-link-url"), builtInImageSrc=$("#built-in-image-src"), builtInImageAlt=$("#built-in-image-alt"), builtInImageWidth=$("#built-in-image-width");
    const builtInSave = $("#save-built-in-element"), builtInReset = $("#reset-built-in-element");
    function stablePreviewSelector(node) {
      if (!node || !node.tagName) return "";
@@ -764,14 +765,26 @@
    }
    function setBuiltInControlsEnabled(enabled) {
      [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInOpacity,builtInBorderWidth,builtInBorderColor,builtInLineHeight,builtInTextDecoration,builtInSave,builtInReset].forEach(control => { control.disabled = !enabled; });
+     [builtInLinkUrl,builtInImageSrc,builtInImageAlt,builtInImageWidth].forEach(control => { control.disabled = true; });
    }
    function rgbToHex(value) {
      const match = String(value).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
      return match ? "#" + match.slice(1,4).map(part => Number(part).toString(16).padStart(2,"0")).join("") : value;
    }
    function updateBuiltInPreview() {
+     const tag = selectedBuiltInNode?.tagName?.toLowerCase();
+     const canEditLabel = tag !== "img" && !selectedBuiltInNode?.querySelector("*");
+     builtInText.disabled = !canEditLabel;
+     if (canEditLabel) selectedBuiltInNode.textContent = builtInText.value.slice(0,500);
+     if (tag === "img") {
+       if (builtInImageSrc.value.trim()) selectedBuiltInNode.src = builtInImageSrc.value.trim();
+       selectedBuiltInNode.alt = builtInImageAlt.value.slice(0,240);
+       selectedBuiltInNode.style.width = Math.max(20,Math.min(2000,Number(builtInImageWidth.value)||600)) + "px";
+       selectedBuiltInNode.style.height = "auto";
+     }
+     if (tag === "a" && builtInLinkUrl.value.trim()) selectedBuiltInNode.setAttribute("href",builtInLinkUrl.value.trim());
      if (!selectedBuiltInNode?.isConnected) return;
-     selectedBuiltInNode.textContent = builtInText.value.slice(0,500);
+     // Text updates are handled above only for simple text elements.
      selectedBuiltInNode.style.fontSize = Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)) + "px";
      selectedBuiltInNode.style.borderRadius = Math.max(0,Math.min(100,Number(builtInRadius.value)||0)) + "px";
      selectedBuiltInNode.style.color = builtInTextColor.value;
@@ -790,7 +803,15 @@
      if (!node || node.closest(".owner-added-element,.owner-editor-alignment-guides,.owner-custom-section")) return;
      const selector = stablePreviewSelector(node); if (!selector) return;
      selectedBuiltInNode = node; selectedBuiltInSelector = selector;
-     builtInText.value = node.textContent.trim().slice(0,500);
+     const tagName=node.tagName.toLowerCase(), simpleText=!node.querySelector("*") && tagName!=="img";
+     builtInText.disabled = !simpleText;
+     builtInLinkUrl.disabled = tagName !== "a";
+     builtInImageSrc.disabled = tagName !== "img"; builtInImageAlt.disabled = tagName !== "img"; builtInImageWidth.disabled = tagName !== "img";
+     builtInLinkUrl.value = tagName === "a" ? (node.getAttribute("href")||"") : "";
+     builtInImageSrc.value = tagName === "img" ? (node.getAttribute("src")||"") : "";
+     builtInImageAlt.value = tagName === "img" ? (node.getAttribute("alt")||"") : "";
+     builtInImageWidth.value = tagName === "img" ? Math.round(node.getBoundingClientRect().width||600) : 600;
+     builtInText.value = node.tagName.toLowerCase()==="img" ? "" : node.textContent.trim().slice(0,500);
      const style = websitePreview.contentWindow.getComputedStyle(node);
      builtInFontSize.value = Math.round(parseFloat(style.fontSize)||24);
      builtInRadius.value = Math.round(parseFloat(style.borderRadius)||0);
@@ -847,10 +868,10 @@
      }
      makeBuiltInCanvasOverlay(node);
    }
-   [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInOpacity,builtInBorderWidth,builtInBorderColor,builtInLineHeight,builtInTextDecoration].forEach(control => { control.addEventListener("input",updateBuiltInPreview); control.addEventListener("change",updateBuiltInPreview); });
+   [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInOpacity,builtInBorderWidth,builtInBorderColor,builtInLineHeight,builtInTextDecoration,builtInLinkUrl,builtInImageSrc,builtInImageAlt,builtInImageWidth].forEach(control => { control.addEventListener("input",updateBuiltInPreview); control.addEventListener("change",updateBuiltInPreview); });
    builtInSave.addEventListener("click",async()=>{
      if(!selectedBuiltInSelector||!selectedBuiltInNode)return;
-     const value={text:builtInText.value.slice(0,500),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value,fontWeight:builtInFontWeight.value,textAlign:builtInTextAlign.value,letterSpacing:Math.max(-2,Math.min(20,Number(builtInLetterSpacing.value)||0)),opacity:Math.max(10,Math.min(100,Number(builtInOpacity.value)||100)),borderWidth:Math.max(0,Math.min(20,Number(builtInBorderWidth.value)||0)),borderColor:builtInBorderColor.value,lineHeight:Math.max(0.8,Math.min(3,Number(builtInLineHeight.value)||1.2)),textDecoration:builtInTextDecoration.value,position:builtInPosition};
+     const tagName=selectedBuiltInNode.tagName.toLowerCase(); const value={elementType:tagName,...(builtInText.disabled?{}:{text:builtInText.value.slice(0,500)}),...(tagName==="a"?{linkUrl:builtInLinkUrl.value.trim()}:{}),...(tagName==="img"?{imageSrc:builtInImageSrc.value.trim(),imageAlt:builtInImageAlt.value.slice(0,240),imageWidth:Math.max(20,Math.min(2000,Number(builtInImageWidth.value)||600))}:{}),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value,fontWeight:builtInFontWeight.value,textAlign:builtInTextAlign.value,letterSpacing:Math.max(-2,Math.min(20,Number(builtInLetterSpacing.value)||0)),opacity:Math.max(10,Math.min(100,Number(builtInOpacity.value)||100)),borderWidth:Math.max(0,Math.min(20,Number(builtInBorderWidth.value)||0)),borderColor:builtInBorderColor.value,lineHeight:Math.max(0.8,Math.min(3,Number(builtInLineHeight.value)||1.2)),textDecoration:builtInTextDecoration.value,position:builtInPosition};
      builtInSave.disabled=true;builtInStatus.textContent="Saving selected element…";
      try{
        const {data,error:readError}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();
@@ -885,8 +906,8 @@
       selectionStyle.textContent = ".owner-added-element[data-element-id]{cursor:pointer;outline:1px dashed transparent;outline-offset:4px;transition:outline-color .15s ease}.owner-added-element[data-element-id]:hover{outline-color:#c9f36a}";
       doc.head.append(selectionStyle);
       doc.addEventListener("click", event => {
-         const builtIn = event.target.closest("h1,h2,h3,h4,p");
-         if (builtIn && !builtIn.closest(".owner-added-element,.owner-custom-section")) {
+         const builtIn = event.target.closest("h1,h2,h3,h4,p,button,a[href],img");
+         if (builtIn && !builtIn.closest(".owner-added-element,.owner-custom-section") && !(builtIn.tagName.toLowerCase()==="a" && builtIn.closest("button"))) {
            event.preventDefault(); event.stopPropagation(); selectBuiltInPreviewNode(builtIn); return;
          }
 
