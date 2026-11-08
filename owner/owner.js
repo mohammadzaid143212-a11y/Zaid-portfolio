@@ -815,8 +815,10 @@
      builtInImageSrc.value = tagName === "img" ? (node.getAttribute("src")||"") : "";
      builtInImageAlt.value = tagName === "img" ? (node.getAttribute("alt")||"") : "";
      builtInImageWidth.value = tagName === "img" ? Math.round(node.getBoundingClientRect().width||600) : 600;
-     builtInImageFit.value = tagName === "img" && ["cover","contain","fill","none"].includes(node.style.objectFit) ? node.style.objectFit : "cover";
-     builtInImagePosition.value = tagName === "img" && ["center","top","bottom","left","right"].includes(node.style.objectPosition) ? node.style.objectPosition : "center";
+     const imageComputedStyle = tagName === "img" ? websitePreview.contentWindow.getComputedStyle(node) : null;
+     builtInImageFit.value = tagName === "img" && ["cover","contain","fill","none"].includes(imageComputedStyle.objectFit) ? imageComputedStyle.objectFit : "cover";
+     const imagePosition = imageComputedStyle?.objectPosition || "center";
+     builtInImagePosition.value = tagName === "img" && ["center","top","bottom","left","right"].includes(imagePosition) ? imagePosition : "center";
      builtInText.value = node.tagName.toLowerCase()==="img" ? "" : node.textContent.trim().slice(0,500);
      const style = websitePreview.contentWindow.getComputedStyle(node);
      builtInFontSize.value = Math.round(parseFloat(style.fontSize)||24);
@@ -834,7 +836,12 @@
      setBuiltInControlsEnabled(true);
      builtInText.disabled = !simpleText;
      builtInLinkUrl.disabled = tagName !== "a";
-     builtInImageSrc.disabled = tagName !== "img"; builtInImageAlt.disabled = tagName !== "img"; builtInImageWidth.disabled = tagName !== "img";
+     builtInLinkTarget.disabled = tagName !== "a";
+     builtInImageSrc.disabled = tagName !== "img";
+     builtInImageAlt.disabled = tagName !== "img";
+     builtInImageWidth.disabled = tagName !== "img";
+     builtInImageFit.disabled = tagName !== "img";
+     builtInImagePosition.disabled = tagName !== "img";
      builtInStatus.textContent = "Selected: " + node.tagName.toLowerCase() + " · " + selector;
    let builtInPosition = {x:0,y:0,width:100};
    let builtInCanvasOverlay = null;
