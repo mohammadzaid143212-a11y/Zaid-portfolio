@@ -1002,14 +1002,33 @@
   $("#element-custom-target").addEventListener("change", () => window.setTimeout(refreshWebsitePreview, 250));
   [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),$("#element-rotation"),$("#element-opacity"),$("#element-radius"),$("#element-border-width"),$("#element-shadow"),elementOverlay,$("#element-layer")].forEach(el => el.addEventListener("change", () => { if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview(); }));
   function getCustomElements() { return Array.isArray(themeSettings.__elements) ? themeSettings.__elements : []; }
+  const selectedCustomLayerIds = new Set();
   function renderCustomElements() {
     const list = $("#custom-element-list"), items = getCustomElements();
     list.replaceChildren();
+    const selectedIds = new Set(items.filter(item => selectedCustomLayerIds.has(item.id)).map(item => item.id));
+    selectedCustomLayerIds.clear(); selectedIds.forEach(id => selectedCustomLayerIds.add(id));
+    if (items.length) {
+      const bulk = document.createElement("div"); bulk.className = "custom-layer-bulk-tools";
+      const selectAll = document.createElement("button"); selectAll.type = "button"; selectAll.className = "quiet-button"; selectAll.textContent = selectedCustomLayerIds.size === items.length ? "Clear selection" : "Select all";
+      selectAll.addEventListener("click", () => { if (selectedCustomLayerIds.size === items.length) selectedCustomLayerIds.clear(); else items.forEach(item => selectedCustomLayerIds.add(item.id)); renderCustomElements(); });
+      const count = document.createElement("span"); count.className = "field-help"; count.textContent = selectedCustomLayerIds.size + " selected";
+      const bulkVisibility = document.createElement("button"); bulkVisibility.type = "button"; bulkVisibility.className = "quiet-button"; bulkVisibility.textContent = "Hide selected"; bulkVisibility.disabled = selectedCustomLayerIds.size === 0;
+      bulkVisibility.addEventListener("click", async () => { const current = getCustomElements().map(item => selectedCustomLayerIds.has(item.id) ? { ...item, hidden: true } : item); bulkVisibility.disabled = true; if (await saveCustomElements(current)) themeNotice("Selected layers hidden. Save & publish to apply."); else bulkVisibility.disabled = false; });
+      const bulkShow = document.createElement("button"); bulkShow.type = "button"; bulkShow.className = "quiet-button"; bulkShow.textContent = "Show selected"; bulkShow.disabled = selectedCustomLayerIds.size === 0;
+      bulkShow.addEventListener("click", async () => { const current = getCustomElements().map(item => selectedCustomLayerIds.has(item.id) ? { ...item, hidden: false } : item); bulkShow.disabled = true; if (await saveCustomElements(current)) themeNotice("Selected layers made visible. Save & publish to apply."); else bulkShow.disabled = false; });
+      const bulkLock = document.createElement("button"); bulkLock.type = "button"; bulkLock.className = "quiet-button"; bulkLock.textContent = "Lock selected"; bulkLock.disabled = selectedCustomLayerIds.size === 0;
+      bulkLock.addEventListener("click", async () => { const current = getCustomElements().map(item => selectedCustomLayerIds.has(item.id) ? { ...item, locked: true } : item); bulkLock.disabled = true; if (await saveCustomElements(current)) themeNotice("Selected layers locked."); else bulkLock.disabled = false; });
+      bulk.append(selectAll,count,bulkVisibility,bulkShow,bulkLock); list.append(bulk);
+    }
     if (!items.length) { const p = document.createElement("p"); p.className = "empty-state"; p.textContent = "No custom elements added yet."; list.append(p); return; }
     items.forEach((item, index) => {
       const card = document.createElement("div"); card.className = "custom-element-item";
       card.dataset.elementId = item.id;
       card.classList.toggle("is-selected", item.id === editingElementId);
+      card.classList.toggle("is-bulk-selected", selectedCustomLayerIds.has(item.id));
+      const select = document.createElement("input"); select.type = "checkbox"; select.className = "custom-layer-select"; select.checked = selectedCustomLayerIds.has(item.id); select.setAttribute("aria-label", "Select layer for bulk actions");
+      select.addEventListener("change", () => { if (select.checked) selectedCustomLayerIds.add(item.id); else selectedCustomLayerIds.delete(item.id); renderCustomElements(); });
       const info = document.createElement("div"); const strong = document.createElement("strong");
       strong.textContent = item.kind === "text" ? (item.content || "Text element") : (item.kind === "image" ? "Image / graphic" : "Video / motion graphic");
       const small = document.createElement("p"); small.textContent = item.target + " · " + item.placement + " · " + (item.animation || "no animation") + (item.hidden ? " · HIDDEN" : "") + (item.locked ? " · LOCKED" : "");
@@ -1114,7 +1133,7 @@
         edit.title = "Unlock this layer before editing";
         del.title = "Unlock this layer before removing";
       }
-      actions.append(moveUp,moveDown,visibility,lock,edit,duplicate,del); card.append(info,actions); list.append(card);
+      actions.append(moveUp,moveDown,visibility,lock,edit,duplicate,del); card.append(select,info,actions); list.append(card);
     });
   }
   async function saveCustomElements(items) {
