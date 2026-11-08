@@ -815,7 +815,14 @@
      doc.addEventListener("scroll",updateBuiltInCanvasOverlay,true);
      doc.defaultView.addEventListener("resize",updateBuiltInCanvasOverlay);
    }
-     builtInPosition = {x:0,y:0,width:100};
+     const savedPosition = themeSettings.__visualOverrides?.[selector]?.position;
+     builtInPosition = savedPosition && typeof savedPosition === "object"
+       ? {x:Math.max(-100,Math.min(100,Number(savedPosition.x)||0)),y:Math.max(-100,Math.min(100,Number(savedPosition.y)||0)),width:Math.max(5,Math.min(100,Number(savedPosition.width)||100))}
+       : {x:0,y:0,width:100};
+     if (savedPosition) {
+       node.style.position = "relative"; node.style.left = builtInPosition.x + "%";
+       node.style.top = builtInPosition.y + "%"; node.style.width = builtInPosition.width + "%";
+     }
      makeBuiltInCanvasOverlay(node);
    }
    [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor].forEach(control => control.addEventListener("input",updateBuiltInPreview));
