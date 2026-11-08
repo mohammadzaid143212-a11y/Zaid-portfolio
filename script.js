@@ -441,6 +441,8 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     if (Number.isFinite(Number(setting.opacity))) target.style.opacity = String(Math.max(10,Math.min(100,Number(setting.opacity)))/100);
     if (Number.isFinite(Number(setting.borderWidth))) { const width = Math.max(0,Math.min(20,Number(setting.borderWidth))); target.style.borderWidth = width + "px"; target.style.borderStyle = width > 0 ? "solid" : "none"; }
     if (/^#[0-9a-f]{6}$/i.test(setting.borderColor || "")) target.style.borderColor = setting.borderColor;
+    if (Number.isFinite(Number(setting.lineHeight))) target.style.lineHeight = String(Math.max(0.8,Math.min(3,Number(setting.lineHeight))));
+    if (["none","underline","line-through","overline"].includes(setting.textDecoration)) target.style.textDecoration = setting.textDecoration;
     if (setting.position && typeof setting.position === "object") {
       const x = Math.max(-100,Math.min(100,Number(setting.position.x)||0));
       const y = Math.max(-100,Math.min(100,Number(setting.position.y)||0));
