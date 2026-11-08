@@ -432,9 +432,15 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     if (!target || target.closest(".owner-added-element,.owner-custom-section")) return;
     if (typeof setting.text === "string" && target.tagName.toLowerCase() !== "img" && !target.querySelector("*")) target.textContent = setting.text.slice(0,500);
     if (typeof setting.linkUrl === "string" && target.tagName.toLowerCase() === "a" && /^(https?:|mailto:|tel:|#|\/(?!\/)|\.\.?\/)/i.test(setting.linkUrl)) target.setAttribute("href",setting.linkUrl);
+    if (target.tagName.toLowerCase() === "a" && ["_self","_blank"].includes(setting.linkTarget)) {
+      target.setAttribute("target",setting.linkTarget);
+      if (setting.linkTarget === "_blank") target.setAttribute("rel","noopener noreferrer"); else target.removeAttribute("rel");
+    }
     if (typeof setting.imageSrc === "string" && target.tagName.toLowerCase() === "img" && /^(https?:|\/(?!\/)|\.\.?\/)/i.test(setting.imageSrc)) target.setAttribute("src",setting.imageSrc);
     if (target.tagName.toLowerCase() === "img") {
       if (typeof setting.imageAlt === "string") target.setAttribute("alt",setting.imageAlt.slice(0,240));
+      if (["cover","contain","fill","none"].includes(setting.imageFit)) target.style.objectFit = setting.imageFit;
+      if (["center","top","bottom","left","right"].includes(setting.imagePosition)) target.style.objectPosition = setting.imagePosition;
       if (Number.isFinite(Number(setting.imageWidth))) target.style.width = Math.max(20,Math.min(2000,Number(setting.imageWidth))) + "px";
       target.style.height = "auto";
     }

@@ -746,6 +746,7 @@
     const builtInBorderColor = $("#built-in-border-color");
     const builtInLineHeight = $("#built-in-line-height"), builtInTextDecoration = $("#built-in-text-decoration");
     const builtInLinkUrl=$("#built-in-link-url"), builtInImageSrc=$("#built-in-image-src"), builtInImageAlt=$("#built-in-image-alt"), builtInImageWidth=$("#built-in-image-width");
+    const builtInImageFit=$("#built-in-image-fit"), builtInImagePosition=$("#built-in-image-position"), builtInLinkTarget=$("#built-in-link-target");
    const builtInSave = $("#save-built-in-element"), builtInReset = $("#reset-built-in-element");
    function stablePreviewSelector(node) {
      if (!node || !node.tagName) return "";
@@ -765,7 +766,7 @@
    }
    function setBuiltInControlsEnabled(enabled) {
      [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInOpacity,builtInBorderWidth,builtInBorderColor,builtInLineHeight,builtInTextDecoration,builtInSave,builtInReset].forEach(control => { control.disabled = !enabled; });
-     [builtInLinkUrl,builtInImageSrc,builtInImageAlt,builtInImageWidth].forEach(control => { control.disabled = true; });
+     [builtInLinkUrl,builtInImageSrc,builtInImageAlt,builtInImageWidth,builtInImageFit,builtInImagePosition,builtInLinkTarget].forEach(control => { control.disabled = true; });
    }
    function rgbToHex(value) {
      const match = String(value).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
@@ -781,8 +782,10 @@
        selectedBuiltInNode.alt = builtInImageAlt.value.slice(0,240);
        selectedBuiltInNode.style.width = Math.max(20,Math.min(2000,Number(builtInImageWidth.value)||600)) + "px";
        selectedBuiltInNode.style.height = "auto";
+       selectedBuiltInNode.style.objectFit = builtInImageFit.value;
+       selectedBuiltInNode.style.objectPosition = builtInImagePosition.value;
      }
-     if (tag === "a" && builtInLinkUrl.value.trim()) selectedBuiltInNode.setAttribute("href",builtInLinkUrl.value.trim());
+     if (tag === "a" && builtInLinkUrl.value.trim()) { selectedBuiltInNode.setAttribute("href",builtInLinkUrl.value.trim()); selectedBuiltInNode.setAttribute("target",builtInLinkTarget.value); if (builtInLinkTarget.value === "_blank") selectedBuiltInNode.setAttribute("rel","noopener noreferrer"); else selectedBuiltInNode.removeAttribute("rel"); }
      if (!selectedBuiltInNode?.isConnected) return;
      // Text updates are handled above only for simple text elements.
      selectedBuiltInNode.style.fontSize = Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)) + "px";
@@ -806,11 +809,14 @@
      const tagName=node.tagName.toLowerCase(), simpleText=!node.querySelector("*") && tagName!=="img";
      builtInText.disabled = !simpleText;
      builtInLinkUrl.disabled = tagName !== "a";
-     builtInImageSrc.disabled = tagName !== "img"; builtInImageAlt.disabled = tagName !== "img"; builtInImageWidth.disabled = tagName !== "img";
+     builtInImageSrc.disabled = tagName !== "img"; builtInImageAlt.disabled = tagName !== "img"; builtInImageWidth.disabled = tagName !== "img"; builtInImageFit.disabled = tagName !== "img"; builtInImagePosition.disabled = tagName !== "img"; builtInLinkTarget.disabled = tagName !== "a";
      builtInLinkUrl.value = tagName === "a" ? (node.getAttribute("href")||"") : "";
+     builtInLinkTarget.value = tagName === "a" && node.getAttribute("target")==="_blank" ? "_blank" : "_self";
      builtInImageSrc.value = tagName === "img" ? (node.getAttribute("src")||"") : "";
      builtInImageAlt.value = tagName === "img" ? (node.getAttribute("alt")||"") : "";
      builtInImageWidth.value = tagName === "img" ? Math.round(node.getBoundingClientRect().width||600) : 600;
+     builtInImageFit.value = tagName === "img" && ["cover","contain","fill","none"].includes(node.style.objectFit) ? node.style.objectFit : "cover";
+     builtInImagePosition.value = tagName === "img" && ["center","top","bottom","left","right"].includes(node.style.objectPosition) ? node.style.objectPosition : "center";
      builtInText.value = node.tagName.toLowerCase()==="img" ? "" : node.textContent.trim().slice(0,500);
      const style = websitePreview.contentWindow.getComputedStyle(node);
      builtInFontSize.value = Math.round(parseFloat(style.fontSize)||24);
@@ -871,10 +877,10 @@
      }
      makeBuiltInCanvasOverlay(node);
    }
-   [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInOpacity,builtInBorderWidth,builtInBorderColor,builtInLineHeight,builtInTextDecoration,builtInLinkUrl,builtInImageSrc,builtInImageAlt,builtInImageWidth].forEach(control => { control.addEventListener("input",updateBuiltInPreview); control.addEventListener("change",updateBuiltInPreview); });
+   [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInOpacity,builtInBorderWidth,builtInBorderColor,builtInLineHeight,builtInTextDecoration,builtInLinkUrl,builtInImageSrc,builtInImageAlt,builtInImageWidth,builtInImageFit,builtInImagePosition,builtInLinkTarget].forEach(control => { control.addEventListener("input",updateBuiltInPreview); control.addEventListener("change",updateBuiltInPreview); });
    builtInSave.addEventListener("click",async()=>{
      if(!selectedBuiltInSelector||!selectedBuiltInNode)return;
-     const tagName=selectedBuiltInNode.tagName.toLowerCase(); const value={elementType:tagName,...(builtInText.disabled?{}:{text:builtInText.value.slice(0,500)}),...(tagName==="a"?{linkUrl:builtInLinkUrl.value.trim()}:{}),...(tagName==="img"?{imageSrc:builtInImageSrc.value.trim(),imageAlt:builtInImageAlt.value.slice(0,240),imageWidth:Math.max(20,Math.min(2000,Number(builtInImageWidth.value)||600))}:{}),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value,fontWeight:builtInFontWeight.value,textAlign:builtInTextAlign.value,letterSpacing:Math.max(-2,Math.min(20,Number(builtInLetterSpacing.value)||0)),opacity:Math.max(10,Math.min(100,Number(builtInOpacity.value)||100)),borderWidth:Math.max(0,Math.min(20,Number(builtInBorderWidth.value)||0)),borderColor:builtInBorderColor.value,lineHeight:Math.max(0.8,Math.min(3,Number(builtInLineHeight.value)||1.2)),textDecoration:builtInTextDecoration.value,position:builtInPosition};
+     const tagName=selectedBuiltInNode.tagName.toLowerCase(); const value={elementType:tagName,...(builtInText.disabled?{}:{text:builtInText.value.slice(0,500)}),...(tagName==="a"?{linkUrl:builtInLinkUrl.value.trim(),linkTarget:builtInLinkTarget.value}:{}),...(tagName==="img"?{imageFit:builtInImageFit.value,imagePosition:builtInImagePosition.value,imageSrc:builtInImageSrc.value.trim(),imageAlt:builtInImageAlt.value.slice(0,240),imageWidth:Math.max(20,Math.min(2000,Number(builtInImageWidth.value)||600))}:{}),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value,fontWeight:builtInFontWeight.value,textAlign:builtInTextAlign.value,letterSpacing:Math.max(-2,Math.min(20,Number(builtInLetterSpacing.value)||0)),opacity:Math.max(10,Math.min(100,Number(builtInOpacity.value)||100)),borderWidth:Math.max(0,Math.min(20,Number(builtInBorderWidth.value)||0)),borderColor:builtInBorderColor.value,lineHeight:Math.max(0.8,Math.min(3,Number(builtInLineHeight.value)||1.2)),textDecoration:builtInTextDecoration.value,position:builtInPosition};
      builtInSave.disabled=true;builtInStatus.textContent="Saving selected element…";
      try{
        const {data,error:readError}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();
