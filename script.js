@@ -456,11 +456,21 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     if (/^#[0-9a-f]{6}$/i.test(setting.borderColor || "")) target.style.borderColor = setting.borderColor;
     if (Number.isFinite(Number(setting.lineHeight))) target.style.lineHeight = String(Math.max(0.8,Math.min(3,Number(setting.lineHeight))));
     if (["none","underline","line-through","overline"].includes(setting.textDecoration)) target.style.textDecoration = setting.textDecoration;
-    if (setting.position && typeof setting.position === "object") {
-      const x = Math.max(-100,Math.min(100,Number(setting.position.x)||0));
-      const y = Math.max(-100,Math.min(100,Number(setting.position.y)||0));
-      const width = Math.max(5,Math.min(100,Number(setting.position.width)||100));
+    const desktopPosition = setting.positionDesktop || setting.position;
+    if (desktopPosition && typeof desktopPosition === "object") {
+      const x = Math.max(-100,Math.min(100,Number(desktopPosition.x)||0));
+      const y = Math.max(-100,Math.min(100,Number(desktopPosition.y)||0));
+      const width = Math.max(5,Math.min(100,Number(desktopPosition.width)||100));
       target.style.position = "relative"; target.style.left = x + "%"; target.style.top = y + "%"; target.style.width = width + "%";
+    }
+    if (setting.positionMobile && typeof setting.positionMobile === "object") {
+      const mobile = setting.positionMobile;
+      const x = Math.max(-100,Math.min(100,Number(mobile.x)||0));
+      const y = Math.max(-100,Math.min(100,Number(mobile.y)||0));
+      const width = Math.max(5,Math.min(100,Number(mobile.width)||100));
+      const style = document.createElement("style");
+      style.textContent = "@media (max-width: 680px) { " + selector + " { position:relative !important; left:" + x + "% !important; top:" + y + "% !important; width:" + width + "% !important; } }";
+      document.head.append(style);
     }
   });
 
