@@ -744,6 +744,7 @@
     const builtInLetterSpacing = $("#built-in-letter-spacing");
     const builtInOpacity = $("#built-in-opacity"), builtInBorderWidth = $("#built-in-border-width");
     const builtInBorderColor = $("#built-in-border-color");
+    const builtInLineHeight = $("#built-in-line-height"), builtInTextDecoration = $("#built-in-text-decoration");
    const builtInSave = $("#save-built-in-element"), builtInReset = $("#reset-built-in-element");
    function stablePreviewSelector(node) {
      if (!node || !node.tagName) return "";
@@ -762,7 +763,7 @@
      return parts.join(" > ").slice(0,240);
    }
    function setBuiltInControlsEnabled(enabled) {
-     [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInOpacity,builtInBorderWidth,builtInBorderColor,builtInSave,builtInReset].forEach(control => { control.disabled = !enabled; });
+     [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInOpacity,builtInBorderWidth,builtInBorderColor,builtInLineHeight,builtInTextDecoration,builtInSave,builtInReset].forEach(control => { control.disabled = !enabled; });
    }
    function rgbToHex(value) {
      const match = String(value).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
@@ -782,6 +783,8 @@
      selectedBuiltInNode.style.borderWidth = Math.max(0,Math.min(20,Number(builtInBorderWidth.value)||0)) + "px";
      selectedBuiltInNode.style.borderStyle = Number(builtInBorderWidth.value)>0 ? "solid" : "none";
      selectedBuiltInNode.style.borderColor = builtInBorderColor.value;
+     selectedBuiltInNode.style.lineHeight = String(Math.max(0.8,Math.min(3,Number(builtInLineHeight.value)||1.2)));
+     selectedBuiltInNode.style.textDecoration = builtInTextDecoration.value;
    }
    function selectBuiltInPreviewNode(node) {
      if (!node || node.closest(".owner-added-element,.owner-editor-alignment-guides,.owner-custom-section")) return;
@@ -799,6 +802,8 @@
      builtInOpacity.value = Math.round((parseFloat(style.opacity)||1)*100);
      builtInBorderWidth.value = Math.max(0,Math.min(20,Math.round(parseFloat(style.borderTopWidth)||0)));
      builtInBorderColor.value = /^#[0-9a-f]{6}$/i.test(rgbToHex(style.borderTopColor)) ? rgbToHex(style.borderTopColor) : "#ffffff";
+     builtInLineHeight.value = Math.max(0.8,Math.min(3,parseFloat(style.lineHeight)/Math.max(1,parseFloat(style.fontSize)||24)||1.2)).toFixed(1);
+     builtInTextDecoration.value = ["underline","line-through","overline"].find(value => style.textDecorationLine.includes(value)) || "none";
      setBuiltInControlsEnabled(true);
      builtInStatus.textContent = "Selected: " + node.tagName.toLowerCase() + " · " + selector;
    let builtInPosition = {x:0,y:0,width:100};
@@ -842,10 +847,10 @@
      }
      makeBuiltInCanvasOverlay(node);
    }
-   [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInOpacity,builtInBorderWidth,builtInBorderColor].forEach(control => { control.addEventListener("input",updateBuiltInPreview); control.addEventListener("change",updateBuiltInPreview); });
+   [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInOpacity,builtInBorderWidth,builtInBorderColor,builtInLineHeight,builtInTextDecoration].forEach(control => { control.addEventListener("input",updateBuiltInPreview); control.addEventListener("change",updateBuiltInPreview); });
    builtInSave.addEventListener("click",async()=>{
      if(!selectedBuiltInSelector||!selectedBuiltInNode)return;
-     const value={text:builtInText.value.slice(0,500),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value,fontWeight:builtInFontWeight.value,textAlign:builtInTextAlign.value,letterSpacing:Math.max(-2,Math.min(20,Number(builtInLetterSpacing.value)||0)),opacity:Math.max(10,Math.min(100,Number(builtInOpacity.value)||100)),borderWidth:Math.max(0,Math.min(20,Number(builtInBorderWidth.value)||0)),borderColor:builtInBorderColor.value,position:builtInPosition};
+     const value={text:builtInText.value.slice(0,500),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value,fontWeight:builtInFontWeight.value,textAlign:builtInTextAlign.value,letterSpacing:Math.max(-2,Math.min(20,Number(builtInLetterSpacing.value)||0)),opacity:Math.max(10,Math.min(100,Number(builtInOpacity.value)||100)),borderWidth:Math.max(0,Math.min(20,Number(builtInBorderWidth.value)||0)),borderColor:builtInBorderColor.value,lineHeight:Math.max(0.8,Math.min(3,Number(builtInLineHeight.value)||1.2)),textDecoration:builtInTextDecoration.value,position:builtInPosition};
      builtInSave.disabled=true;builtInStatus.textContent="Saving selected element…";
      try{
        const {data,error:readError}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();
