@@ -239,9 +239,15 @@
               <section class="built-in-editor" aria-labelledby="built-in-editor-title">
                 <p class="eyebrow">BUILT-IN ELEMENT EDITOR</p>
                 <h3 id="built-in-editor-title">Edit existing website text</h3>
-                <p class="field-help">Tap a heading or paragraph in the live website preview to select it. Edit the text and basic styling here. Changes stay in preview until you save them.</p>
+                <p class="field-help">Tap a heading, paragraph, button, link or image in the live website preview to select it. Edit supported content and styling here. Changes stay in preview until you save them.</p>
                 <p id="built-in-selection-status" class="upload-status" role="status" aria-live="polite">No built-in text selected yet.</p>
                 <label for="built-in-text">Selected text</label>
+                <div class="theme-control-grid">
+                  <div><label for="built-in-link-url">Link destination</label><input id="built-in-link-url" type="url" placeholder="https://example.com" disabled></div>
+                  <div><label for="built-in-image-src">Image source</label><input id="built-in-image-src" type="url" placeholder="https://… or /image.jpg" disabled></div>
+                  <div><label for="built-in-image-alt">Image alt text</label><input id="built-in-image-alt" type="text" maxlength="240" placeholder="Describe the image" disabled></div>
+                  <div><label for="built-in-image-width">Image width (px)</label><input id="built-in-image-width" type="number" min="20" max="2000" value="600" disabled></div>
+                </div>
                 <textarea id="built-in-text" rows="3" maxlength="500" placeholder="Select a heading or paragraph in the preview first." disabled></textarea>
                 <div class="theme-control-grid">
                   <div><label for="built-in-font-size">Font size (px)</label><input id="built-in-font-size" type="number" min="10" max="120" value="24" disabled></div>
@@ -261,7 +267,7 @@
                   <button id="save-built-in-element" class="primary" type="button" disabled>Save selected element</button>
                   <button id="reset-built-in-element" class="quiet-button" type="button" disabled>Reset override</button>
                 </div>
-                <p class="field-help">This first built-in editing pass supports headings and paragraphs. It does not change links, images, layout structure or the original site source.</p>
+                <p class="field-help">Supports text, button labels, link destinations and image source, alt text and width. Complex nested button/link content is preserved rather than destructively replaced.</p>
               </section>
               <div class="canvas-alignment-tools" role="group" aria-label="Align selected element"><span class="field-help">Quick align</span><button type="button" class="quiet-button" data-element-align="left">Left</button><button type="button" class="quiet-button" data-element-align="center-x">Center X</button><button type="button" class="quiet-button" data-element-align="right">Right</button><button type="button" class="quiet-button" data-element-align="top">Top</button><button type="button" class="quiet-button" data-element-align="center-y">Middle</button><button type="button" class="quiet-button" data-element-align="bottom">Bottom</button></div>
               <div class="theme-control-grid">
