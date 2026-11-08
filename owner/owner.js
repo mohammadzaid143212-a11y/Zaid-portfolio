@@ -735,7 +735,85 @@
     recordPositionHistory();
   }));
 
-  function refreshWebsitePreview() {
+  // Direct selection and editing for existing built-in headings and paragraphs.
+   let selectedBuiltInSelector = "", selectedBuiltInNode = null;
+   const builtInText = $("#built-in-text"), builtInFontSize = $("#built-in-font-size");
+   const builtInRadius = $("#built-in-radius"), builtInTextColor = $("#built-in-text-color");
+   const builtInBgColor = $("#built-in-bg-color"), builtInStatus = $("#built-in-selection-status");
+   const builtInSave = $("#save-built-in-element"), builtInReset = $("#reset-built-in-element");
+   function stablePreviewSelector(node) {
+     if (!node || !node.tagName) return "";
+     if (node.id) return "#" + CSS.escape(node.id);
+     const parts = []; let current = node;
+     while (current && current.nodeType === 1 && current.tagName.toLowerCase() !== "body") {
+       let part = current.tagName.toLowerCase();
+       if (current.parentElement) {
+         const siblings = Array.from(current.parentElement.children).filter(item => item.tagName === current.tagName);
+         if (siblings.length > 1) part += ":nth-of-type(" + (siblings.indexOf(current) + 1) + ")";
+       }
+       parts.unshift(part);
+       if (current.parentElement?.id) { parts.unshift("#" + CSS.escape(current.parentElement.id)); break; }
+       current = current.parentElement;
+     }
+     return parts.join(" > ").slice(0,240);
+   }
+   function setBuiltInControlsEnabled(enabled) {
+     [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInSave,builtInReset].forEach(control => { control.disabled = !enabled; });
+   }
+   function rgbToHex(value) {
+     const match = String(value).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+     return match ? "#" + match.slice(1,4).map(part => Number(part).toString(16).padStart(2,"0")).join("") : value;
+   }
+   function updateBuiltInPreview() {
+     if (!selectedBuiltInNode?.isConnected) return;
+     selectedBuiltInNode.textContent = builtInText.value.slice(0,500);
+     selectedBuiltInNode.style.fontSize = Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)) + "px";
+     selectedBuiltInNode.style.borderRadius = Math.max(0,Math.min(100,Number(builtInRadius.value)||0)) + "px";
+     selectedBuiltInNode.style.color = builtInTextColor.value;
+     selectedBuiltInNode.style.backgroundColor = builtInBgColor.value;
+   }
+   function selectBuiltInPreviewNode(node) {
+     if (!node || node.closest(".owner-added-element,.owner-editor-alignment-guides,.owner-custom-section")) return;
+     const selector = stablePreviewSelector(node); if (!selector) return;
+     selectedBuiltInNode = node; selectedBuiltInSelector = selector;
+     builtInText.value = node.textContent.trim().slice(0,500);
+     const style = websitePreview.contentWindow.getComputedStyle(node);
+     builtInFontSize.value = Math.round(parseFloat(style.fontSize)||24);
+     builtInRadius.value = Math.round(parseFloat(style.borderRadius)||0);
+     builtInTextColor.value = /^#[0-9a-f]{6}$/i.test(rgbToHex(style.color)) ? rgbToHex(style.color) : "#f2f0eb";
+     builtInBgColor.value = /^#[0-9a-f]{6}$/i.test(rgbToHex(style.backgroundColor)) ? rgbToHex(style.backgroundColor) : "#ffffff";
+     setBuiltInControlsEnabled(true);
+     builtInStatus.textContent = "Selected: " + node.tagName.toLowerCase() + " · " + selector;
+   }
+   [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor].forEach(control => control.addEventListener("input",updateBuiltInPreview));
+   builtInSave.addEventListener("click",async()=>{
+     if(!selectedBuiltInSelector||!selectedBuiltInNode)return;
+     const value={text:builtInText.value.slice(0,500),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value};
+     builtInSave.disabled=true;builtInStatus.textContent="Saving selected element…";
+     try{
+       const {data,error:readError}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();
+       if(readError)throw readError;
+       const latest=data?.settings||themeSettings||{},overrides={...(latest.__visualOverrides||{}),[selectedBuiltInSelector]:value},next={...latest,__visualOverrides:overrides};
+       const {error}=await client.from("portfolio_theme_settings").upsert({id:true,settings:next,updated_at:new Date().toISOString()},{onConflict:"id"});
+       if(error)throw error;themeSettings=next;builtInStatus.textContent="Saved and published. Refresh the public portfolio to see the changes.";
+     }catch(error){builtInStatus.textContent="Could not save: "+(error.message||"Please try again.");}
+     finally{builtInSave.disabled=false;}
+   });
+   builtInReset.addEventListener("click",async()=>{
+     if(!selectedBuiltInSelector)return;builtInReset.disabled=true;
+     try{
+       const {data,error:readError}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();
+       if(readError)throw readError;
+       const latest=data?.settings||themeSettings||{},overrides={...(latest.__visualOverrides||{})};delete overrides[selectedBuiltInSelector];
+       const next={...latest,__visualOverrides:overrides};
+       const {error}=await client.from("portfolio_theme_settings").upsert({id:true,settings:next,updated_at:new Date().toISOString()},{onConflict:"id"});
+       if(error)throw error;themeSettings=next;builtInStatus.textContent="Override reset. Refresh the public preview.";
+       if(websitePreview.contentDocument?.readyState==="complete")refreshWebsitePreview();
+     }catch(error){builtInStatus.textContent="Could not reset: "+(error.message||"Please try again.");}
+     finally{builtInReset.disabled=false;}
+   });
+
+   function refreshWebsitePreview() {
     let doc;
     try { doc = websitePreview.contentDocument; } catch { return; }
     if (!doc || !doc.body) return;
@@ -745,6 +823,11 @@
       selectionStyle.textContent = ".owner-added-element[data-element-id]{cursor:pointer;outline:1px dashed transparent;outline-offset:4px;transition:outline-color .15s ease}.owner-added-element[data-element-id]:hover{outline-color:#c9f36a}";
       doc.head.append(selectionStyle);
       doc.addEventListener("click", event => {
+         const builtIn = event.target.closest("h1,h2,h3,h4,p");
+         if (builtIn && !builtIn.closest(".owner-added-element,.owner-custom-section")) {
+           event.preventDefault(); event.stopPropagation(); selectBuiltInPreviewNode(builtIn); return;
+         }
+
         const layer = event.target.closest(".owner-added-element[data-element-id]");
         if (!layer) return;
         const id = layer.dataset.elementId;
