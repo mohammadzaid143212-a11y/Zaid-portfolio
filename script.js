@@ -498,6 +498,7 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
 const customElements = Array.isArray(data.settings.__elements) ? data.settings.__elements : [];
   const animationNames = { "fade-in":"themeFadeIn", float:"themeFloat", pulse:"themePulse", "slow-zoom":"themeSlowZoom", "slide-up":"themeSlideUp", "slide-left":"themeSlideLeft" };
   customElements.slice(0,30).forEach(item => {
+    if (item.hidden === true) return;
     let targets;
     try { targets = document.querySelectorAll(item.target); } catch { return; }
     if (!targets.length) return;
