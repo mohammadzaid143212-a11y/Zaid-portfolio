@@ -962,7 +962,15 @@
     if (kind === "text") previewMarker.textContent = content || "Your element";
     else if (kind === "image" && url) { const img = doc.createElement("img"); img.src = url; img.alt = ""; img.style.cssText = "display:block;width:100%;max-height:30vh;object-fit:contain"; previewMarker.append(img); }
     else previewMarker.textContent = kind === "video" ? "▶ Video / motion graphic" : "Image / graphic";
-    const alignmentGuides = doc.createElement("div"); alignmentGuides.className="owner-editor-alignment-guides"; alignmentGuides.style.cssText="position:absolute;inset:0;z-index:99998;pointer-events:none;display:none;"; alignmentGuides.innerHTML="<span style=\"position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed #c9f36a\"></span><span style=\"position:absolute;top:50%;left:0;right:0;border-top:1px dashed #c9f36a\"></span>"; if(getComputedStyle(previewTarget).position==="static")previewTarget.style.position="relative"; previewTarget.append(alignmentGuides,previewMarker);
+    const alignmentGuides = doc.createElement("div");
+    alignmentGuides.className = "owner-editor-alignment-guides";
+    alignmentGuides.style.cssText = "position:absolute;inset:0;z-index:99998;pointer-events:none;display:none;";
+    const verticalGuide = doc.createElement("span"), horizontalGuide = doc.createElement("span");
+    verticalGuide.style.cssText = "position:absolute;top:0;bottom:0;border-left:1px dashed #c9f36a;left:50%;";
+    horizontalGuide.style.cssText = "position:absolute;left:0;right:0;border-top:1px dashed #c9f36a;top:50%;";
+    alignmentGuides.append(verticalGuide,horizontalGuide);
+    if(getComputedStyle(previewTarget).position==="static")previewTarget.style.position="relative";
+    previewTarget.append(alignmentGuides,previewMarker);
     if (editingElementId) {
       const original = Array.from(doc.querySelectorAll(".owner-added-element[data-element-id]")).find(el => el.dataset.elementId === editingElementId);
       if (original) { original.dataset.ownerOriginalOpacity = original.style.opacity; original.dataset.ownerEditDimmed = "true"; original.style.opacity = "0.18"; }
@@ -976,7 +984,15 @@
     resizeGrip.addEventListener("pointermove", ev => { if (!resizing || !previewTarget) return; const rect=previewTarget.getBoundingClientRect(); const next=Math.max(10,Math.min(100,resizeStartWidth+(ev.clientX-resizeStartX)/rect.width*100)); if(previewMode === "mobile"){ $("#element-mobile-enabled").checked=true; $("#element-mobile-fields").classList.remove("hidden"); $("#element-mobile-width").value=Math.round(next); } else { $("#element-width").value=Math.round(next); } previewMarker.style.width="min("+next+"%,100%)"; updatePositionPreview(); });
     const stopResize=()=>{if(resizing){resizing=false;recordPositionHistory();}}; resizeGrip.addEventListener("pointerup",stopResize); resizeGrip.addEventListener("pointercancel",stopResize);
     previewMarker.addEventListener("pointerdown", ev => { if (ev.target === resizeGrip) return; previewDrag = true; previewMarker.setPointerCapture(ev.pointerId); ev.preventDefault(); });
-    previewMarker.addEventListener("pointermove", ev => { if (!previewDrag || !previewTarget || !previewMarker) return; const rect = previewTarget.getBoundingClientRect(); let x=(ev.clientX-rect.left)/rect.width*100; let y=(ev.clientY-rect.top)/rect.height*100; const snappedX=Math.abs(x-50)<=2.5, snappedY=Math.abs(y-50)<=2.5; if(snappedX)x=50; if(snappedY)y=50; x=clampPercent(x); y=clampPercent(y); if(previewMode === "mobile"){ $("#element-mobile-enabled").checked=true; $("#element-mobile-fields").classList.remove("hidden"); $("#element-mobile-x").value=Math.round(x); $("#element-mobile-y").value=Math.round(y); } else { elementX.value=Math.round(x); elementY.value=Math.round(y); } previewMarker.style.left=x+"%"; previewMarker.style.top=y+"%"; alignmentGuides.style.display=(snappedX||snappedY)?"block":"none"; updatePositionPreview(); });
+    previewMarker.addEventListener("pointermove", ev => { if (!previewDrag || !previewTarget || !previewMarker) return; const rect = previewTarget.getBoundingClientRect(); let x=(ev.clientX-rect.left)/rect.width*100; let y=(ev.clientY-rect.top)/rect.height*100;
+      const snapToGuide = value => { const guides=[0,10,25,50,75,90,100]; const nearest=guides.reduce((best,point)=>Math.abs(value-point)<Math.abs(value-best)?point:best,guides[0]); return Math.abs(value-nearest)<=1.8?nearest:null; };
+      const guideX=snapToGuide(x), guideY=snapToGuide(y), snappedX=guideX!==null, snappedY=guideY!==null;
+      if(snappedX)x=guideX; if(snappedY)y=guideY; x=clampPercent(x); y=clampPercent(y);
+      if(previewMode === "mobile"){ $("#element-mobile-enabled").checked=true; $("#element-mobile-fields").classList.remove("hidden"); $("#element-mobile-x").value=Math.round(x); $("#element-mobile-y").value=Math.round(y); } else { elementX.value=Math.round(x); elementY.value=Math.round(y); }
+      previewMarker.style.left=x+"%"; previewMarker.style.top=y+"%";
+      verticalGuide.style.left=(snappedX?guideX:50)+"%"; horizontalGuide.style.top=(snappedY?guideY:50)+"%";
+      verticalGuide.style.display=snappedX?"block":"none"; horizontalGuide.style.display=snappedY?"block":"none";
+      alignmentGuides.style.display=(snappedX||snappedY)?"block":"none"; updatePositionPreview(); });
     const stop = () => { if(previewDrag){previewDrag=false;alignmentGuides.style.display="none";recordPositionHistory();} }; previewMarker.addEventListener("pointerup",stop); previewMarker.addEventListener("pointercancel",stop);
     $("#element-upload-status").textContent = editingElementId ? "Editing saved layer: drag the marker or its corner handle, then tap Update element to publish." : "Preview ready. Drag the dashed marker on the website to set its position.";
   }
