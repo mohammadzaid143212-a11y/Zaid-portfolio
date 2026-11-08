@@ -435,6 +435,9 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     if (Number.isFinite(Number(setting.radius))) target.style.borderRadius = Math.max(0,Math.min(100,Number(setting.radius))) + "px";
     if (/^#[0-9a-f]{6}$/i.test(setting.color || "")) target.style.color = setting.color;
     if (/^#[0-9a-f]{6}$/i.test(setting.background || "")) target.style.backgroundColor = setting.background;
+    if ([300,400,500,600,700,800].includes(Number(setting.fontWeight))) target.style.fontWeight = String(Number(setting.fontWeight));
+    if (["left","center","right","justify"].includes(setting.textAlign)) target.style.textAlign = setting.textAlign;
+    if (Number.isFinite(Number(setting.letterSpacing))) target.style.letterSpacing = Math.max(-2,Math.min(20,Number(setting.letterSpacing))) + "px";
     if (setting.position && typeof setting.position === "object") {
       const x = Math.max(-100,Math.min(100,Number(setting.position.x)||0));
       const y = Math.max(-100,Math.min(100,Number(setting.position.y)||0));
