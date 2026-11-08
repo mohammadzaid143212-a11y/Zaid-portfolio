@@ -931,6 +931,11 @@
         const layer = event.target.closest(".owner-added-element[data-element-id]");
         if (!layer) return;
         const id = layer.dataset.elementId;
+        if (getCustomElements().some(item => item.id === id && item.locked)) {
+          event.preventDefault(); event.stopPropagation();
+          $("#element-upload-status").textContent = "This layer is locked. Unlock it in the layer list to edit.";
+          return;
+        }
         const card = document.querySelector('#custom-element-list [data-element-id="' + CSS.escape(id) + '"]');
         const editButton = card && Array.from(card.querySelectorAll("button")).find(button => button.textContent.trim() === "Edit");
         if (!editButton) return;
@@ -991,9 +996,19 @@
       card.classList.toggle("is-selected", item.id === editingElementId);
       const info = document.createElement("div"); const strong = document.createElement("strong");
       strong.textContent = item.kind === "text" ? (item.content || "Text element") : (item.kind === "image" ? "Image / graphic" : "Video / motion graphic");
-      const small = document.createElement("p"); small.textContent = item.target + " · " + item.placement + " · " + (item.animation || "no animation") + (item.hidden ? " · HIDDEN" : "");
+      const small = document.createElement("p"); small.textContent = item.target + " · " + item.placement + " · " + (item.animation || "no animation") + (item.hidden ? " · HIDDEN" : "") + (item.locked ? " · LOCKED" : "");
       info.append(strong,small);
       const actions = document.createElement("div"); actions.className = "custom-element-actions";
+      const lock = document.createElement("button"); lock.type = "button"; lock.className = "quiet-button"; lock.textContent = item.locked ? "Unlock" : "Lock"; lock.title = item.locked ? "Unlock this layer for editing" : "Lock this layer to prevent accidental changes"; lock.setAttribute("aria-pressed", String(!!item.locked));
+      lock.addEventListener("click", async () => {
+        const current = getCustomElements().slice(), at = current.findIndex(x => x.id === item.id);
+        if (at < 0) return;
+        current[at] = { ...current[at], locked: !current[at].locked };
+        lock.disabled = true;
+        const saved = await saveCustomElements(current);
+        if (!saved) lock.disabled = false;
+        else themeNotice(current[at].locked ? "Layer locked. Unlock it before editing or moving." : "Layer unlocked and ready to edit.");
+      });
       const visibility = document.createElement("button"); visibility.type = "button"; visibility.className = "quiet-button"; visibility.textContent = item.hidden ? "Show" : "Hide"; visibility.title = item.hidden ? "Show this layer on the public portfolio" : "Hide this layer on the public portfolio"; visibility.setAttribute("aria-pressed", String(!!item.hidden));
       visibility.addEventListener("click", async () => {
         const current = getCustomElements().slice(), at = current.findIndex(x => x.id === item.id);
@@ -1078,7 +1093,12 @@
         const saved = await saveCustomElements(getCustomElements().filter(x => x.id !== item.id));
         if (!saved) del.disabled = false;
       });
-      actions.append(moveUp,moveDown,visibility,edit,duplicate,del); card.append(info,actions); list.append(card);
+      if (item.locked) {
+        edit.disabled = true; moveUp.disabled = true; moveDown.disabled = true; duplicate.disabled = true; del.disabled = true;
+        edit.title = "Unlock this layer before editing";
+        del.title = "Unlock this layer before removing";
+      }
+      actions.append(moveUp,moveDown,visibility,lock,edit,duplicate,del); card.append(info,actions); list.append(card);
     });
   }
   async function saveCustomElements(items) {
@@ -1100,6 +1120,7 @@
     }
   }
   $("#add-element-button").addEventListener("click", async () => {
+    if (editingElementId && getCustomElements().some(item => item.id === editingElementId && item.locked)) return themeNotice("Unlock this layer before updating it.", true);
     if (elementUploadBusy) return themeNotice("Wait for the file upload to finish.",true);
     let target = $("#element-target").value === "custom" ? $("#element-custom-target").value.trim() : $("#element-target").value;
     if (!target) return themeNotice("Choose a target section or enter a CSS selector.",true);
