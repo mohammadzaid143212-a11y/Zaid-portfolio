@@ -751,3 +751,11 @@ body{font-family:"DM Sans",sans-serif;background:radial-gradient(ellipse at 78% 
 
 /* Make the video format explicit in the private project library. */
 .video-format-hint{padding:10px 12px;border-left:2px solid var(--accent);background:#ffffff06;margin:-8px 0 16px}.library-item-long .library-item-info:before,.library-item-short .library-item-info:before{display:inline-block;font-size:9px;letter-spacing:1.2px;color:var(--accent);margin-bottom:7px}.library-item-long .library-item-info:before{content:"LANDSCAPE · 16:9"}.library-item-short .library-item-info:before{content:"VERTICAL · 9:16"}
+
+
+/* Visual Builder layer stack: selected item and accessible layer-order controls. */
+#element-studio .custom-element-item.is-selected{border-color:var(--accent);background:#d5e6a00c;box-shadow:inset 3px 0 0 var(--accent)}
+#element-studio .custom-element-actions{gap:6px;flex-wrap:wrap}
+#element-studio .custom-element-actions .layer-order-button{min-width:34px;width:34px;height:34px;padding:0;font-size:17px;line-height:1}
+#element-studio .custom-element-actions button:disabled{opacity:.3;cursor:not-allowed}
+@media(max-width:600px){#element-studio .custom-element-actions{width:100%;display:grid;grid-template-columns:34px 34px minmax(70px,1fr) minmax(70px,1fr)}#element-studio .custom-element-actions button{min-width:0}}
