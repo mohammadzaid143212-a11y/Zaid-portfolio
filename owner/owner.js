@@ -800,6 +800,32 @@
         if (!saved) moveDown.disabled = false;
         else themeNotice("Layer moved backward. Refresh the public preview after publishing to review the new stacking order.");
       });
+      const duplicate = document.createElement("button"); duplicate.type = "button"; duplicate.className = "quiet-button"; duplicate.textContent = "Duplicate"; duplicate.title = "Create a copy of this element";
+      duplicate.addEventListener("click", async () => {
+        const current = getCustomElements().slice();
+        if (current.length >= 30) return themeNotice("Maximum 30 custom elements. Remove one before duplicating.", true);
+        const sourceItem = current.find(x => x.id === item.id);
+        if (!sourceItem) return;
+        const offset = value => clampPercent((Number(value) || 50) + 4);
+        const copy = {
+          ...sourceItem,
+          id: crypto.randomUUID(),
+          x: offset(sourceItem.x),
+          y: offset(sourceItem.y),
+          mobile: sourceItem.mobile ? {
+            ...sourceItem.mobile,
+            x: offset(sourceItem.mobile.x),
+            y: offset(sourceItem.mobile.y)
+          } : null
+        };
+        duplicate.disabled = true;
+        const saved = await saveCustomElements([...current, copy]);
+        if (saved) {
+          editingElementId = copy.id;
+          renderCustomElements();
+          themeNotice("Element duplicated. The new copy is offset slightly so you can see and edit it independently.");
+        } else duplicate.disabled = false;
+      });
       const del = document.createElement("button"); del.type = "button"; del.className = "quiet-button"; del.textContent = "Remove";
       del.addEventListener("click", async () => {
         if (!window.confirm("Remove this custom element? This change will be saved to your theme settings.")) return;
@@ -807,7 +833,7 @@
         const saved = await saveCustomElements(getCustomElements().filter(x => x.id !== item.id));
         if (!saved) del.disabled = false;
       });
-      actions.append(moveUp,moveDown,edit,del); card.append(info,actions); list.append(card);
+      actions.append(moveUp,moveDown,edit,duplicate,del); card.append(info,actions); list.append(card);
     });
   }
   async function saveCustomElements(items) {
