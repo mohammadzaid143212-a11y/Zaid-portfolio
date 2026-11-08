@@ -11,10 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="owner.css?v=cinematic-luxury-1">
   <link rel="stylesheet" href="cinematic-studio.css?v=hybrid-immersive-1">
-  <link rel="stylesheet" href="advanced.css"><link rel="stylesheet" href="motion-studio.css"><link rel="stylesheet" href="three-d-studio.css"><link rel="stylesheet" href="scene-builder.css"><link rel="stylesheet" href="loading-intro-studio.css"><link rel="stylesheet" href="transition-studio.css"><link rel="stylesheet" href="doors-studio.css"><link rel="stylesheet" href="portrait-studio.css"><link rel="stylesheet" href="kinetic-type-studio.css"><link rel="stylesheet" href="horizontal-gallery-studio.css"><link rel="stylesheet" href="../cinematic-animation-lab.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="advanced.css"><link rel="stylesheet" href="motion-studio.css"><link rel="stylesheet" href="three-d-studio.css"><link rel="stylesheet" href="scene-builder.css"><link rel="stylesheet" href="website-structure-studio.css"><link rel="stylesheet" href="loading-intro-studio.css"><link rel="stylesheet" href="transition-studio.css"><link rel="stylesheet" href="doors-studio.css"><link rel="stylesheet" href="portrait-studio.css"><link rel="stylesheet" href="kinetic-type-studio.css"><link rel="stylesheet" href="horizontal-gallery-studio.css"><link rel="stylesheet" href="../cinematic-animation-lab.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/tus-js-client@4.3.1/dist/tus.min.js"></script>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
-  <script defer src="owner.js"></script>
+  <script defer src="owner.js"></script><script defer src="website-structure-studio.js"></script>
   <script defer src="advanced.js"></script><script defer src="motion-studio.js"></script><script defer src="three-d-studio.js"></script><script type="module" src="scene-builder.mjs"></script><script defer src="loading-intro-studio.js"></script><script defer src="transition-studio.js"></script><script defer src="doors-studio.js"></script><script defer src="portrait-studio.js"></script><script defer src="kinetic-type-studio.js"></script><script defer src="horizontal-gallery-studio.js"></script><script defer src="cinematic-animation-lab.js"></script><script defer src="next-tools.js?v=owner-panels-fix-1"></script><script defer src="inquiries.js?v=portfolio-inbox-1"></script><style>.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:none!important}.zaid-cursor-dot,.zaid-cursor-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:9999999;border-radius:50%;will-change:transform}.zaid-cursor-dot{width:5px;height:5px;background:var(--zaid-cursor-color)}.zaid-cursor-ring{width:var(--zaid-cursor-size);height:var(--zaid-cursor-size);border:1px solid var(--zaid-cursor-color);transition:width .16s,height .16s}.zaid-cursor-ring.is-hover{width:calc(var(--zaid-cursor-size)*1.45);height:calc(var(--zaid-cursor-size)*1.45)}@media(hover:none),(pointer:coarse){.zaid-custom-cursor a,.zaid-custom-cursor button{cursor:auto!important}.zaid-cursor-dot,.zaid-cursor-ring{display:none!important}}</style>
 </head>
 <body>
@@ -73,6 +73,7 @@
         <a class="sidebar-link" href="#long-video-manager" data-owner-section="long-video-manager"><span class="sidebar-icon">▣</span><span>Long Videos</span></a>
         <a class="sidebar-link" href="#short-video-manager" data-owner-section="short-video-manager"><span class="sidebar-icon">▶</span><span>Short Videos</span></a>
         <a class="sidebar-link" href="#element-studio" data-owner-section="element-studio"><span class="sidebar-icon">✣</span><span>Visual Builder</span></a>
+        <a class="sidebar-link" href="#website-structure-studio" data-owner-section="website-structure-studio"><span class="sidebar-icon">▤</span><span>Website Structure</span></a>
          <a class="sidebar-link" href="#adjustment-studio" data-owner-section="adjustment-studio"><span class="sidebar-icon">⚙</span><span>Adjustment Panel</span></a>
         <a class="sidebar-link" href="#backup-studio" data-owner-section="backup-studio"><span class="sidebar-icon">↧</span><span>Backup &amp; Restore</span></a>
         <a class="sidebar-link" href="#seo-studio" data-owner-section="seo-studio"><span class="sidebar-icon">⌕</span><span>SEO Studio</span></a>
@@ -277,6 +278,22 @@
         </details>
       </section>
 
+      <section class="manager-card studio-slide" id="website-structure-studio">
+ <div class="manager-heading"><div><p class="eyebrow">WEBSITE RECREATE / STRUCTURE</p><h2>Website Structure Studio</h2><p class="manager-intro">Reorder, hide or restore the main public sections, and add your own content sections. Changes are saved to portfolio settings and applied by the public website runtime.</p></div></div>
+ <div class="structure-editor">
+  <div class="structure-toolbar"><span class="eyebrow">01 / PAGE SECTIONS</span><button class="quiet-button" id="structure-reset" type="button">Reset order &amp; visibility</button></div>
+  <div id="structure-section-list" class="structure-section-list"><p class="empty-state">Loading page structure…</p></div>
+  <div class="structure-add">
+   <p class="eyebrow">02 / ADD CUSTOM SECTION</p>
+   <label for="structure-new-title">Section heading</label><input id="structure-new-title" type="text" maxlength="70" placeholder="e.g. My Creative Process">
+   <label for="structure-new-copy">Section description</label><textarea id="structure-new-copy" rows="3" maxlength="500" placeholder="Write a short introduction for this section…"></textarea>
+   <button class="quiet-button" id="structure-add-button" type="button">＋ Add section</button>
+  </div>
+  <div class="structure-actions"><button class="quiet-button" id="structure-save-draft" type="button">Save local draft</button><button class="quiet-button" id="structure-restore-draft" type="button">Restore local draft</button><button class="primary" id="structure-publish" type="button">Save &amp; publish structure ↗</button></div>
+  <p class="notice" id="structure-message" role="status" aria-live="polite"></p>
+  <p class="field-help">This phase controls page section order, visibility and text-only custom sections. Full freeform canvas editing, arbitrary element drag/drop, advanced section templates and 3D scene publishing are separate upcoming builder layers. Existing projects and media are not deleted by this panel.</p>
+ </div>
+</section>
       <section class="manager-card studio-slide" id="element-studio">
         <div class="manager-heading"><div><p class="eyebrow">MODULE / 04</p><h2>Visual Editor</h2>
         <p class="manager-intro">Add and select elements in the workspace, then use the connected Adjustment Panel in Advanced Mode to fine-tune their placement and appearance.</p></div></div>

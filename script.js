@@ -353,6 +353,40 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     });
   });
 
+  // Apply owner-managed page structure after core theme settings are loaded.
+  const layoutStyle=document.createElement("style");
+  layoutStyle.textContent=".owner-custom-section{padding:clamp(48px,8vw,110px) 5vw;border-top:1px solid rgba(255,255,255,.12)}.owner-custom-section .section-inner{max-width:1180px;margin:auto}.owner-custom-section h2{font-size:clamp(30px,5vw,64px);margin:0 0 16px}.owner-custom-section p{max-width:720px;line-height:1.8;opacity:.78}";
+  document.head.append(layoutStyle);
+  const layout = data.settings.__siteLayout || {};
+  const sectionMap = { hero: ".hero", work: ".work-section", about: ".about-section", contact: ".contact-section" };
+  const mainContent = document.querySelector("main") || document.body;
+  const customSections = Array.isArray(layout.customSections) ? layout.customSections.slice(0,12) : [];
+  const customById = new Map(customSections.filter(x=>x&&typeof x.id==="string"&&/^[a-z0-9-]{1,48}$/.test(x.id)).map(x=>[x.id,x]));
+  const order = Array.isArray(layout.order) ? layout.order : ["hero","work","about","contact"];
+  const applied = new Set();
+  function appendCustom(item) {
+    if (!item || applied.has("custom:"+item.id)) return;
+    const section=document.createElement("section");section.className="owner-custom-section";section.id="owner-section-"+item.id;
+    const inner=document.createElement("div");inner.className="section-inner";
+    const heading=document.createElement("h2");heading.textContent=String(item.title||"New section").slice(0,70);
+    const copy=document.createElement("p");copy.textContent=String(item.copy||"").slice(0,500);
+    inner.append(heading,copy);section.append(inner);mainContent.append(section);applied.add("custom:"+item.id);
+  }
+  order.forEach(key=>{
+    if (typeof key!=="string") return;
+    if (key.startsWith("custom:")) { appendCustom(customById.get(key.slice(7))); return; }
+    const selector=sectionMap[key],node=selector?document.querySelector(selector):null;
+    if(!node||applied.has(key))return;
+    const visible=layout.visibility?.[key]!==false;node.hidden=!visible;node.setAttribute("aria-hidden",String(!visible));
+    mainContent.append(node);applied.add(key);
+  });
+  Object.entries(sectionMap).forEach(([key,selector])=>{
+    const node=document.querySelector(selector);if(!node)return;
+    const visible=layout.visibility?.[key]!==false;node.hidden=!visible;node.setAttribute("aria-hidden",String(!visible));
+    if(!applied.has(key)){mainContent.append(node);applied.add(key)}
+  });
+  customSections.forEach(appendCustom);
+
   // Apply saved Animation Studio presets on the public portfolio.
   const animationSettings = data.settings.__animationStudio || {};
   const motionSelectors = {
