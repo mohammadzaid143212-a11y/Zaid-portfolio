@@ -709,6 +709,32 @@
   });
   recordPositionHistory();
 
+  // One-tap alignment for the currently edited element, respecting desktop/mobile mode.
+  document.querySelectorAll("[data-element-align]").forEach(button => button.addEventListener("click", () => {
+    const position = activePreviewPosition();
+    const width = Math.max(10, Math.min(100, Number(position.width) || 80));
+    const action = button.dataset.elementAlign;
+    let x = clampPercent(position.x), y = clampPercent(position.y);
+    if (action === "left") x = width / 2;
+    if (action === "center-x") x = 50;
+    if (action === "right") x = 100 - width / 2;
+    if (action === "top") y = 2;
+    if (action === "center-y") y = 50;
+    if (action === "bottom") y = 98;
+    if (previewMode === "mobile") {
+      $("#element-mobile-enabled").checked = true;
+      $("#element-mobile-fields").classList.remove("hidden");
+      $("#element-mobile-x").value = Math.round(x);
+      $("#element-mobile-y").value = Math.round(y);
+    } else {
+      elementX.value = Math.round(x);
+      elementY.value = Math.round(y);
+    }
+    updatePositionPreview();
+    if (websitePreview.contentDocument?.readyState === "complete") refreshWebsitePreview();
+    recordPositionHistory();
+  }));
+
   function refreshWebsitePreview() {
     let doc;
     try { doc = websitePreview.contentDocument; } catch { return; }
