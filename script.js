@@ -357,32 +357,32 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
   const layout = data.settings.__siteLayout || {};
   const sectionMap = { hero: ".hero", work: ".work-section", about: ".about-section", contact: ".contact-section" };
   const mainContent = document.querySelector("main") || document.body;
-  const orderedNodes = [];
-  (Array.isArray(layout.order) ? layout.order : ["hero","work","about","contact"]).forEach(key => {
-    const selector = sectionMap[key];
-    const node = selector ? document.querySelector(selector) : null;
-    if (node && !orderedNodes.includes(node)) orderedNodes.push(node);
-  });
-  Object.entries(sectionMap).forEach(([key, selector]) => {
-    const node = document.querySelector(selector);
-    if (!node) return;
-    const visible = layout.visibility?.[key] !== false;
-    node.hidden = !visible;
-    node.setAttribute("aria-hidden", String(!visible));
-    if (visible && !orderedNodes.includes(node)) orderedNodes.push(node);
-  });
-  orderedNodes.forEach(node => mainContent.append(node));
   const customSections = Array.isArray(layout.customSections) ? layout.customSections.slice(0,12) : [];
-  customSections.forEach(item => {
-    if (!item || typeof item.id !== "string" || !/^[a-z0-9-]{1,48}$/.test(item.id)) return;
-    const section = document.createElement("section");
-    section.className = "owner-custom-section";
-    section.id = "owner-section-" + item.id;
-    const inner = document.createElement("div"); inner.className = "section-inner";
-    const heading = document.createElement("h2"); heading.textContent = String(item.title || "New section").slice(0,70);
-    const copy = document.createElement("p"); copy.textContent = String(item.copy || "").slice(0,500);
-    inner.append(heading,copy); section.append(inner); mainContent.append(section);
+  const customById = new Map(customSections.filter(x=>x&&typeof x.id==="string"&&/^[a-z0-9-]{1,48}$/.test(x.id)).map(x=>[x.id,x]));
+  const order = Array.isArray(layout.order) ? layout.order : ["hero","work","about","contact"];
+  const applied = new Set();
+  function appendCustom(item) {
+    if (!item || applied.has("custom:"+item.id)) return;
+    const section=document.createElement("section");section.className="owner-custom-section";section.id="owner-section-"+item.id;
+    const inner=document.createElement("div");inner.className="section-inner";
+    const heading=document.createElement("h2");heading.textContent=String(item.title||"New section").slice(0,70);
+    const copy=document.createElement("p");copy.textContent=String(item.copy||"").slice(0,500);
+    inner.append(heading,copy);section.append(inner);mainContent.append(section);applied.add("custom:"+item.id);
+  }
+  order.forEach(key=>{
+    if (typeof key!=="string") return;
+    if (key.startsWith("custom:")) { appendCustom(customById.get(key.slice(7))); return; }
+    const selector=sectionMap[key],node=selector?document.querySelector(selector):null;
+    if(!node||applied.has(key))return;
+    const visible=layout.visibility?.[key]!==false;node.hidden=!visible;node.setAttribute("aria-hidden",String(!visible));
+    mainContent.append(node);applied.add(key);
   });
+  Object.entries(sectionMap).forEach(([key,selector])=>{
+    const node=document.querySelector(selector);if(!node)return;
+    const visible=layout.visibility?.[key]!==false;node.hidden=!visible;node.setAttribute("aria-hidden",String(!visible));
+    if(!applied.has(key)){mainContent.append(node);applied.add(key)}
+  });
+  customSections.forEach(appendCustom);
 
   // Apply saved Animation Studio presets on the public portfolio.
   const animationSettings = data.settings.__animationStudio || {};
