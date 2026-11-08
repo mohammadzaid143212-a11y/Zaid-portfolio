@@ -463,6 +463,27 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
       const width = Math.max(5,Math.min(100,Number(desktopPosition.width)||100));
       target.style.position = "relative"; target.style.left = x + "%"; target.style.top = y + "%"; target.style.width = width + "%";
     }
+    if (setting.styleMobile && typeof setting.styleMobile === "object") {
+      const mobile = setting.styleMobile, declarations = [];
+      if (Number.isFinite(Number(mobile.fontSize))) declarations.push("font-size:"+Math.max(10,Math.min(120,Number(mobile.fontSize)))+"px");
+      if (Number.isFinite(Number(mobile.radius))) declarations.push("border-radius:"+Math.max(0,Math.min(100,Number(mobile.radius)))+"px");
+      if (/^#[0-9a-f]{6}$/i.test(mobile.color||"")) declarations.push("color:"+mobile.color);
+      if (/^#[0-9a-f]{6}$/i.test(mobile.background||"")) declarations.push("background-color:"+mobile.background);
+      if ([300,400,500,600,700,800].includes(Number(mobile.fontWeight))) declarations.push("font-weight:"+Number(mobile.fontWeight));
+      if (["left","center","right","justify"].includes(mobile.textAlign)) declarations.push("text-align:"+mobile.textAlign);
+      if (Number.isFinite(Number(mobile.letterSpacing))) declarations.push("letter-spacing:"+Math.max(-2,Math.min(20,Number(mobile.letterSpacing)))+"px");
+      if (Number.isFinite(Number(mobile.opacity))) declarations.push("opacity:"+(Math.max(10,Math.min(100,Number(mobile.opacity)))/100));
+      if (Number.isFinite(Number(mobile.borderWidth))) { const width=Math.max(0,Math.min(20,Number(mobile.borderWidth))); declarations.push("border-width:"+width+"px","border-style:"+(width>0?"solid":"none")); }
+      if (/^#[0-9a-f]{6}$/i.test(mobile.borderColor||"")) declarations.push("border-color:"+mobile.borderColor);
+      if (Number.isFinite(Number(mobile.lineHeight))) declarations.push("line-height:"+Math.max(0.8,Math.min(3,Number(mobile.lineHeight))));
+      if (["none","underline","line-through","overline"].includes(mobile.textDecoration)) declarations.push("text-decoration:"+mobile.textDecoration);
+      if (target.tagName.toLowerCase()==="img") {
+        if (Number.isFinite(Number(mobile.imageWidth))) declarations.push("width:"+Math.max(20,Math.min(2000,Number(mobile.imageWidth)))+"px");
+        if (["cover","contain","fill","none"].includes(mobile.imageFit)) declarations.push("object-fit:"+mobile.imageFit);
+        if (["center","top","bottom","left","right"].includes(mobile.imagePosition)) declarations.push("object-position:"+mobile.imagePosition);
+      }
+      if (declarations.length) { const style=document.createElement("style"); style.textContent="@media (max-width: 680px) { "+selector+" { "+declarations.join(";")+" !important; } }"; document.head.append(style); }
+    }
     if (setting.positionMobile && typeof setting.positionMobile === "object") {
       const mobile = setting.positionMobile;
       const x = Math.max(-100,Math.min(100,Number(mobile.x)||0));
