@@ -438,6 +438,9 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     if ([300,400,500,600,700,800].includes(Number(setting.fontWeight))) target.style.fontWeight = String(Number(setting.fontWeight));
     if (["left","center","right","justify"].includes(setting.textAlign)) target.style.textAlign = setting.textAlign;
     if (Number.isFinite(Number(setting.letterSpacing))) target.style.letterSpacing = Math.max(-2,Math.min(20,Number(setting.letterSpacing))) + "px";
+    if (Number.isFinite(Number(setting.opacity))) target.style.opacity = String(Math.max(10,Math.min(100,Number(setting.opacity)))/100);
+    if (Number.isFinite(Number(setting.borderWidth))) { const width = Math.max(0,Math.min(20,Number(setting.borderWidth))); target.style.borderWidth = width + "px"; target.style.borderStyle = width > 0 ? "solid" : "none"; }
+    if (/^#[0-9a-f]{6}$/i.test(setting.borderColor || "")) target.style.borderColor = setting.borderColor;
     if (setting.position && typeof setting.position === "object") {
       const x = Math.max(-100,Math.min(100,Number(setting.position.x)||0));
       const y = Math.max(-100,Math.min(100,Number(setting.position.y)||0));
