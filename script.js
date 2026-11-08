@@ -435,6 +435,12 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     if (Number.isFinite(Number(setting.radius))) target.style.borderRadius = Math.max(0,Math.min(100,Number(setting.radius))) + "px";
     if (/^#[0-9a-f]{6}$/i.test(setting.color || "")) target.style.color = setting.color;
     if (/^#[0-9a-f]{6}$/i.test(setting.background || "")) target.style.backgroundColor = setting.background;
+    if (setting.position && typeof setting.position === "object") {
+      const x = Math.max(-100,Math.min(100,Number(setting.position.x)||0));
+      const y = Math.max(-100,Math.min(100,Number(setting.position.y)||0));
+      const width = Math.max(5,Math.min(100,Number(setting.position.width)||100));
+      target.style.position = "relative"; target.style.left = x + "%"; target.style.top = y + "%"; target.style.width = width + "%";
+    }
   });
 
 const customElements = Array.isArray(data.settings.__elements) ? data.settings.__elements : [];
