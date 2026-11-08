@@ -991,9 +991,19 @@
       card.classList.toggle("is-selected", item.id === editingElementId);
       const info = document.createElement("div"); const strong = document.createElement("strong");
       strong.textContent = item.kind === "text" ? (item.content || "Text element") : (item.kind === "image" ? "Image / graphic" : "Video / motion graphic");
-      const small = document.createElement("p"); small.textContent = item.target + " · " + item.placement + " · " + (item.animation || "no animation");
+      const small = document.createElement("p"); small.textContent = item.target + " · " + item.placement + " · " + (item.animation || "no animation") + (item.hidden ? " · HIDDEN" : "");
       info.append(strong,small);
       const actions = document.createElement("div"); actions.className = "custom-element-actions";
+      const visibility = document.createElement("button"); visibility.type = "button"; visibility.className = "quiet-button"; visibility.textContent = item.hidden ? "Show" : "Hide"; visibility.title = item.hidden ? "Show this layer on the public portfolio" : "Hide this layer on the public portfolio"; visibility.setAttribute("aria-pressed", String(!!item.hidden));
+      visibility.addEventListener("click", async () => {
+        const current = getCustomElements().slice(), at = current.findIndex(x => x.id === item.id);
+        if (at < 0) return;
+        current[at] = { ...current[at], hidden: !current[at].hidden };
+        visibility.disabled = true;
+        const saved = await saveCustomElements(current);
+        if (!saved) visibility.disabled = false;
+        else themeNotice(current[at].hidden ? "Layer hidden from the public portfolio. Save & publish to apply." : "Layer made visible. Save & publish to apply.");
+      });
       const edit = document.createElement("button"); edit.type = "button"; edit.className = "quiet-button"; edit.textContent = "Edit";
       edit.addEventListener("click", () => {
         editingElementId = item.id;
@@ -1068,7 +1078,7 @@
         const saved = await saveCustomElements(getCustomElements().filter(x => x.id !== item.id));
         if (!saved) del.disabled = false;
       });
-      actions.append(moveUp,moveDown,edit,duplicate,del); card.append(info,actions); list.append(card);
+      actions.append(moveUp,moveDown,visibility,edit,duplicate,del); card.append(info,actions); list.append(card);
     });
   }
   async function saveCustomElements(items) {
