@@ -354,6 +354,9 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
   });
 
   // Apply owner-managed page structure after core theme settings are loaded.
+  const layoutStyle=document.createElement("style");
+  layoutStyle.textContent=".owner-custom-section{padding:clamp(48px,8vw,110px) 5vw;border-top:1px solid rgba(255,255,255,.12)}.owner-custom-section .section-inner{max-width:1180px;margin:auto}.owner-custom-section h2{font-size:clamp(30px,5vw,64px);margin:0 0 16px}.owner-custom-section p{max-width:720px;line-height:1.8;opacity:.78}";
+  document.head.append(layoutStyle);
   const layout = data.settings.__siteLayout || {};
   const sectionMap = { hero: ".hero", work: ".work-section", about: ".about-section", contact: ".contact-section" };
   const mainContent = document.querySelector("main") || document.body;
