@@ -826,6 +826,9 @@
      builtInLineHeight.value = Math.max(0.8,Math.min(3,parseFloat(style.lineHeight)/Math.max(1,parseFloat(style.fontSize)||24)||1.2)).toFixed(1);
      builtInTextDecoration.value = ["underline","line-through","overline"].find(value => style.textDecorationLine.includes(value)) || "none";
      setBuiltInControlsEnabled(true);
+     builtInText.disabled = !simpleText;
+     builtInLinkUrl.disabled = tagName !== "a";
+     builtInImageSrc.disabled = tagName !== "img"; builtInImageAlt.disabled = tagName !== "img"; builtInImageWidth.disabled = tagName !== "img";
      builtInStatus.textContent = "Selected: " + node.tagName.toLowerCase() + " · " + selector;
    let builtInPosition = {x:0,y:0,width:100};
    let builtInCanvasOverlay = null;
