@@ -740,6 +740,8 @@
    const builtInText = $("#built-in-text"), builtInFontSize = $("#built-in-font-size");
    const builtInRadius = $("#built-in-radius"), builtInTextColor = $("#built-in-text-color");
    const builtInBgColor = $("#built-in-bg-color"), builtInStatus = $("#built-in-selection-status");
+    const builtInFontWeight = $("#built-in-font-weight"), builtInTextAlign = $("#built-in-text-align");
+    const builtInLetterSpacing = $("#built-in-letter-spacing");
    const builtInSave = $("#save-built-in-element"), builtInReset = $("#reset-built-in-element");
    function stablePreviewSelector(node) {
      if (!node || !node.tagName) return "";
@@ -758,7 +760,7 @@
      return parts.join(" > ").slice(0,240);
    }
    function setBuiltInControlsEnabled(enabled) {
-     [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInSave,builtInReset].forEach(control => { control.disabled = !enabled; });
+     [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing,builtInSave,builtInReset].forEach(control => { control.disabled = !enabled; });
    }
    function rgbToHex(value) {
      const match = String(value).match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
@@ -771,6 +773,9 @@
      selectedBuiltInNode.style.borderRadius = Math.max(0,Math.min(100,Number(builtInRadius.value)||0)) + "px";
      selectedBuiltInNode.style.color = builtInTextColor.value;
      selectedBuiltInNode.style.backgroundColor = builtInBgColor.value;
+     selectedBuiltInNode.style.fontWeight = builtInFontWeight.value;
+     selectedBuiltInNode.style.textAlign = builtInTextAlign.value;
+     selectedBuiltInNode.style.letterSpacing = Math.max(-2,Math.min(20,Number(builtInLetterSpacing.value)||0)) + "px";
    }
    function selectBuiltInPreviewNode(node) {
      if (!node || node.closest(".owner-added-element,.owner-editor-alignment-guides,.owner-custom-section")) return;
@@ -782,6 +787,9 @@
      builtInRadius.value = Math.round(parseFloat(style.borderRadius)||0);
      builtInTextColor.value = /^#[0-9a-f]{6}$/i.test(rgbToHex(style.color)) ? rgbToHex(style.color) : "#f2f0eb";
      builtInBgColor.value = /^#[0-9a-f]{6}$/i.test(rgbToHex(style.backgroundColor)) ? rgbToHex(style.backgroundColor) : "#ffffff";
+     builtInFontWeight.value = String(Math.max(300,Math.min(800,Math.round((parseInt(style.fontWeight,10)||400)/100)*100)));
+     builtInTextAlign.value = ["left","center","right","justify"].includes(style.textAlign) ? style.textAlign : "left";
+     builtInLetterSpacing.value = Math.max(-2,Math.min(20,parseFloat(style.letterSpacing)||0));
      setBuiltInControlsEnabled(true);
      builtInStatus.textContent = "Selected: " + node.tagName.toLowerCase() + " · " + selector;
    let builtInPosition = {x:0,y:0,width:100};
@@ -825,10 +833,10 @@
      }
      makeBuiltInCanvasOverlay(node);
    }
-   [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor].forEach(control => control.addEventListener("input",updateBuiltInPreview));
+   [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor,builtInFontWeight,builtInTextAlign,builtInLetterSpacing].forEach(control => { control.addEventListener("input",updateBuiltInPreview); control.addEventListener("change",updateBuiltInPreview); });
    builtInSave.addEventListener("click",async()=>{
      if(!selectedBuiltInSelector||!selectedBuiltInNode)return;
-     const value={text:builtInText.value.slice(0,500),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value,position:builtInPosition};
+     const value={text:builtInText.value.slice(0,500),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value,fontWeight:builtInFontWeight.value,textAlign:builtInTextAlign.value,letterSpacing:Math.max(-2,Math.min(20,Number(builtInLetterSpacing.value)||0)),position:builtInPosition};
      builtInSave.disabled=true;builtInStatus.textContent="Saving selected element…";
      try{
        const {data,error:readError}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();
