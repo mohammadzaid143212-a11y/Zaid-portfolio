@@ -430,7 +430,14 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
     if (!setting || typeof selector !== "string" || selector.length > 240) return;
     let target; try { target = document.querySelector(selector); } catch { return; }
     if (!target || target.closest(".owner-added-element,.owner-custom-section")) return;
-    if (typeof setting.text === "string") target.textContent = setting.text.slice(0,500);
+    if (typeof setting.text === "string" && target.tagName.toLowerCase() !== "img" && !target.querySelector("*")) target.textContent = setting.text.slice(0,500);
+    if (typeof setting.linkUrl === "string" && target.tagName.toLowerCase() === "a" && /^(https?:|mailto:|tel:|#|\/(?!\/)|\.\.?\/)/i.test(setting.linkUrl)) target.setAttribute("href",setting.linkUrl);
+    if (typeof setting.imageSrc === "string" && target.tagName.toLowerCase() === "img" && /^(https?:|\/(?!\/)|\.\.?\/)/i.test(setting.imageSrc)) target.setAttribute("src",setting.imageSrc);
+    if (target.tagName.toLowerCase() === "img") {
+      if (typeof setting.imageAlt === "string") target.setAttribute("alt",setting.imageAlt.slice(0,240));
+      if (Number.isFinite(Number(setting.imageWidth))) target.style.width = Math.max(20,Math.min(2000,Number(setting.imageWidth))) + "px";
+      target.style.height = "auto";
+    }
     if (Number.isFinite(Number(setting.fontSize))) target.style.fontSize = Math.max(10,Math.min(120,Number(setting.fontSize))) + "px";
     if (Number.isFinite(Number(setting.radius))) target.style.borderRadius = Math.max(0,Math.min(100,Number(setting.radius))) + "px";
     if (/^#[0-9a-f]{6}$/i.test(setting.color || "")) target.style.color = setting.color;
