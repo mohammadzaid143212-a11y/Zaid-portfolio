@@ -784,11 +784,51 @@
      builtInBgColor.value = /^#[0-9a-f]{6}$/i.test(rgbToHex(style.backgroundColor)) ? rgbToHex(style.backgroundColor) : "#ffffff";
      setBuiltInControlsEnabled(true);
      builtInStatus.textContent = "Selected: " + node.tagName.toLowerCase() + " · " + selector;
+   let builtInPosition = {x:0,y:0,width:100};
+   let builtInCanvasOverlay = null;
+   function removeBuiltInCanvasOverlay() { if (builtInCanvasOverlay) builtInCanvasOverlay.remove(); builtInCanvasOverlay = null; }
+   function updateBuiltInCanvasOverlay() {
+     if (!selectedBuiltInNode?.isConnected || !builtInCanvasOverlay) return;
+     const rect = selectedBuiltInNode.getBoundingClientRect();
+     builtInCanvasOverlay.style.left = rect.left + "px"; builtInCanvasOverlay.style.top = rect.top + "px";
+     builtInCanvasOverlay.style.width = rect.width + "px"; builtInCanvasOverlay.style.height = rect.height + "px";
+   }
+   function makeBuiltInCanvasOverlay(node) {
+     removeBuiltInCanvasOverlay();
+     const doc = websitePreview.contentDocument, overlay = doc.createElement("div");
+     overlay.setAttribute("aria-label","Selected element move and resize frame");
+     overlay.style.cssText="position:fixed;z-index:2147483000;border:2px dashed #c9f36a;box-sizing:border-box;pointer-events:none;touch-action:none;";
+     const grip=doc.createElement("button");grip.type="button";grip.setAttribute("aria-label","Resize selected element");
+     grip.style.cssText="position:absolute;right:-9px;bottom:-9px;width:18px;height:18px;border:2px solid #15202a;border-radius:4px;background:#c9f36a;padding:0;pointer-events:auto;touch-action:none;cursor:nwse-resize;";
+     const move=doc.createElement("div");move.title="Drag to move";move.style.cssText="position:absolute;inset:0;pointer-events:auto;cursor:move;touch-action:none;background:transparent;";
+     overlay.append(move,grip);doc.body.append(overlay);builtInCanvasOverlay=overlay;updateBuiltInCanvasOverlay();
+     let moving=false,resizing=false,startX=0,startY=0,startLeft=0,startTop=0,startWidth=0,startHeight=0;
+     const parent=node.parentElement;
+     move.addEventListener("pointerdown",ev=>{moving=true;startX=ev.clientX;startY=ev.clientY;const r=node.getBoundingClientRect();startLeft=r.left;startTop=r.top;move.setPointerCapture(ev.pointerId);ev.preventDefault();});
+     move.addEventListener("pointermove",ev=>{if(!moving)return;overlay.style.left=(startLeft+ev.clientX-startX)+"px";overlay.style.top=(startTop+ev.clientY-startY)+"px";});
+     const stopMove=()=>{if(!moving)return;moving=false;const parentRect=parent.getBoundingClientRect(),r=node.getBoundingClientRect(),or=overlay.getBoundingClientRect();builtInPosition.x=Math.round((or.left-r.left)/Math.max(1,parentRect.width)*10000)/100;builtInPosition.y=Math.round((or.top-r.top)/Math.max(1,parentRect.height)*10000)/100;node.style.position="relative";node.style.left=builtInPosition.x+"%";node.style.top=builtInPosition.y+"%";updateBuiltInCanvasOverlay();builtInStatus.textContent="Position adjusted in preview. Tap Save selected element to publish.";};
+     move.addEventListener("pointerup",stopMove);move.addEventListener("pointercancel",stopMove);
+     grip.addEventListener("pointerdown",ev=>{resizing=true;startX=ev.clientX;startWidth=overlay.getBoundingClientRect().width;grip.setPointerCapture(ev.pointerId);ev.preventDefault();ev.stopPropagation();});
+     grip.addEventListener("pointermove",ev=>{if(!resizing)return;const width=Math.max(30,startWidth+ev.clientX-startX);overlay.style.width=width+"px";});
+     const stopResize=()=>{if(!resizing)return;resizing=false;const parentRect=parent.getBoundingClientRect();builtInPosition.width=Math.max(5,Math.min(100,Math.round(overlay.getBoundingClientRect().width/Math.max(1,parentRect.width)*10000)/100));node.style.width=builtInPosition.width+"%";updateBuiltInCanvasOverlay();builtInStatus.textContent="Width adjusted in preview. Tap Save selected element to publish.";};
+     grip.addEventListener("pointerup",stopResize);grip.addEventListener("pointercancel",stopResize);
+     doc.addEventListener("scroll",updateBuiltInCanvasOverlay,true);
+     doc.defaultView.addEventListener("resize",updateBuiltInCanvasOverlay);
+   }
+     const savedPosition = themeSettings.__visualOverrides?.[selector]?.position;
+     builtInPosition = savedPosition && typeof savedPosition === "object"
+       ? {x:Math.max(-100,Math.min(100,Number(savedPosition.x)||0)),y:Math.max(-100,Math.min(100,Number(savedPosition.y)||0)),width:Math.max(5,Math.min(100,Number(savedPosition.width)||100))}
+       : {x:0,y:0,width:100};
+     if (savedPosition) {
+       node.style.position = "relative"; node.style.left = builtInPosition.x + "%";
+       node.style.top = builtInPosition.y + "%"; node.style.width = builtInPosition.width + "%";
+     }
+     makeBuiltInCanvasOverlay(node);
    }
    [builtInText,builtInFontSize,builtInRadius,builtInTextColor,builtInBgColor].forEach(control => control.addEventListener("input",updateBuiltInPreview));
    builtInSave.addEventListener("click",async()=>{
      if(!selectedBuiltInSelector||!selectedBuiltInNode)return;
-     const value={text:builtInText.value.slice(0,500),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value};
+     const value={text:builtInText.value.slice(0,500),fontSize:Math.max(10,Math.min(120,Number(builtInFontSize.value)||24)),radius:Math.max(0,Math.min(100,Number(builtInRadius.value)||0)),color:builtInTextColor.value,background:builtInBgColor.value,position:builtInPosition};
      builtInSave.disabled=true;builtInStatus.textContent="Saving selected element…";
      try{
        const {data,error:readError}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();
@@ -800,7 +840,7 @@
      finally{builtInSave.disabled=false;}
    });
    builtInReset.addEventListener("click",async()=>{
-     if(!selectedBuiltInSelector)return;builtInReset.disabled=true;
+     if(!selectedBuiltInSelector)return;builtInReset.disabled=true;removeBuiltInCanvasOverlay();
      try{
        const {data,error:readError}=await client.from("portfolio_theme_settings").select("settings").eq("id",true).maybeSingle();
        if(readError)throw readError;
