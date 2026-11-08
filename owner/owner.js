@@ -752,8 +752,10 @@
     const list = $("#custom-element-list"), items = getCustomElements();
     list.replaceChildren();
     if (!items.length) { const p = document.createElement("p"); p.className = "empty-state"; p.textContent = "No custom elements added yet."; list.append(p); return; }
-    items.forEach(item => {
+    items.forEach((item, index) => {
       const card = document.createElement("div"); card.className = "custom-element-item";
+      card.dataset.elementId = item.id;
+      card.classList.toggle("is-selected", item.id === editingElementId);
       const info = document.createElement("div"); const strong = document.createElement("strong");
       strong.textContent = item.kind === "text" ? (item.content || "Text element") : (item.kind === "image" ? "Image / graphic" : "Video / motion graphic");
       const small = document.createElement("p"); small.textContent = item.target + " · " + item.placement + " · " + (item.animation || "no animation");
@@ -776,6 +778,28 @@
         document.querySelector('[data-owner-section="adjustment-studio"]')?.click();
          $("#adjustment-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
       });
+      const moveUp = document.createElement("button"); moveUp.type = "button"; moveUp.className = "quiet-button layer-order-button"; moveUp.textContent = "↑"; moveUp.title = "Move layer forward"; moveUp.setAttribute("aria-label", "Move layer forward");
+      moveUp.disabled = index === items.length - 1;
+      moveUp.addEventListener("click", async () => {
+        const current = getCustomElements().slice(), from = current.findIndex(x => x.id === item.id);
+        if (from < 0 || from >= current.length - 1) return;
+        [current[from], current[from + 1]] = [current[from + 1], current[from]];
+        moveUp.disabled = true;
+        const saved = await saveCustomElements(current);
+        if (!saved) moveUp.disabled = false;
+        else themeNotice("Layer moved forward. Refresh the public preview after publishing to review the new stacking order.");
+      });
+      const moveDown = document.createElement("button"); moveDown.type = "button"; moveDown.className = "quiet-button layer-order-button"; moveDown.textContent = "↓"; moveDown.title = "Move layer backward"; moveDown.setAttribute("aria-label", "Move layer backward");
+      moveDown.disabled = index === 0;
+      moveDown.addEventListener("click", async () => {
+        const current = getCustomElements().slice(), from = current.findIndex(x => x.id === item.id);
+        if (from <= 0) return;
+        [current[from], current[from - 1]] = [current[from - 1], current[from]];
+        moveDown.disabled = true;
+        const saved = await saveCustomElements(current);
+        if (!saved) moveDown.disabled = false;
+        else themeNotice("Layer moved backward. Refresh the public preview after publishing to review the new stacking order.");
+      });
       const del = document.createElement("button"); del.type = "button"; del.className = "quiet-button"; del.textContent = "Remove";
       del.addEventListener("click", async () => {
         if (!window.confirm("Remove this custom element? This change will be saved to your theme settings.")) return;
@@ -783,7 +807,7 @@
         const saved = await saveCustomElements(getCustomElements().filter(x => x.id !== item.id));
         if (!saved) del.disabled = false;
       });
-      actions.append(edit,del); card.append(info,actions); list.append(card);
+      actions.append(moveUp,moveDown,edit,del); card.append(info,actions); list.append(card);
     });
   }
   async function saveCustomElements(items) {
