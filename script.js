@@ -546,7 +546,9 @@ const customElements = Array.isArray(data.settings.__elements) ? data.settings._
       } else if (item.kind === "shape") {
         node.style.height = Math.max(20,Math.min(1600,Number(item.height)||180)) + "px";
         node.style.minHeight = "20px";
-        node.style.background = elementColor;
+        const gradientColor = /^#[0-9a-f]{6}$/i.test(item.gradientColor || "") ? item.gradientColor : "#6b8cff";
+        const gradientAngle = Math.max(0,Math.min(360,Number(item.gradientAngle)||135));
+        node.style.background = item.backgroundMode === "gradient" ? "linear-gradient("+gradientAngle+"deg,"+elementColor+","+gradientColor+")" : elementColor;
         node.style.padding = "0";
         node.setAttribute("aria-label","Decorative shape or container");
       } else {
