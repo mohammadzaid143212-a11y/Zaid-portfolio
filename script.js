@@ -537,6 +537,12 @@ const customElements = Array.isArray(data.settings.__elements) ? data.settings._
         node.textContent = String(item.content || "").slice(0,240);
         node.style.font = "600 clamp(18px,3vw,34px) Manrope, sans-serif";
         node.style.overflowWrap = "anywhere";
+      } else if (item.kind === "shape") {
+        node.style.height = Math.max(20,Math.min(1600,Number(item.height)||180)) + "px";
+        node.style.minHeight = "20px";
+        node.style.background = elementColor;
+        node.style.padding = "0";
+        node.setAttribute("aria-label","Decorative shape or container");
       } else {
         let media;
         if (item.kind === "image") {
