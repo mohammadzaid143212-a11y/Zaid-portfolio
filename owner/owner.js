@@ -922,6 +922,52 @@
       const selectionStyle = doc.createElement("style");
       selectionStyle.textContent = ".owner-added-element[data-element-id]{cursor:pointer;outline:1px dashed transparent;outline-offset:4px;transition:outline-color .15s ease}.owner-added-element[data-element-id]:hover{outline-color:#c9f36a}.owner-added-element[data-owner-multi-selected='true']{outline:2px solid #c9f36a!important;outline-offset:5px;box-shadow:0 0 0 4px #c9f36a33!important}";
       doc.head.append(selectionStyle);
+      let previewGroupDrag = null, suppressNextLayerClick = false;
+      doc.addEventListener("pointerdown", event => {
+        const layer = event.target.closest(".owner-added-element[data-element-id]");
+        if (!layer || selectedCustomLayerIds.size < 2 || !selectedCustomLayerIds.has(layer.dataset.elementId)) return;
+        const selectedItems = getCustomElements().filter(item => selectedCustomLayerIds.has(item.id));
+        if (!selectedItems.length || selectedItems.some(item => item.locked)) return;
+        const entries = selectedItems.map(item => {
+          const node = Array.from(doc.querySelectorAll(".owner-added-element[data-element-id]")).find(el => el.dataset.elementId === item.id);
+          if (!node || !node.parentElement) return null;
+          const rect = node.parentElement.getBoundingClientRect();
+          return { item, node, rect, startX: Number(item.x ?? 50), startY: Number(item.y ?? 50), mobileX: item.mobile ? Number(item.mobile.x ?? item.x ?? 50) : null, mobileY: item.mobile ? Number(item.mobile.y ?? item.y ?? 50) : null };
+        }).filter(Boolean);
+        if (entries.length < 2) return;
+        previewGroupDrag = { pointerId:event.pointerId, startClientX:event.clientX, startClientY:event.clientY, entries };
+        try { layer.setPointerCapture(event.pointerId); } catch {}
+        event.preventDefault(); event.stopPropagation();
+      }, true);
+      doc.addEventListener("pointermove", event => {
+        if (!previewGroupDrag || event.pointerId !== previewGroupDrag.pointerId) return;
+        const dx = event.clientX - previewGroupDrag.startClientX, dy = event.clientY - previewGroupDrag.startClientY;
+        previewGroupDrag.entries.forEach(entry => {
+          const x = Math.max(0,Math.min(100,entry.startX + dx / Math.max(1,entry.rect.width) * 100));
+          const y = Math.max(0,Math.min(100,entry.startY + dy / Math.max(1,entry.rect.height) * 100));
+          entry.node.style.left = x + "%"; entry.node.style.top = y + "%";
+        });
+        event.preventDefault();
+      }, true);
+      const finishPreviewGroupDrag = async event => {
+        if (!previewGroupDrag || (event && event.pointerId !== previewGroupDrag.pointerId)) return;
+        const drag = previewGroupDrag; previewGroupDrag = null;
+        const dx = event ? event.clientX - drag.startClientX : 0, dy = event ? event.clientY - drag.startClientY : 0;
+        const latest = getCustomElements().map(item => {
+          const entry = drag.entries.find(candidate => candidate.item.id === item.id);
+          if (!entry) return item;
+          const x = Math.max(0,Math.min(100,entry.startX + dx / Math.max(1,entry.rect.width) * 100));
+          const y = Math.max(0,Math.min(100,entry.startY + dy / Math.max(1,entry.rect.height) * 100));
+          const moved = { ...item, x, y };
+          if (item.mobile) moved.mobile = { ...item.mobile, x:Math.max(0,Math.min(100,entry.mobileX + dx / Math.max(1,entry.rect.width) * 100)), y:Math.max(0,Math.min(100,entry.mobileY + dy / Math.max(1,entry.rect.height) * 100)) };
+          return moved;
+        });
+        suppressNextLayerClick = true;
+        if (await saveCustomElements(latest)) themeNotice("Selected layers dragged together and saved. Use Save & publish to apply.");
+        else refreshWebsitePreview();
+      };
+      doc.addEventListener("pointerup", finishPreviewGroupDrag, true);
+      doc.addEventListener("pointercancel", finishPreviewGroupDrag, true);
       doc.addEventListener("click", event => {
          const builtIn = event.target.closest("h1,h2,h3,h4,p,button,a[href],img");
          if (builtIn && !builtIn.closest(".owner-added-element,.owner-custom-section") && !(builtIn.tagName.toLowerCase()==="a" && builtIn.closest("button"))) {
@@ -931,6 +977,7 @@
         const layer = event.target.closest(".owner-added-element[data-element-id]");
         if (!layer) return;
         const id = layer.dataset.elementId;
+        if (suppressNextLayerClick) { suppressNextLayerClick = false; event.preventDefault(); event.stopPropagation(); return; }
         if (event.shiftKey || previewMultiSelectMode) {
           event.preventDefault(); event.stopPropagation();
           if (selectedCustomLayerIds.has(id)) selectedCustomLayerIds.delete(id); else selectedCustomLayerIds.add(id);
