@@ -931,7 +931,7 @@
         const layer = event.target.closest(".owner-added-element[data-element-id]");
         if (!layer) return;
         const id = layer.dataset.elementId;
-        if (event.shiftKey) {
+        if (event.shiftKey || previewMultiSelectMode) {
           event.preventDefault(); event.stopPropagation();
           if (selectedCustomLayerIds.has(id)) selectedCustomLayerIds.delete(id); else selectedCustomLayerIds.add(id);
           doc.querySelectorAll(".owner-added-element[data-element-id]").forEach(node => { node.dataset.ownerMultiSelected = selectedCustomLayerIds.has(node.dataset.elementId) ? "true" : "false"; });
@@ -1011,6 +1011,7 @@
   [elementKind,$("#element-content"),$("#element-url"),$("#element-width"),$("#element-color"),$("#element-rotation"),$("#element-opacity"),$("#element-radius"),$("#element-border-width"),$("#element-shadow"),elementOverlay,$("#element-layer")].forEach(el => el.addEventListener("change", () => { if (websitePreview.contentDocument && websitePreview.contentDocument.readyState === "complete") refreshWebsitePreview(); }));
   function getCustomElements() { return Array.isArray(themeSettings.__elements) ? themeSettings.__elements : []; }
   const selectedCustomLayerIds = new Set();
+  let previewMultiSelectMode = false;
   function renderCustomElements() {
     const list = $("#custom-element-list"), items = getCustomElements();
     list.replaceChildren();
@@ -1021,6 +1022,9 @@
       const selectAll = document.createElement("button"); selectAll.type = "button"; selectAll.className = "quiet-button"; selectAll.textContent = selectedCustomLayerIds.size === items.length ? "Clear selection" : "Select all";
       selectAll.addEventListener("click", () => { if (selectedCustomLayerIds.size === items.length) selectedCustomLayerIds.clear(); else items.forEach(item => selectedCustomLayerIds.add(item.id)); renderCustomElements(); });
       const count = document.createElement("span"); count.className = "field-help"; count.textContent = selectedCustomLayerIds.size + " selected";
+      const previewSelectMode = document.createElement("button"); previewSelectMode.type = "button"; previewSelectMode.className = "quiet-button"; previewSelectMode.textContent = previewMultiSelectMode ? "Done selecting on preview" : "Select on preview"; previewSelectMode.setAttribute("aria-pressed", String(previewMultiSelectMode));
+      previewSelectMode.title = "Turn on to tap custom layers in the website preview and add or remove them from the selection";
+      previewSelectMode.addEventListener("click", () => { previewMultiSelectMode = !previewMultiSelectMode; renderCustomElements(); themeNotice(previewMultiSelectMode ? "Preview selection mode on. Tap layers in the preview to select or deselect them." : "Preview selection mode off."); });
       const bulkVisibility = document.createElement("button"); bulkVisibility.type = "button"; bulkVisibility.className = "quiet-button"; bulkVisibility.textContent = "Hide selected"; bulkVisibility.disabled = selectedCustomLayerIds.size === 0;
       bulkVisibility.addEventListener("click", async () => { const current = getCustomElements().map(item => selectedCustomLayerIds.has(item.id) ? { ...item, hidden: true } : item); bulkVisibility.disabled = true; if (await saveCustomElements(current)) themeNotice("Selected layers hidden. Save & publish to apply."); else bulkVisibility.disabled = false; });
       const bulkShow = document.createElement("button"); bulkShow.type = "button"; bulkShow.className = "quiet-button"; bulkShow.textContent = "Show selected"; bulkShow.disabled = selectedCustomLayerIds.size === 0;
@@ -1064,7 +1068,7 @@
         if (await saveCustomElements(current)) { selectedCustomLayerIds.clear(); themeNotice(chosen.length + " selected layer(s) deleted."); }
         else bulkDelete.disabled = false;
       });
-      bulk.append(selectAll,count,bulkVisibility,bulkShow,bulkLock,bulkUnlock,bulkDelete); list.append(bulk,groupMove);
+      bulk.append(selectAll,count,previewSelectMode,bulkVisibility,bulkShow,bulkLock,bulkUnlock,bulkDelete); list.append(bulk,groupMove);
     }
     if (!items.length) { const p = document.createElement("p"); p.className = "empty-state"; p.textContent = "No custom elements added yet."; list.append(p); return; }
     items.forEach((item, index) => {
