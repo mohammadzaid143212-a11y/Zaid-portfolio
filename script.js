@@ -535,7 +535,10 @@ const customElements = Array.isArray(data.settings.__elements) ? data.settings._
       }
       if (item.kind === "text") {
         node.textContent = String(item.content || "").slice(0,240);
-        node.style.font = "600 clamp(18px,3vw,34px) Manrope, sans-serif";
+        node.style.fontFamily = "Manrope, sans-serif";
+        node.style.fontSize = "clamp(10px," + Math.max(10,Math.min(160,Number(item.fontSize)||34)) + "px,160px)";
+        node.style.fontWeight = String(Math.max(300,Math.min(800,Number(item.fontWeight)||600)));
+        node.style.textAlign = ["left","center","right"].includes(item.textAlign) ? item.textAlign : "center";
         node.style.overflowWrap = "anywhere";
       } else if (item.kind === "shape") {
         node.style.height = Math.max(20,Math.min(1600,Number(item.height)||180)) + "px";
