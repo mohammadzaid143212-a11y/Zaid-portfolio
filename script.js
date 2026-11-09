@@ -549,7 +549,8 @@ const customElements = Array.isArray(data.settings.__elements) ? data.settings._
         const gradientColor = /^#[0-9a-f]{6}$/i.test(item.gradientColor || "") ? item.gradientColor : "#6b8cff";
         const gradientAngle = Math.max(0,Math.min(360,Number(item.gradientAngle)||135));
         node.style.background = item.backgroundMode === "gradient" ? "linear-gradient("+gradientAngle+"deg,"+elementColor+","+gradientColor+")" : elementColor;
-        node.style.padding = "0";
+        const padding = item.padding && typeof item.padding === "object" ? item.padding : {};
+        node.style.padding = [padding.top,padding.right,padding.bottom,padding.left].map(v=>Math.max(0,Math.min(240,Number(v)||0))+"px").join(" ");
         node.setAttribute("aria-label","Decorative shape or container");
       } else {
         let media;
