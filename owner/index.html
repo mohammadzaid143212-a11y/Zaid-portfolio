@@ -204,7 +204,7 @@
           <div class="custom-elements-panel">
             <p class="eyebrow">ELEMENT BUILDER</p>
             <h3>Add an element anywhere</h3>
-            <p class="field-help">Add text, an image, a video or a motion-graphic overlay to a selected section. You can edit or remove each element later.</p>
+            <p class="field-help">Add text, images, video, or a shape/container block to a selected section. You can edit or remove each element later.</p>
             <label for="element-target">Place inside section / selector</label>
             <select id="element-target">
               <option value=".hero">Hero section</option><option value=".hero-frame">Hero video frame</option>
@@ -214,8 +214,8 @@
             </select>
             <div id="element-custom-target-field" class="hidden"><label for="element-custom-target">Custom target selector</label><input id="element-custom-target" type="text" placeholder=".project-info h3"></div>
             <label for="element-kind">Element type</label>
-            <select id="element-kind"><option value="text">Text / heading</option><option value="image">Image / graphic</option><option value="video">Video / motion graphic</option></select>
-            <label for="element-content">Text content (for text elements)</label><input id="element-content" type="text" maxlength="240" placeholder="Your custom headline or caption">
+            <select id="element-kind"><option value="text">Text / heading</option><option value="image">Image / graphic</option><option value="video">Video / motion graphic</option><option value="shape">Shape / container</option></select>
+            <label for="element-height">Container height (px)</label><input id="element-height" type="number" min="20" max="1600" value="180"><label for="element-content">Text content (for text elements)</label><input id="element-content" type="text" maxlength="240" placeholder="Your custom headline or caption">
             <label for="element-url">Image / video URL (optional if uploading)</label><input id="element-url" type="url" placeholder="https://…">
             <label for="element-file" class="file-picker-label">Or upload image / video</label>
             <input id="element-file" class="file-picker" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/ogg">
