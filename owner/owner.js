@@ -920,7 +920,7 @@
     // Let the owner select an already-published custom layer directly in the same-origin preview.
     if (doc.documentElement.dataset.ownerLayerSelectionReady !== "true") {
       const selectionStyle = doc.createElement("style");
-      selectionStyle.textContent = ".owner-added-element[data-element-id]{cursor:pointer;outline:1px dashed transparent;outline-offset:4px;transition:outline-color .15s ease}.owner-added-element[data-element-id]:hover{outline-color:#c9f36a}";
+      selectionStyle.textContent = ".owner-added-element[data-element-id]{cursor:pointer;outline:1px dashed transparent;outline-offset:4px;transition:outline-color .15s ease}.owner-added-element[data-element-id]:hover{outline-color:#c9f36a}.owner-added-element[data-owner-multi-selected='true']{outline:2px solid #c9f36a!important;outline-offset:5px;box-shadow:0 0 0 4px #c9f36a33!important}";
       doc.head.append(selectionStyle);
       doc.addEventListener("click", event => {
          const builtIn = event.target.closest("h1,h2,h3,h4,p,button,a[href],img");
@@ -931,6 +931,14 @@
         const layer = event.target.closest(".owner-added-element[data-element-id]");
         if (!layer) return;
         const id = layer.dataset.elementId;
+        if (event.shiftKey) {
+          event.preventDefault(); event.stopPropagation();
+          if (selectedCustomLayerIds.has(id)) selectedCustomLayerIds.delete(id); else selectedCustomLayerIds.add(id);
+          doc.querySelectorAll(".owner-added-element[data-element-id]").forEach(node => { node.dataset.ownerMultiSelected = selectedCustomLayerIds.has(node.dataset.elementId) ? "true" : "false"; });
+          renderCustomElements();
+          $("#element-upload-status").textContent = selectedCustomLayerIds.size + " layer(s) selected. Use group positioning controls in the layer list.";
+          return;
+        }
         if (getCustomElements().some(item => item.id === id && item.locked)) {
           event.preventDefault(); event.stopPropagation();
           $("#element-upload-status").textContent = "This layer is locked. Unlock it in the layer list to edit.";
