@@ -1056,6 +1056,21 @@
       const moveDownGroup = document.createElement("button"); moveDownGroup.type = "button"; moveDownGroup.className = "quiet-button"; moveDownGroup.textContent = "↓"; moveDownGroup.title = "Move selected layers down 1%"; moveDownGroup.disabled = selectedCustomLayerIds.size === 0;
       moveDownGroup.addEventListener("click", () => nudgeGroup(0,1,"down"));
       groupMove.append(groupMoveLabel,moveLeft,moveRight,moveUpGroup,moveDownGroup);
+      const reorderSelected = async direction => {
+        const current = getCustomElements().slice();
+        const selectedIndexes = current.map((item,index) => selectedCustomLayerIds.has(item.id) ? index : -1).filter(index => index >= 0);
+        if (!selectedIndexes.length) return;
+        if (current.some(item => selectedCustomLayerIds.has(item.id) && item.locked)) return themeNotice("Unlock selected layers before changing their order.", true);
+        const chosen = new Set(selectedCustomLayerIds);
+        if (direction === "forward") {
+          for (let i=current.length-2;i>=0;i--) if (chosen.has(current[i].id) && !chosen.has(current[i+1].id)) [current[i],current[i+1]]=[current[i+1],current[i]];
+        } else {
+          for (let i=1;i<current.length;i++) if (chosen.has(current[i].id) && !chosen.has(current[i-1].id)) [current[i],current[i-1]]=[current[i-1],current[i]];
+        }
+        if (await saveCustomElements(current)) themeNotice(direction === "forward" ? "Selected layers moved forward in the layer stack." : "Selected layers moved backward in the layer stack.");
+      };
+      const bringForward = document.createElement("button"); bringForward.type = "button"; bringForward.className = "quiet-button"; bringForward.textContent = "Bring forward"; bringForward.disabled = selectedCustomLayerIds.size === 0; bringForward.addEventListener("click", () => reorderSelected("forward"));
+      const sendBackward = document.createElement("button"); sendBackward.type = "button"; sendBackward.className = "quiet-button"; sendBackward.textContent = "Send backward"; sendBackward.disabled = selectedCustomLayerIds.size === 0; sendBackward.addEventListener("click", () => reorderSelected("backward"));
       const bulkDelete = document.createElement("button"); bulkDelete.type = "button"; bulkDelete.className = "quiet-button"; bulkDelete.textContent = "Delete selected"; bulkDelete.disabled = selectedCustomLayerIds.size === 0 || items.some(item => selectedCustomLayerIds.has(item.id) && item.locked);
       bulkDelete.title = items.some(item => selectedCustomLayerIds.has(item.id) && item.locked) ? "Unlock selected layers before deleting" : "Remove all selected layers";
       bulkDelete.addEventListener("click", async () => {
@@ -1068,7 +1083,7 @@
         if (await saveCustomElements(current)) { selectedCustomLayerIds.clear(); themeNotice(chosen.length + " selected layer(s) deleted."); }
         else bulkDelete.disabled = false;
       });
-      bulk.append(selectAll,count,previewSelectMode,bulkVisibility,bulkShow,bulkLock,bulkUnlock,bulkDelete); list.append(bulk,groupMove);
+      bulk.append(selectAll,count,previewSelectMode,bulkVisibility,bulkShow,bulkLock,bulkUnlock,bringForward,sendBackward,bulkDelete); list.append(bulk,groupMove);
     }
     if (!items.length) { const p = document.createElement("p"); p.className = "empty-state"; p.textContent = "No custom elements added yet."; list.append(p); return; }
     items.forEach((item, index) => {
