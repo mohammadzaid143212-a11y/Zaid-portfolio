@@ -539,6 +539,9 @@ const customElements = Array.isArray(data.settings.__elements) ? data.settings._
         node.style.fontSize = "clamp(10px," + Math.max(10,Math.min(160,Number(item.fontSize)||34)) + "px,160px)";
         node.style.fontWeight = String(Math.max(300,Math.min(800,Number(item.fontWeight)||600)));
         node.style.textAlign = ["left","center","right"].includes(item.textAlign) ? item.textAlign : "center";
+        node.style.lineHeight = String(Math.max(0.8,Math.min(3,Number(item.lineHeight)||1.2)));
+        node.style.letterSpacing = Math.max(-2,Math.min(20,Number(item.letterSpacing)||0)) + "px";
+        node.style.textDecoration = ["none","underline","line-through","overline"].includes(item.textDecoration) ? item.textDecoration : "none";
         node.style.overflowWrap = "anywhere";
       } else if (item.kind === "shape") {
         node.style.height = Math.max(20,Math.min(1600,Number(item.height)||180)) + "px";
