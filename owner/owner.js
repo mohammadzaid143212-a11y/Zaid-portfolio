@@ -1173,7 +1173,7 @@
         $("#element-custom-target-field").classList.toggle("hidden", $("#element-target").value !== "custom");
         if ($("#element-target").value === "custom") $("#element-custom-target").value = item.target;
         elementKind.value = item.kind; elementKind.dispatchEvent(new Event("change"));
-        $("#element-content").value = item.content || ""; $("#element-url").value = item.url || "";
+        $("#element-content").value = item.content || ""; $("#element-url").value = item.url || ""; $("#element-height").value = item.height || 180;
         $("#element-placement").value = item.placement || "center"; $("#element-width").value = item.width || 80; $("#element-layer").value = item.layer === "back" ? "back" : "front";
         $("#element-x").value = item.x ?? 50; $("#element-y").value = item.y ?? 50; $("#element-mobile-enabled").checked = !!item.mobile; $("#element-mobile-x").value = item.mobile?.x ?? 50; $("#element-mobile-y").value = item.mobile?.y ?? 50; $("#element-mobile-width").value = item.mobile?.width ?? 90; $("#element-mobile-fields").classList.toggle("hidden", !item.mobile); elementOverlay.checked = item.overlay !== false; updatePositionPreview();
         $("#element-animation").value = item.animation || "none"; $("#element-duration").value = item.duration || 6;
@@ -1278,10 +1278,10 @@
     }
     const kind = elementKind.value, content = $("#element-content").value.trim(), url = $("#element-url").value.trim();
     if (kind === "text" && !content) return themeNotice("Enter the text you want to add.",true);
-    if (kind !== "text") { try { const u = new URL(url); if (!["http:","https:"].includes(u.protocol)) throw new Error(); } catch { return themeNotice("Add a valid image/video URL or upload a file first.",true); } }
+    if (["image","video"].includes(kind)) { try { const u = new URL(url); if (!["http:","https:"].includes(u.protocol)) throw new Error(); } catch { return themeNotice("Add a valid image/video URL or upload a file first.",true); } }
     const items = getCustomElements();
     if (!editingElementId && items.length >= 30) return themeNotice("Maximum 30 custom elements. Remove one before adding another.",true);
-    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), x:clampPercent(elementX.value), y:clampPercent(elementY.value), mobile:$("#element-mobile-enabled").checked ? { x:clampPercent($("#element-mobile-x").value), y:clampPercent($("#element-mobile-y").value), width:Math.max(10,Math.min(100,Number($("#element-mobile-width").value)||90)) } : null, overlay:elementOverlay.checked, layer:$("#element-layer").value, animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value, rotation:Math.max(-180,Math.min(180,Number($("#element-rotation").value)||0)), opacity:Math.max(10,Math.min(100,Number($("#element-opacity").value)||100)), radius:Math.max(0,Math.min(200,Number($("#element-radius").value)||0)), borderWidth:Math.max(0,Math.min(10,Number($("#element-border-width").value)||0)), shadow:["none","soft","glow","deep"].includes($("#element-shadow").value)?$("#element-shadow").value:"none" };
+    const item = { id:editingElementId || crypto.randomUUID(), target, kind, content:content.slice(0,240), url, height:Math.max(20,Math.min(1600,Number($("#element-height").value)||180)), placement:$("#element-placement").value, width:Math.max(10,Math.min(100,Number($("#element-width").value)||80)), x:clampPercent(elementX.value), y:clampPercent(elementY.value), mobile:$("#element-mobile-enabled").checked ? { x:clampPercent($("#element-mobile-x").value), y:clampPercent($("#element-mobile-y").value), width:Math.max(10,Math.min(100,Number($("#element-mobile-width").value)||90)) } : null, overlay:elementOverlay.checked, layer:$("#element-layer").value, animation:$("#element-animation").value, duration:Math.max(.5,Math.min(30,Number($("#element-duration").value)||6)), color:$("#element-color").value, rotation:Math.max(-180,Math.min(180,Number($("#element-rotation").value)||0)), opacity:Math.max(10,Math.min(100,Number($("#element-opacity").value)||100)), radius:Math.max(0,Math.min(200,Number($("#element-radius").value)||0)), borderWidth:Math.max(0,Math.min(10,Number($("#element-border-width").value)||0)), shadow:["none","soft","glow","deep"].includes($("#element-shadow").value)?$("#element-shadow").value:"none" };
     const nextItems = editingElementId ? items.map(x => x.id === editingElementId ? item : x) : [...items,item];
     const saved = await saveCustomElements(nextItems);
     if (!saved) return;
@@ -1296,6 +1296,7 @@
     elementKind.value = "text";
     $("#element-content").value = "";
     $("#element-url").value = "";
+    $("#element-height").value = 180;
     $("#element-file").value = "";
     elementUploadedUrl = "";
     $("#element-upload-status").textContent = "";
