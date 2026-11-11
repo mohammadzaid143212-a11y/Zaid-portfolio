@@ -498,7 +498,17 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && "Intersect
 const customElements = Array.isArray(data.settings.__elements) ? data.settings.__elements : [];
   const renderedCustomElements = new Map();
   const animationNames = { "fade-in":"themeFadeIn", float:"themeFloat", pulse:"themePulse", "slow-zoom":"themeSlowZoom", "slide-up":"themeSlideUp", "slide-left":"themeSlideLeft" };
-  customElements.slice(0,30).forEach(item => {
+  const pendingCustomElements = customElements.slice(0,30);
+  const orderedCustomElements = [];
+  const emittedCustomIds = new Set();
+  while (pendingCustomElements.length) {
+    const nextIndex = pendingCustomElements.findIndex(item => !item.parentId || emittedCustomIds.has(item.parentId) || !pendingCustomElements.some(candidate => candidate.id === item.parentId));
+    if (nextIndex < 0) { orderedCustomElements.push(...pendingCustomElements.splice(0)); break; }
+    const [nextItem] = pendingCustomElements.splice(nextIndex,1);
+    orderedCustomElements.push(nextItem);
+    if (nextItem.id) emittedCustomIds.add(nextItem.id);
+  }
+  orderedCustomElements.forEach(item => {
     if (item.hidden === true) return;
     let targets;
     if (item.parentId && renderedCustomElements.has(item.parentId)) targets = [renderedCustomElements.get(item.parentId)];
@@ -548,7 +558,6 @@ const customElements = Array.isArray(data.settings.__elements) ? data.settings._
       } else if (item.kind === "shape") {
         node.style.height = Math.max(20,Math.min(1600,Number(item.height)||180)) + "px";
         node.style.minHeight = "20px";
-        node.style.position = "relative";
         node.style.display = "block";
         const gradientColor = /^#[0-9a-f]{6}$/i.test(item.gradientColor || "") ? item.gradientColor : "#6b8cff";
         const gradientAngle = Math.max(0,Math.min(360,Number(item.gradientAngle)||135));
