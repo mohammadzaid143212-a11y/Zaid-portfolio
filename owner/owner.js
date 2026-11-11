@@ -1150,7 +1150,7 @@
       const select = document.createElement("input"); select.type = "checkbox"; select.className = "custom-layer-select"; select.checked = selectedCustomLayerIds.has(item.id); select.setAttribute("aria-label", "Select layer for bulk actions");
       select.addEventListener("change", () => { if (select.checked) selectedCustomLayerIds.add(item.id); else selectedCustomLayerIds.delete(item.id); renderCustomElements(); });
       const info = document.createElement("div"); const strong = document.createElement("strong");
-      strong.textContent = item.kind === "text" ? (item.content || "Text element") : (item.kind === "image" ? "Image / graphic" : "Video / motion graphic");
+      strong.textContent = item.kind === "text" ? (item.content || "Text element") : (item.kind === "image" ? "Image / graphic" : (item.kind === "shape" ? "Shape / container" : "Video / motion graphic"));
       const small = document.createElement("p"); small.textContent = item.target + " · " + item.placement + " · " + (item.animation || "no animation") + (item.hidden ? " · HIDDEN" : "") + (item.locked ? " · LOCKED" : "");
       info.append(strong,small);
       const actions = document.createElement("div"); actions.className = "custom-element-actions";
