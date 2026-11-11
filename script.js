@@ -511,7 +511,9 @@ const customElements = Array.isArray(data.settings.__elements) ? data.settings._
   orderedCustomElements.forEach(item => {
     if (item.hidden === true) return;
     let targets;
+    if (item.parentId && customElements.some(parent => parent.id === item.parentId && parent.hidden === true)) return;
     if (item.parentId && renderedCustomElements.has(item.parentId)) targets = [renderedCustomElements.get(item.parentId)];
+    else if (item.parentId && customElements.some(parent => parent.id === item.parentId)) return;
     else { try { targets = document.querySelectorAll(item.target); } catch { return; } }
     if (!targets.length) return;
     targets.forEach(target => {
