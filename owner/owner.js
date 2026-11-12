@@ -1039,10 +1039,10 @@
     resizeGrip.type = "button"; resizeGrip.setAttribute("aria-label","Resize element"); resizeGrip.title = "Drag to resize";
     resizeGrip.style.cssText = "position:absolute;right:-7px;bottom:-7px;width:18px;height:18px;border:2px solid #08090d;border-radius:3px;background:#c9f36a;cursor:nwse-resize;touch-action:none;padding:0;";
     previewMarker.append(resizeGrip);
-    let resizing = false, resizeStartX = 0, resizeStartWidth = 80;
-    resizeGrip.addEventListener("pointerdown", ev => { resizing=true; resizeStartX=ev.clientX; resizeStartWidth=Math.max(10,Math.min(100,Number(activePreviewPosition().width)||80)); resizeGrip.setPointerCapture(ev.pointerId); ev.stopPropagation(); ev.preventDefault(); });
-    resizeGrip.addEventListener("pointermove", ev => { if (!resizing || !previewTarget) return; const rect=previewTarget.getBoundingClientRect(); const next=Math.max(10,Math.min(100,resizeStartWidth+(ev.clientX-resizeStartX)/rect.width*100)); if(previewMode === "mobile"){ $("#element-mobile-enabled").checked=true; $("#element-mobile-fields").classList.remove("hidden"); $("#element-mobile-width").value=Math.round(next); } else { $("#element-width").value=Math.round(next); } previewMarker.style.width="min("+next+"%,100%)"; updatePositionPreview(); });
-    const stopResize=()=>{if(resizing){resizing=false;recordPositionHistory();}}; resizeGrip.addEventListener("pointerup",stopResize); resizeGrip.addEventListener("pointercancel",stopResize);
+    let resizing = false, resizeStartX = 0, resizeStartY = 0, resizeStartWidth = 80, resizeStartHeight = 180;
+    resizeGrip.addEventListener("pointerdown", ev => { resizing=true; resizeStartX=ev.clientX; resizeStartY=ev.clientY; resizeStartWidth=Math.max(10,Math.min(100,Number(activePreviewPosition().width)||80)); resizeStartHeight=Math.max(20,Math.min(1600,Number($("#element-height").value)||180)); resizeGrip.setPointerCapture(ev.pointerId); ev.stopPropagation(); ev.preventDefault(); });
+    resizeGrip.addEventListener("pointermove", ev => { if (!resizing || !previewTarget) return; const rect=previewTarget.getBoundingClientRect(); const nextWidth=Math.max(10,Math.min(100,resizeStartWidth+(ev.clientX-resizeStartX)/rect.width*100)); const nextHeight=Math.max(20,Math.min(1600,resizeStartHeight+(ev.clientY-resizeStartY))); if(previewMode === "mobile"){ $("#element-mobile-enabled").checked=true; $("#element-mobile-fields").classList.remove("hidden"); $("#element-mobile-width").value=Math.round(nextWidth); } else { $("#element-width").value=Math.round(nextWidth); } $("#element-height").value=Math.round(nextHeight); previewMarker.style.width="min("+nextWidth+"%,100%)"; previewMarker.style.height=nextHeight+"px"; updatePositionPreview(); });
+    const stopResize=()=>{if(resizing){resizing=false;recordPositionHistory();if(typeof recordEditHistory==="function")recordEditHistory();}}; resizeGrip.addEventListener("pointerup",stopResize); resizeGrip.addEventListener("pointercancel",stopResize);
     previewMarker.addEventListener("pointerdown", ev => { if (ev.target === resizeGrip) return; previewDrag = true; previewMarker.setPointerCapture(ev.pointerId); ev.preventDefault(); });
     previewMarker.addEventListener("pointermove", ev => { if (!previewDrag || !previewTarget || !previewMarker) return; const rect = previewTarget.getBoundingClientRect(); let x=(ev.clientX-rect.left)/rect.width*100; let y=(ev.clientY-rect.top)/rect.height*100;
       const snapToGuide = value => { const guides=[0,10,25,50,75,90,100]; const nearest=guides.reduce((best,point)=>Math.abs(value-point)<Math.abs(value-best)?point:best,guides[0]); return Math.abs(value-nearest)<=1.8?nearest:null; };
@@ -1290,7 +1290,71 @@
     status.textContent=sorted.map(frame=>frame.time+"% · opacity "+frame.opacity+"% · Y "+frame.y+"px · scale "+frame.scale+"%").join("  |  ");
   }
   $("#add-keyframe").addEventListener("click", () => { const frame={time:Math.max(0,Math.min(100,Number($("#element-keyframe-time").value)||0)),opacity:Math.max(0,Math.min(100,Number($("#element-keyframe-opacity").value)||100)),y:Math.max(-500,Math.min(500,Number($("#element-keyframe-y").value)||0)),scale:Math.max(10,Math.min(200,Number($("#element-keyframe-scale").value)||100))}; customKeyframes=customKeyframes.filter(x=>x.time!==frame.time); customKeyframes.push(frame); customKeyframes.sort((a,b)=>a.time-b.time); renderKeyframeStatus(); });
+
   $("#clear-keyframes").addEventListener("click",()=>{customKeyframes=[];renderKeyframeStatus();});
+  // Full adjustment-panel undo/redo history (separate from the position-only history above).
+  const editHistory=[]; let editHistoryIndex=-1, editHistoryTimer=null, restoringEditHistory=false;
+  function captureEditState(){
+    const fields={}; draftFieldIds.forEach(id=>{const el=document.getElementById(id);if(el)fields[id]=el.type==="checkbox"?el.checked:el.value;});
+    return {fields,editingElementId,elementUploadedUrl,customKeyframes:customKeyframes.map(frame=>({...frame}))};
+  }
+  function updateEditHistoryButtons(){
+    $("#edit-undo").disabled=editHistoryIndex<=0; $("#edit-redo").disabled=editHistoryIndex>=editHistory.length-1;
+    $("#edit-history-status").textContent=editHistory.length?"Edit "+(editHistoryIndex+1)+" of "+editHistory.length:"Edit history · start changing any setting.";
+  }
+  function recordEditHistory(){
+    if(restoringEditHistory)return;
+    const state=captureEditState(), previous=editHistory[editHistoryIndex];
+    if(previous&&JSON.stringify(previous)===JSON.stringify(state))return;
+    editHistory.splice(editHistoryIndex+1); editHistory.push(state);
+    if(editHistory.length>60)editHistory.shift();
+    editHistoryIndex=editHistory.length-1; updateEditHistoryButtons();
+  }
+  function restoreEditHistory(index){
+    if(index<0||index>=editHistory.length)return;
+    restoringEditHistory=true; editHistoryIndex=index; const state=editHistory[index];
+    Object.entries(state.fields).forEach(([id,value])=>{const el=document.getElementById(id);if(el)el.type==="checkbox"?el.checked=!!value:el.value=value;});
+    editingElementId=state.editingElementId||null; elementUploadedUrl=state.elementUploadedUrl||"";
+    customKeyframes=state.customKeyframes.map(frame=>({...frame})); renderKeyframeStatus();
+    elementKind.dispatchEvent(new Event("change"));
+    $("#element-custom-target-field").classList.toggle("hidden",$("#element-target").value!=="custom");
+    $("#element-mobile-fields").classList.toggle("hidden",!$("#element-mobile-enabled").checked);
+    $("#add-element-button").textContent=editingElementId?"Update element":"Add element";
+    updatePositionPreview(); restoringEditHistory=false; updateEditHistoryButtons();
+    if(websitePreview.contentDocument?.readyState==="complete")refreshWebsitePreview();
+    saveElementDraft(true);
+  }
+  $("#edit-undo").addEventListener("click",()=>restoreEditHistory(editHistoryIndex-1));
+  $("#edit-redo").addEventListener("click",()=>restoreEditHistory(editHistoryIndex+1));
+  draftFieldIds.forEach(id=>{const el=document.getElementById(id);if(!el)return;["input","change"].forEach(type=>el.addEventListener(type,()=>{if(restoringEditHistory)return;if(editHistoryTimer)window.clearTimeout(editHistoryTimer);editHistoryTimer=window.setTimeout(()=>{editHistoryTimer=null;recordEditHistory();},250);}));});
+  $("#add-keyframe").addEventListener("click",()=>{if(editHistoryTimer)window.clearTimeout(editHistoryTimer);recordEditHistory();});
+  $("#clear-keyframes").addEventListener("click",()=>{if(editHistoryTimer)window.clearTimeout(editHistoryTimer);recordEditHistory();});
+  recordEditHistory();
+
+  // Local version snapshots of saved custom elements; no database schema changes required.
+  const elementVersionsKey="zaid-portfolio:visual-builder-versions:v1";
+  function readElementVersions(){try{const data=JSON.parse(localStorage.getItem(elementVersionsKey)||"[]");return Array.isArray(data)?data.slice(0,20):[];}catch{return [];}}
+  function renderElementVersions(){
+    const select=$("#element-version-list"), versions=readElementVersions(), status=$("#element-version-status"), restore=$("#restore-element-version");
+    select.replaceChildren();
+    if(!versions.length){const option=document.createElement("option");option.value="";option.textContent="No saved versions yet";select.append(option);restore.disabled=true;status.textContent="Up to 20 snapshots are stored locally on this device.";return;}
+    versions.forEach((version,index)=>{const option=document.createElement("option");option.value=String(index);option.textContent=new Date(version.savedAt).toLocaleString()+" · "+(version.elements?.length||0)+" layers";select.append(option);});
+    restore.disabled=false; status.textContent=versions.length+" local versions available · newest first.";
+  }
+  function saveElementVersion(){
+    try{const versions=readElementVersions();versions.unshift({savedAt:new Date().toISOString(),elements:JSON.parse(JSON.stringify(getCustomElements()))});localStorage.setItem(elementVersionsKey,JSON.stringify(versions.slice(0,20)));renderElementVersions();$("#element-version-list").value="0";$("#element-version-status").textContent="Version saved on this browser.";}
+    catch(error){$("#element-version-status").textContent="Could not save version. Browser storage may be full.";}
+  }
+  $("#save-element-version").addEventListener("click",saveElementVersion);
+  $("#restore-element-version").addEventListener("click",async()=>{
+    const index=Number($("#element-version-list").value),version=readElementVersions()[index];
+    if(!version||!Array.isArray(version.elements))return;
+    if(!window.confirm("Restore this version? Current saved custom elements will be replaced."))return;
+    const ok=await saveCustomElements(version.elements);
+    if(ok){resetElementForm({announce:false});$("#element-version-status").textContent="Version restored. Use Save & publish in Theme Studio to publish it.";}
+  });
+  renderElementVersions();
+
   $("#add-element-button").addEventListener("click", async () => {
     if (editingElementId && getCustomElements().some(item => item.id === editingElementId && item.locked)) return themeNotice("Unlock this layer before updating it.", true);
     if (elementUploadBusy) return themeNotice("Wait for the file upload to finish.",true);
