@@ -545,7 +545,7 @@ const customElements = Array.isArray(data.settings.__elements) ? data.settings._
         node.style.position = "relative"; node.style.margin = (item.placement === "top" ? "0 auto 24px" : item.placement === "bottom" ? "24px auto 0" : "24px auto"); node.style.transform = "rotate("+elementRotation+"deg)";
       }
       if (item.animation && animationNames[item.animation] && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        node.style.animation = animationNames[item.animation] + " " + Math.max(.5,Math.min(30,Number(item.duration)||6)) + "s ease-in-out infinite alternate";
+        node.style.animation = animationNames[item.animation] + " " + Math.max(.5,Math.min(30,Number(item.duration)||6)) + "s " + (["linear","ease","ease-in","ease-out","ease-in-out","cubic-bezier(.22,1,.36,1)","cubic-bezier(.7,0,.3,1)"].includes(item.easing) ? item.easing : "ease-in-out") + " " + Math.max(0,Math.min(30,Number(item.delay)||0)) + "s " + (["infinite","1","2","3","5"].includes(String(item.iterations)) ? item.iterations : "infinite") + " " + (["normal","reverse","alternate","alternate-reverse"].includes(item.direction) ? item.direction : "alternate") + " both";
       }
       if (item.kind === "text") {
         node.textContent = String(item.content || "").slice(0,240);
