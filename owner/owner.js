@@ -1276,7 +1276,19 @@
     }
   }
   let customKeyframes = [];
-  function renderKeyframeStatus() { $("#keyframe-status").textContent = customKeyframes.length ? customKeyframes.slice().sort((a,b)=>a.time-b.time).map(frame=>frame.time+"% · opacity "+frame.opacity+"% · Y "+frame.y+"px · scale "+frame.scale+"%").join("  |  ") : "No custom keyframes yet. Add frames at 0–100% of the animation."; }
+  function renderKeyframeStatus() {
+    const timeline=$("#keyframe-timeline"), status=$("#keyframe-status");
+    timeline.replaceChildren();
+    const sorted=customKeyframes.slice().sort((a,b)=>a.time-b.time);
+    if(!sorted.length){ const hint=document.createElement("span"); hint.className="field-help"; hint.textContent="Timeline markers appear here as you add keyframes."; timeline.append(hint); status.textContent="No custom keyframes yet. Add frames at 0–100% of the animation."; return; }
+    sorted.forEach(frame=>{
+      const marker=document.createElement("button"); marker.type="button"; marker.className="quiet-button"; marker.textContent=frame.time+"%"; marker.title="Load keyframe at "+frame.time+"%";
+      marker.style.cssText="min-width:48px;padding:7px 10px;border:1px solid #9aa6b2;border-radius:8px;font-weight:700";
+      marker.addEventListener("click",()=>{ $("#element-keyframe-time").value=frame.time; $("#element-keyframe-opacity").value=frame.opacity; $("#element-keyframe-y").value=frame.y; $("#element-keyframe-scale").value=frame.scale; });
+      timeline.append(marker);
+    });
+    status.textContent=sorted.map(frame=>frame.time+"% · opacity "+frame.opacity+"% · Y "+frame.y+"px · scale "+frame.scale+"%").join("  |  ");
+  }
   $("#add-keyframe").addEventListener("click", () => { const frame={time:Math.max(0,Math.min(100,Number($("#element-keyframe-time").value)||0)),opacity:Math.max(0,Math.min(100,Number($("#element-keyframe-opacity").value)||100)),y:Math.max(-500,Math.min(500,Number($("#element-keyframe-y").value)||0)),scale:Math.max(10,Math.min(200,Number($("#element-keyframe-scale").value)||100))}; customKeyframes=customKeyframes.filter(x=>x.time!==frame.time); customKeyframes.push(frame); customKeyframes.sort((a,b)=>a.time-b.time); renderKeyframeStatus(); });
   $("#clear-keyframes").addEventListener("click",()=>{customKeyframes=[];renderKeyframeStatus();});
   $("#add-element-button").addEventListener("click", async () => {
